@@ -4,16 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Rust-G Release Tag
+        description: Rust-G Release Tag (required without branch)
         type: string
       branch:
-        description: Rust-G Branch
+        description: Rust-G Branch (required without release tag)
         type: string
   repository_dispatch:
     types: [rustg_release]
 
 jobs:
-  build-linux:
+  build:
+    name: Build and upload release
     runs-on: ubuntu-22.04
 
     steps:
@@ -50,7 +51,7 @@ jobs:
 
       - run: |
           cd target/i686-unknown-linux-gnu/release
-          zip rustg-${{ env.RUSTG_GIT_REF_NAME }}.zip librust_g.so
+          zip ${{ env.RUSTG_GIT_REF_NAME }}.zip librust_g.so
 
       - uses: ryand56/r2-upload-action@latest
         with:
@@ -58,6 +59,6 @@ jobs:
           r2-access-key-id: ${{ secrets.RUSTG_RELEASES_ACCESS_KEY_ID }}
           r2-secret-access-key: ${{ secrets.RUSTG_RELEASES_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.RUSTG_RELEASES_BUCKET }}
-          source-dir: './target/i686-unknown-linux-gnu/release/rustg-${{ env.RUSTG_GIT_REF_NAME }}.zip'
+          source-dir: './target/i686-unknown-linux-gnu/release/${{ env.RUSTG_GIT_REF_NAME }}.zip'
           destination-dir: ./
           keep-file-fresh: true
