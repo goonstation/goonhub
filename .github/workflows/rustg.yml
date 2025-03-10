@@ -41,15 +41,12 @@ jobs:
           cd target/i686-unknown-linux-gnu/release
           zip rustg-${{ env.RUSTG_GIT_REF }}.zip librust_g.so
 
-      - uses: hkusu/s3-upload-action@v2
+      - uses: ryand56/r2-upload-action@latest
         with:
-          aws-access-key-id: ${{ secrets.RUSTG_RELEASES_AWS_KEY }}
-          aws-secret-access-key: ${{ secrets.RUSTG_RELEASES_AWS_SECRET }}
-          aws-region: 'us-east-2'
-          aws-bucket: ${{ secrets.RUSTG_RELEASES_AWS_BUCKET }}
-          bucket-root: /
-          destination-dir: /
-          public: true
-          expire: 0
-          file-path: './target/i686-unknown-linux-gnu/release/rustg-${{ env.RUSTG_GIT_REF }}.zip'
-          output-file-url: true
+          r2-account-id: ${{ secrets.RUSTG_RELEASES_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.RUSTG_RELEASES_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.RUSTG_RELEASES_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.RUSTG_RELEASES_BUCKET }}
+          source-dir: './target/i686-unknown-linux-gnu/release/rustg-${{ env.RUSTG_GIT_REF }}.zip'
+          destination-dir: ./
+          keep-file-fresh: true
