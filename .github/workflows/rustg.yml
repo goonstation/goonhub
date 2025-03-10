@@ -3,9 +3,11 @@ name: Rust-G
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: Rust-G Ref
-        required: true
+      tag:
+        description: Rust-G Release Tag
+        type: string
+      branch:
+        description: Rust-G Branch
         type: string
   repository_dispatch:
     types: [rustg_release]
@@ -13,11 +15,18 @@ on:
 jobs:
   build-linux:
     runs-on: ubuntu-22.04
-    env:
-      RUSTG_GIT_REF: ${{ github.event_name == 'workflow_dispatch' && inputs.ref || github.event.client_payload.ref }}
-      PKG_CONFIG_ALLOW_CROSS: 1
 
     steps:
+      - if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "RUSTG_GIT_REF=${{ inputs.tag != '' && format('refs/tags/{0}', inputs.tag) || format('refs/heads/{0}', inputs.branch) }}" >> "$GITHUB_ENV"
+          echo "RUSTG_GIT_REF_NAME=${{ inputs.tag != '' && inputs.tag || inputs.branch }}" >> "$GITHUB_ENV"
+
+      - if: ${{ github.event_name == 'repository_dispatch' }}
+        run: |
+          echo "RUSTG_GIT_REF=${{ github.event.client_payload.ref }}" >> "$GITHUB_ENV"
+          echo "RUSTG_GIT_REF_NAME=${{ github.event.client_payload.ref_name }}" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
         with:
           repository: goonstation/rust-g
@@ -36,10 +45,12 @@ jobs:
 
       - name: Build
         run: cargo build --target i686-unknown-linux-gnu --release --features all
+        env:
+          PKG_CONFIG_ALLOW_CROSS: 1
 
       - run: |
           cd target/i686-unknown-linux-gnu/release
-          zip rustg-${{ env.RUSTG_GIT_REF }}.zip librust_g.so
+          zip rustg-${{ env.RUSTG_GIT_REF_NAME }}.zip librust_g.so
 
       - uses: ryand56/r2-upload-action@latest
         with:
@@ -47,6 +58,6 @@ jobs:
           r2-access-key-id: ${{ secrets.RUSTG_RELEASES_ACCESS_KEY_ID }}
           r2-secret-access-key: ${{ secrets.RUSTG_RELEASES_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.RUSTG_RELEASES_BUCKET }}
-          source-dir: './target/i686-unknown-linux-gnu/release/rustg-${{ env.RUSTG_GIT_REF }}.zip'
+          source-dir: './target/i686-unknown-linux-gnu/release/rustg-${{ env.RUSTG_GIT_REF_NAME }}.zip'
           destination-dir: ./
           keep-file-fresh: true
