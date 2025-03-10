@@ -15,7 +15,9 @@ class RedirectController extends Controller
     public function redirect(Request $request, string $path)
     {
         $redirect = Redirect::where('from', $path)->firstOrFail();
-        $redirect->increment('visits');
+        $redirect = Redirect::withoutAuditing(function () use ($redirect) {
+            return $redirect->increment('visits');
+        });
 
         return FacadesRedirect::to($redirect->to);
     }
