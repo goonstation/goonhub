@@ -6,6 +6,7 @@
     :show-columns="['created_at']"
     :pagination="{ sortBy: 'created_at', rowsPerPage: 50 }"
     :skeleton-options="{ rows: 15 }"
+    @row-click="onRowClick"
     flat
     dense
     no-row-actions
@@ -14,9 +15,10 @@
     grid-filters
   >
     <template #cell-content-user_id="{ props }">
-      <Link :href="$route('admin.users.edit', props.row.user_id)">
+      <Link v-if="props.row.user_id" :href="$route('admin.users.edit', props.row.user_id)">
         {{ props.row.user.name }}
       </Link>
+      <template v-else>Anon</template>
     </template>
     <template #cell-content-auditable_type="{ props }">
       <auditable :id="props.row.auditable_id" :model="props.row.auditable_type" />
@@ -67,6 +69,11 @@ export default {
         },
       ],
     }
+  },
+  methods: {
+    onRowClick(row) {
+      this.$rtr.visit(route('admin.audit.show', row.id))
+    },
   },
 }
 </script>

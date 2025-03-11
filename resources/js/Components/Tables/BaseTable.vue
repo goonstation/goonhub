@@ -174,7 +174,7 @@
       <template v-slot:body="props">
         <slot name="body-prepend" :props="props" />
         <q-tr
-          @click="onRowClick(props)"
+          @click.capture="onRowClick(props)"
           :props="props"
           :class="{ 'clickable-row': clickableRows }"
           :style="props.rowIndex % 2 === 0 ? '' : 'background-color: rgba(255, 255, 255, 0.02);'"
