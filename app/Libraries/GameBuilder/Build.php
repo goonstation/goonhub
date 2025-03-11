@@ -44,7 +44,7 @@ class Build
 
     private $rootDir;
 
-    private $tmpDir;
+    private $tmpDir = '/tmp';
 
     private $rootByondDir;
 
@@ -65,8 +65,6 @@ class Build
     private $cdnTargetRoot = '/cdn';
 
     private $cdnTarget;
-
-    private $cdnNodeVersion = '18.20.5';
 
     private $testMergeBranch;
 
@@ -99,7 +97,6 @@ class Build
         $this->mapSwitch = $mapSwitch && $this->settings->map_id ? true : false;
 
         $this->rootDir = storage_path($this::$path);
-        $this->tmpDir = "{$this->rootDir}/tmp";
         $this->rootByondDir = "{$this->rootDir}/byond";
         $this->rootRustgDir = "{$this->rootDir}/rustg";
         $this->serverDir = "{$this->rootDir}/servers/{$server->server_id}";
@@ -458,15 +455,14 @@ class Build
         $this->log('Success');
     }
 
-    private function buildRustg()
+    private function updateRustg()
     {
         $this->checkCancelled();
         $this->log('Checking for updates', group: 'Rust-G');
-        $rustgArtifact = "{$this->rootRustgDir}/{$this->settings->rustg_version}.tar.gz";
 
-        if (File::exists($rustgArtifact)) {
-            // Rust-g version already built
-            $this->log("Already built {$this->settings->rustg_version}");
+        if (File::exists("{$this->rootRustgDir}/{$this->settings->rustg_version}.zip")) {
+            // Rust-G version already downloaded
+            $this->log("Already downloaded {$this->settings->rustg_version}");
 
             return;
         }
@@ -477,43 +473,10 @@ class Build
             File::makeDirectory($this->rootRustgDir);
         }
 
-        $workDir = $this->tmpDir.'/rustg-'.time();
-        File::makeDirectory($workDir, recursive: true);
+        Http::sink("{$this->rootRustgDir}/{$this->settings->rustg_version}.zip")
+            ->get("https://rustg.goonhub.com/{$this->settings->rustg_version}.zip");
 
-        $process = new Process([
-            'git', 'clone', '--depth', 1, '--branch', $this->settings->rustg_version,
-            'https://github.com/goonstation/rust-g', $workDir,
-        ]);
-        $this->runProcess($process);
-
-        $this->log('Building, this might take a while', flush: true);
-        $cargoBin = getenv('HOME').'/.cargo/bin';
-        $process = new Process(
-            [
-                "$cargoBin/cargo", 'build', '--release', '--target', 'i686-unknown-linux-gnu', '--features', 'all',
-            ],
-            cwd: $workDir,
-            env: [
-                'RUSTFLAGS' => '-C target-cpu=native',
-                'PKG_CONFIG_ALLOW_CROSS' => 1,
-            ],
-            timeout: 300
-        );
-        $this->runProcess($process, false, false);
-
-        $this->log('Creating artifact');
-        File::makeDirectory("$workDir/{$this->settings->rustg_version}");
-        File::move(
-            "$workDir/target/i686-unknown-linux-gnu/release/librust_g.so",
-            "$workDir/{$this->settings->rustg_version}/librust_g.so"
-        );
-        $process = new Process([
-            'tar', 'czf', $rustgArtifact, $this->settings->rustg_version,
-        ], cwd: $workDir);
-        $this->runProcess($process);
-        File::deleteDirectory($workDir);
-
-        $this->log("Updated to {$this->settings->rustg_version}");
+        $this->log("Downloaded {$this->settings->rustg_version}");
     }
 
     private function buildCdn()
@@ -542,18 +505,6 @@ class Build
             File::makeDirectory($this->buildCdnDir);
         }
 
-        $this->log('Building');
-
-        $nvm = getenv('NVM_DIR');
-        $nvmUse = fn ($cmd) => sprintf("bash -c '. %s/nvm.sh ; %s ;'", $nvm, $cmd);
-
-        // Install target Node version if missing
-        if (File::missing("$nvm/versions/node/v{$this->cdnNodeVersion}")) {
-            $this->log('Missing target Node version, installing');
-            $process = Process::fromShellCommandline($nvmUse("nvm install --no-progress {$this->cdnNodeVersion}"));
-            $this->runProcess($process);
-        }
-
         $this->log('Preparing build directory');
 
         // Clean out old CDN build dir, but keep node modules so we don't have to waste time reinstalling them all
@@ -566,14 +517,16 @@ class Build
 
         File::put("{$this->buildCdnDir}/revision", $this->repo->getHash());
 
+        $this->log('Building');
+
         $process = Process::fromShellCommandline(
-            $nvmUse("nvm exec {$this->cdnNodeVersion} npm install --no-progress --quiet"),
+            'npm install --no-progress --quiet',
             $this->buildCdnDir, timeout: 300
         );
         $this->runProcess($process);
         $process = Process::fromShellCommandline(
-            $nvmUse("nvm exec {$this->cdnNodeVersion} npm run build --quiet -- --servertype {$this->server->server_id}"),
-            $this->buildCdnDir, timeout: 300
+            "npm run build -- --server {$this->server->server_id}",
+            $this->buildCdnDir
         );
         $this->runProcess($process);
 
@@ -720,8 +673,8 @@ class Build
             $this->log('Attaching new rust-g artifact to upload');
             $req->attach(
                 'rustg',
-                file_get_contents("{$this->rootRustgDir}/{$this->settings->rustg_version}.tar.gz"),
-                "{$this->settings->rustg_version}.tar.gz"
+                file_get_contents("{$this->rootRustgDir}/{$this->settings->rustg_version}.zip"),
+                "{$this->settings->rustg_version}.zip"
             );
         }
         $this->log('Uploading new artifacts to remote server');
@@ -744,7 +697,7 @@ class Build
         $this->prepareBuildDir();
 
         $this->compile();
-        $this->buildRustg();
+        $this->updateRustg();
         $this->buildCdn();
     }
 
@@ -755,8 +708,10 @@ class Build
         $this->model->save();
 
         $this->mergeTestMerges();
+        $this->updateByond();
         $this->prepareBuildDir();
         $this->compile();
+        $this->updateRustg();
     }
 
     public function start()

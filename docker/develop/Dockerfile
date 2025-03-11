@@ -94,13 +94,6 @@ RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y rsync gcc-multilib lib32stdc++6 zlib1g-dev:i386 libssl-dev:i386 pkg-config:i386 libstdc++6 libstdc++6:i386
 
-# Install Cargo for building Rust-G
-USER sail
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
-    ~/.cargo/bin/rustup target add i686-unknown-linux-gnu && \
-    chmod -R 770 ~/.cargo
-USER root
-
 # Clean up apt cache
 RUN apt-get -y autoremove && \
     apt-get clean && \

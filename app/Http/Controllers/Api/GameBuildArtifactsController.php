@@ -100,7 +100,7 @@ class GameBuildArtifactsController extends Controller
         ]);
 
         $buildPath = Build::$path;
-        $path = storage_path("$buildPath/rustg/{$request['version']}.tar.gz");
+        $path = storage_path("$buildPath/rustg/{$request['version']}.zip");
 
         if (! file_exists($path)) {
             return abort(404);
