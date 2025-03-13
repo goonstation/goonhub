@@ -482,41 +482,60 @@ class Build
     private function buildCdn()
     {
         $this->checkCancelled();
-        $this->log('Checking for updates', group: 'CDN');
-        if (File::exists($this->buildCdnDir)) {
-            $process = new Process([
-                'diff', '-qr',
-                '-x', 'node_modules',
-                '-x', 'build',
-                '-x', 'package-lock.json',
-                'browserassets',
-                "{$this->buildCdnDir}/browserassets",
-            ], $this->buildDir);
-            $process->run();
+        $this->log('Building CDN', group: 'CDN');
+        // if (File::exists($this->buildCdnDir)) {
+        //     $process = Process::fromShellCommandline(
+        //         "find . -type f \( ".
+        //             '! -path "./node_modules/*" '.
+        //             '! -path "./build/*" '.
+        //             '! -path "./tgui/*" '.
+        //         "\) -exec diff -q {} \"{$this->buildDir}/browserassets/\"{} \;",
+        //         "{$this->buildCdnDir}/browserassets"
+        //     );
+        //     $process->run();
+        //     $hasBrowserAssetsChanges = (bool) $process->getErrorOutput();
 
-            if (! $process->getOutput()) {
-                // CDN files haven't changed, avoid rebuilding
-                $this->log('No changes');
+        //     $process = Process::fromShellCommandline(
+        //         "find . -type f \( ".
+        //             '! -path "./.yarn/*" '.
+        //             '! -path "./.pnp.cjs" '.
+        //         "\) -exec diff -q {} \"{$this->buildDir}/tgui/\"{} \;",
+        //         "{$this->buildCdnDir}/tgui"
+        //     );
+        //     $process->run();
+        //     $hasTguiChanges = (bool) $process->getErrorOutput();
 
-                return;
-            }
-        } else {
+        //     if (! $hasBrowserAssetsChanges && ! $hasTguiChanges) {
+        //         // CDN files haven't changed, avoid rebuilding
+        //         $this->log('No changes');
+
+        //         return;
+        //     }
+        // } else {
+        //     File::makeDirectory($this->buildCdnDir);
+        // }
+
+        if (File::missing($this->buildCdnDir)) {
             File::makeDirectory($this->buildCdnDir);
+        }
+
+        $yarnCache = "{$this->rootDir}/.yarn";
+        if (File::missing($yarnCache)) {
+            File::makeDirectory($yarnCache);
         }
 
         $this->log('Preparing build directory');
 
-        $groups = ['browserassets', 'tgui'];
-        foreach ($groups as $group) {
-            // Backup node modules
-            File::moveDirectory("{$this->buildCdnDir}/$group/node_modules", "{$this->buildCdnDir}/{$group}_modules");
-            // Clean up old files
-            File::deleteDirectory("{$this->buildCdnDir}/$group");
-            // Transfer new files
-            File::moveDirectory("{$this->buildDir}/$group", "{$this->buildCdnDir}/$group");
-            // Restore node modules backup
-            File::moveDirectory("{$this->buildCdnDir}/{$group}_modules", "{$this->buildCdnDir}/$group/node_modules");
-        }
+        // Backup node modules
+        File::moveDirectory("{$this->buildCdnDir}/browserassets/node_modules", "{$this->buildCdnDir}/browserassets_modules");
+        // Clean up old files
+        File::deleteDirectory("{$this->buildCdnDir}/browserassets");
+        File::deleteDirectory("{$this->buildCdnDir}/tgui");
+        // Transfer new files
+        File::moveDirectory("{$this->buildDir}/browserassets", "{$this->buildCdnDir}/browserassets");
+        File::moveDirectory("{$this->buildDir}/tgui", "{$this->buildCdnDir}/tgui");
+        // Restore node modules backup
+        File::moveDirectory("{$this->buildCdnDir}/browserassets_modules", "{$this->buildCdnDir}/browserassets/node_modules");
 
         $this->log('Building');
 
@@ -534,7 +553,18 @@ class Build
             "{$this->buildCdnDir}/tgui/packages/tgui/goonstation/cdn-manifest.json"
         );
 
-        $process = Process::fromShellCommandline('bin/tgui --build', "{$this->buildCdnDir}/tgui");
+        $process = Process::fromShellCommandline(
+            'bin/tgui --build',
+            cwd: "{$this->buildCdnDir}/tgui",
+            env: [
+                'YARN_GLOBAL_FOLDER' => $yarnCache,
+                'YARN_ENABLE_GLOBAL_CACHE' => true,
+                'YARN_ENABLE_COLORS' => false,
+                'YARN_ENABLE_PROGRESS_BARS' => false,
+                'YARN_ENABLE_TELEMETRY' => false,
+                'YARN_PREFER_INTERACTIVE' => false,
+            ]
+        );
         $this->runProcess($process);
 
         $process = Process::fromShellCommandline(
@@ -640,9 +670,10 @@ class Build
         }
         $process = Process::fromShellCommandline("mv {$this->buildDir}/rsc.zip {$this->cdnTarget}/");
         $this->runProcess($process);
-        if (File::exists("{$this->buildCdnDir}/build")) {
-            $process = Process::fromShellCommandline("rsync -rl {$this->buildCdnDir}/build/* {$this->cdnTarget}/ && rm -r {$this->buildCdnDir}/build");
+        if (File::exists("{$this->buildCdnDir}/browserassets/build")) {
+            $process = Process::fromShellCommandline("rsync -rl {$this->buildCdnDir}/browserassets/build/* {$this->cdnTarget}/");
             $this->runProcess($process);
+            File::deleteDirectory("{$this->buildCdnDir}/browserassets/build");
         }
     }
 
