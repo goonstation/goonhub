@@ -10,6 +10,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/goonhub
+  RELEASE_NAME: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.ref_name }}
 
 jobs:
   build:
@@ -61,6 +62,7 @@ jobs:
         with:
           context: .
           file: docker/deploy/Dockerfile
+          build-args: SENTRY_RELEASE=${{ env.RELEASE_NAME }}
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -82,4 +84,4 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           environment: production
-          release: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.ref_name }}
+          release: ${{ env.RELEASE_NAME }}

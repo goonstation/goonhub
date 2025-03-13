@@ -14,6 +14,7 @@ FROM php:${PHP_VERSION}-cli-bookworm AS base
 ARG WWWUSER=42080
 ARG WWWGROUP=42080
 ARG TZ=UTC
+ARG SENTRY_RELEASE
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm-color \
@@ -22,7 +23,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     USER=octane \
     ROOT=/var/www/html \
     COMPOSER_FUND=0 \
-    COMPOSER_MAX_PARALLEL_HTTP=24
+    COMPOSER_MAX_PARALLEL_HTTP=24 \
+    SENTRY_RELEASE=${SENTRY_RELEASE}
 
 WORKDIR ${ROOT}
 
@@ -126,6 +128,7 @@ RUN cd /usr/local/src && \
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=vendor /usr/bin/composer /usr/bin/composer
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /usr/local/bin /usr/local/bin
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /opt /opt
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=bun /usr/local/bin/bun /usr/local/bin/
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=bun /usr/local/bin/bunx /usr/local/bin/
 COPY --link --chown=${WWWUSER}:${WWWGROUP} . .
