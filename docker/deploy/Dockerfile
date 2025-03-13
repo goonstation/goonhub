@@ -14,7 +14,6 @@ FROM php:${PHP_VERSION}-cli-bookworm AS base
 ARG WWWUSER=42080
 ARG WWWGROUP=42080
 ARG TZ=UTC
-ARG SENTRY_RELEASE
 
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm-color \
@@ -23,8 +22,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     USER=octane \
     ROOT=/var/www/html \
     COMPOSER_FUND=0 \
-    COMPOSER_MAX_PARALLEL_HTTP=24 \
-    SENTRY_RELEASE=${SENTRY_RELEASE}
+    COMPOSER_MAX_PARALLEL_HTTP=24
 
 WORKDIR ${ROOT}
 
@@ -155,6 +153,9 @@ COPY --link --chown=${WWWUSER}:${WWWGROUP} docker/deploy/supervisord.app.conf /e
 COPY --link --chown=${WWWUSER}:${WWWGROUP} docker/deploy/php.ini ${PHP_INI_DIR}/conf.d/99-octane.ini
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --chmod=755 docker/deploy/start-container /usr/local/bin/start-container
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --chmod=755 docker/deploy/healthcheck /usr/local/bin/healthcheck
+
+ARG SENTRY_RELEASE
+ENV SENTRY_RELEASE=${SENTRY_RELEASE}
 
 EXPOSE 8000 8080
 
