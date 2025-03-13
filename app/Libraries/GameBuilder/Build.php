@@ -488,10 +488,9 @@ class Build
                 'diff', '-qr',
                 '-x', 'node_modules',
                 '-x', 'build',
-                '-x', 'revision',
                 '-x', 'package-lock.json',
                 'browserassets',
-                $this->buildCdnDir,
+                "{$this->buildCdnDir}/browserassets",
             ], $this->buildDir);
             $process->run();
 
@@ -507,28 +506,47 @@ class Build
 
         $this->log('Preparing build directory');
 
-        // Clean out old CDN build dir, but keep node modules so we don't have to waste time reinstalling them all
-        File::moveDirectory("{$this->buildCdnDir}/node_modules", "{$this->serverDir}/node_modules");
-        File::deleteDirectory($this->buildCdnDir, preserve: true);
-        File::moveDirectory("{$this->serverDir}/node_modules", "{$this->buildCdnDir}/node_modules");
-
-        $process = Process::fromShellCommandline("mv {$this->buildDir}/browserassets/* {$this->buildCdnDir}");
-        $this->runProcess($process);
-
-        File::put("{$this->buildCdnDir}/revision", $this->repo->getHash());
+        $groups = ['browserassets', 'tgui'];
+        foreach ($groups as $group) {
+            // Backup node modules
+            File::moveDirectory("{$this->buildCdnDir}/$group/node_modules", "{$this->buildCdnDir}/{$group}_modules");
+            // Clean up old files
+            File::deleteDirectory("{$this->buildCdnDir}/$group");
+            // Transfer new files
+            File::moveDirectory("{$this->buildDir}/$group", "{$this->buildCdnDir}/$group");
+            // Restore node modules backup
+            File::moveDirectory("{$this->buildCdnDir}/{$group}_modules", "{$this->buildCdnDir}/$group/node_modules");
+        }
 
         $this->log('Building');
 
         $process = Process::fromShellCommandline(
             'npm install --no-progress --quiet',
-            $this->buildCdnDir, timeout: 300
+            "{$this->buildCdnDir}/browserassets", timeout: 120
         );
         $this->runProcess($process);
+
+        $process = Process::fromShellCommandline('npm run tgui:manifest', "{$this->buildCdnDir}/browserassets");
+        $this->runProcess($process);
+
+        File::move(
+            "{$this->buildCdnDir}/browserassets/build/tgui-manifest.json",
+            "{$this->buildCdnDir}/tgui/packages/tgui/goonstation/cdn-manifest.json"
+        );
+
+        $process = Process::fromShellCommandline('bin/tgui --build', "{$this->buildCdnDir}/tgui");
+        $this->runProcess($process);
+
         $process = Process::fromShellCommandline(
             "npm run build -- --server {$this->server->server_id}",
-            $this->buildCdnDir
+            "{$this->buildCdnDir}/browserassets"
         );
         $this->runProcess($process);
+
+        $manifest = "{$this->buildCdnDir}/browserassets/build/manifest.json";
+        if (File::exists($manifest)) {
+            File::copy($manifest, "{$this->buildDir}/cdn-manifest.json");
+        }
 
         $this->log('Built');
     }
@@ -581,13 +599,15 @@ class Build
 
         // What to include in the deployed game
         $include = [
-            'goonstation.dmb', 'goonstation.rsc', 'buildByond.conf', '.env.build',
+            'goonstation.dmb', 'goonstation.rsc', 'buildByond.conf', '.env.build', 'cdn-manifest.json',
             'assets', 'config', 'strings', 'sound', 'tools', 'testmerges',
             '+secret/assets', '+secret/strings',
         ];
         $this->log('Creating new game build artifact archive');
         $process = new Process([
-            'tar', 'czf', "{$this->artifactsDir}/game-$buildStamp.tar.gz", ...$include,
+            'tar', '--warning=no-failed-read', '--ignore-failed-read', '-czf',
+            "{$this->artifactsDir}/game-$buildStamp.tar.gz",
+            ...$include,
         ], cwd: $this->buildDir);
         $this->runProcess($process);
 
