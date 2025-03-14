@@ -28,20 +28,20 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('horizon:snapshot')->everyFiveMinutes();
 
-        $schedule->job(new ClearOldDectalks)->dailyAt('07:10')->sentryMonitor();
-        $schedule->job(new ClearOldAudio)->dailyAt('07:20')->sentryMonitor();
+        $schedule->job(new ClearOldDectalks)->dailyAt('07:10');
+        $schedule->job(new ClearOldAudio)->dailyAt('07:20');
 
-        $schedule->job(new UpdateGeoLite)->weekly()->sentryMonitor();
-        $schedule->job(new UpdateYoutubeDLP)->weekly()->sentryMonitor();
+        $schedule->job(new UpdateGeoLite)->weekly();
+        $schedule->job(new UpdateYoutubeDLP)->weekly();
 
         if (App::isProduction()) {
-            $schedule->job(new BuildChangelog)->everyFiveMinutes()->sentryMonitor();
-            $schedule->job(new GetPlayerCounts)->everyFiveMinutes()->sentryMonitor();
-            $schedule->job(new GameBuildOnRepoUpdate)->everyFiveMinutes()->sentryMonitor();
+            $schedule->job(new BuildChangelog)->everyFiveMinutes();
+            $schedule->job(new GetPlayerCounts)->everyFiveMinutes();
+            $schedule->job(new GameBuildOnRepoUpdate)->everyFiveMinutes();
 
-            $schedule->job(new GenerateNumbersStationPass)->hourly()->sentryMonitor();
+            $schedule->job(new GenerateNumbersStationPass)->hourly();
 
-            $schedule->job(new GenerateGlobalPlayerStats)->daily()->sentryMonitor();
+            $schedule->job(new GenerateGlobalPlayerStats)->daily();
         }
 
         if (App::environment(['production', 'staging'])) {
