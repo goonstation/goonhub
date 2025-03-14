@@ -1,0 +1,14 @@
+name: Deploy
+
+concurrency: production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+
+    steps:
+      - run: docker ps
