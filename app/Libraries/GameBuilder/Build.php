@@ -182,15 +182,14 @@ class Build
     public function checkCancelled()
     {
         if (Cache::has($this->cancelCacheKey)) {
-            Cache::forget($this->cancelCacheKey);
             throw new CancelledException;
         }
     }
 
-    public static function cancel(string $serverId, int $adminId)
+    public static function cancel(string $serverId, int $adminId, string $reason = '')
     {
         GameBuildCancelled::dispatch($serverId, $adminId, 'current');
-        Cache::set("GameBuild-$serverId-cancel", $adminId);
+        Cache::set("GameBuild-$serverId-cancel", ['adminId' => $adminId, 'reason' => $reason]);
         $pid = Cache::get("GameBuild-$serverId-proc");
         if ($pid) {
             FacadesProcess::run("kill -9 $pid");
@@ -806,15 +805,22 @@ class Build
             $this->error = $message ? $message : true;
 
         } catch (ProcessSignaledException|CancelledException) {
-            $cancelledBy = Cache::get($this->cancelCacheKey);
+            $cancelled = Cache::get($this->cancelCacheKey);
             Cache::forget($this->cancelCacheKey);
 
             $this->cancelled = true;
             $this->model->cancelled = true;
-            $this->model->cancelled_by = $cancelledBy;
-            $cancelledByAdmin = GameAdmin::firstWhere('id', $cancelledBy);
+            $this->model->cancelled_by = $cancelled['adminId'];
+            $this->model->cancelled_reason = $cancelled['reason'];
+            $cancelledByAdmin = GameAdmin::firstWhere('id', $cancelled['adminId']);
             $cancelledByAdmin = $cancelledByAdmin->name ?: $cancelledByAdmin->ckey;
-            $this->log("Build cancelled by $cancelledByAdmin", group: 'error-reset');
+
+            $logMessage = "Build cancelled by $cancelledByAdmin";
+            if ($cancelled['reason']) {
+                $logMessage .= ": {$cancelled['reason']}";
+            }
+
+            $this->log($logMessage, group: 'error-reset');
 
         } catch (\Throwable $e) {
             $message = $e->getMessage();
