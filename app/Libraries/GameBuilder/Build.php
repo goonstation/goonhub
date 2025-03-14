@@ -322,7 +322,7 @@ class Build
             "#define BUILD_TIME_MINUTE {$now->minute}",
             "#define BUILD_TIME_SECOND {$now->second}",
             "#define BUILD_TIME_UNIX {$now->unix()}",
-            "#define PRELOAD_RSC_URL \"https://cdn-{$this->server->server_id}.goonhub.com/rsc.zip\"",
+            "#define PRELOAD_RSC_URL \"http://cdn-{$this->server->server_id}.goonhub.com/rsc.zip\"",
         ];
 
         if ($this->settings->map_id) {
