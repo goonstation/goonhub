@@ -4,20 +4,25 @@ concurrency: production
 
 on:
   workflow_dispatch:
+  registry_package:
+    types: [published]
 
 jobs:
   deploy:
     name: Deploy
     runs-on: self-hosted
 
+    env:
+      GOONHUB_DOCKER_PATH: ${{ secrets.GOONHUB_DOCKER_PATH }}
+
     defaults:
       run:
         shell: bash
-        working-directory: /pop/docker/sites/goonhub.com
+        working-directory: ${{ env.GOONHUB_DOCKER_PATH }}
 
     steps:
       - name: Pull image
-        run: docker compose pull
+        run: docker compose pull -q
       - name: Clear old env
         run: echo "" > .env
       - name: Create new shared volume
