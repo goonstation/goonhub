@@ -66,6 +66,7 @@ class Kernel extends HttpKernel
         'noindex' => \App\Http\Middleware\NoIndex::class,
         'nometa' => \App\Http\Middleware\NoMeta::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
+        'sentry' => \App\Http\Middleware\Sentry::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
