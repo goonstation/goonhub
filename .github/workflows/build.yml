@@ -89,4 +89,5 @@ jobs:
       - name: Dispatch complete event
         uses: peter-evans/repository-dispatch@v3
         with:
+          token: ${{ secrets.GOONHUB_REPO_DISPATCH_TOKEN }}
           event-type: build-complete
