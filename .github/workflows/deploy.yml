@@ -10,5 +10,29 @@ jobs:
     name: Deploy
     runs-on: self-hosted
 
+    defaults:
+      run:
+        shell: bash
+        working-directory: /pop/docker/sites/goonhub.com
+
     steps:
-      - run: docker ps
+      - run: docker compose pull
+      - run: echo "" > .env
+      - run: |
+          PUBLIC_VOLUME="goonhub-public-$EPOCHSECONDS"
+          echo "PUBLIC_VOLUME=$PUBLIC_VOLUME" >> .env
+          docker volume create "$PUBLIC_VOLUME" --label "for=goonhub"
+      - run: |
+          WEBBRIDGE_NETWORK="goonhub-webbridge-$EPOCHSECONDS"
+          echo "WEBBRIDGE_NETWORK=$WEBBRIDGE_NETWORK" >> .env
+          docker network create "$WEBBRIDGE_NETWORK" --label "for=goonhub"
+      - run: |
+          PRE_STOP_APP="$(cat scripts/pre-stop-commands.sh)"
+          (\
+            trap 'kill 0' SIGINT; \
+            docker rollout app --wait-after-healthy 5 --pre-stop-hook "$PRE_STOP_APP" & \
+            docker rollout nginx --wait-after-healthy 5 --pre-stop-hook "touch /tmp/drain && sleep 45" & \
+            wait\
+          )
+      - run: docker volume prune --filter "label=for=goonhub" -a -f
+      - run: docker network prune --filter "label=for=goonhub" -f
