@@ -85,3 +85,8 @@ jobs:
         with:
           environment: production
           release: ${{ env.RELEASE_NAME }}
+
+      - name: Dispatch complete event
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          event-type: build-complete

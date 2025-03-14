@@ -1,11 +1,11 @@
 name: Deploy
 
-concurrency: deploy
+concurrency: production
 
 on:
   workflow_dispatch:
-  registry_package:
-    types: [published]
+  repository_dispatch:
+    types: [build-complete]
 
 jobs:
   deploy:
