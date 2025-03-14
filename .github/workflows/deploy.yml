@@ -16,23 +16,34 @@ jobs:
         working-directory: /pop/docker/sites/goonhub.com
 
     steps:
-      - run: docker compose pull
-      - run: echo "" > .env
-      - run: |
+      - name: Pull image
+        run: docker compose pull
+      - name: Clear old env
+        run: echo "" > .env
+      - name: Create new shared volume
+        run: |
           PUBLIC_VOLUME="goonhub-public-$EPOCHSECONDS"
           echo "PUBLIC_VOLUME=$PUBLIC_VOLUME" >> .env
           docker volume create "$PUBLIC_VOLUME" --label "for=goonhub"
-      - run: |
+      - name: Create new shared network
+        run: |
           WEBBRIDGE_NETWORK="goonhub-webbridge-$EPOCHSECONDS"
           echo "WEBBRIDGE_NETWORK=$WEBBRIDGE_NETWORK" >> .env
           docker network create "$WEBBRIDGE_NETWORK" --label "for=goonhub"
-      - run: |
-          PRE_STOP_APP="$(cat scripts/pre-stop-commands.sh)"
+      - name: Rollout new containers
+        run: |
           (\
             trap 'kill 0' SIGINT; \
-            docker rollout app --wait-after-healthy 5 --pre-stop-hook "$PRE_STOP_APP" & \
+            docker rollout app --wait-after-healthy 5 --pre-stop-hook " \
+              touch /tmp/drain && \
+              supervisorctl stop scheduler:* && \
+              supervisorctl stop pulse:* && \
+              sleep 45 \
+            " & \
             docker rollout nginx --wait-after-healthy 5 --pre-stop-hook "touch /tmp/drain && sleep 45" & \
             wait\
           )
-      - run: docker volume prune --filter "label=for=goonhub" -a -f
-      - run: docker network prune --filter "label=for=goonhub" -f
+      - name: Clean up
+        run: |
+          docker volume prune --filter "label=for=goonhub" -a -f
+          docker network prune --filter "label=for=goonhub" -f
