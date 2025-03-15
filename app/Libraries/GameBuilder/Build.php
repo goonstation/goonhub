@@ -677,7 +677,11 @@ class Build
         $process = Process::fromShellCommandline("mv {$this->buildDir}/rsc.zip {$this->cdnTarget}/");
         $this->runProcess($process);
         if (File::exists("{$this->buildCdnDir}/browserassets/build")) {
-            $process = Process::fromShellCommandline("rsync -rl {$this->buildCdnDir}/browserassets/build/* {$this->cdnTarget}/");
+            $process = Process::fromShellCommandline(
+                'rsync -rl --ignore-existing '.
+                "{$this->buildCdnDir}/browserassets/build/* ".
+                "{$this->cdnTarget}/"
+            );
             $this->runProcess($process);
             File::deleteDirectory("{$this->buildCdnDir}/browserassets/build");
         }
