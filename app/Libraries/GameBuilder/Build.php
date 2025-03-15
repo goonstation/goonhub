@@ -66,6 +66,8 @@ class Build
 
     private $cdnTarget;
 
+    private $cdnVersion = 1;
+
     private $testMergeBranch;
 
     private $testMergeSuccesses = [];
@@ -322,6 +324,7 @@ class Build
             "#define BUILD_TIME_SECOND {$now->second}",
             "#define BUILD_TIME_UNIX {$now->unix()}",
             "#define PRELOAD_RSC_URL \"http://cdn-{$this->server->server_id}.goonhub.com/rsc.zip\"",
+            "#define CDN_VERSION {$this->cdnVersion}",
         ];
 
         if ($this->settings->map_id) {
@@ -567,8 +570,12 @@ class Build
         $this->runProcess($process);
 
         $process = Process::fromShellCommandline(
-            "npm run build -- --server {$this->server->server_id}",
-            "{$this->buildCdnDir}/browserassets"
+            'npm run build',
+            cwd: "{$this->buildCdnDir}/browserassets",
+            env: [
+                'SERVER_TARGET' => $this->server->server_id,
+                'CDN_VERSION' => $this->cdnVersion,
+            ]
         );
         $this->runProcess($process);
 
