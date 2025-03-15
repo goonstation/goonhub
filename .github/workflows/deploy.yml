@@ -43,6 +43,7 @@ jobs:
               touch /tmp/drain && \
               supervisorctl stop scheduler:* && \
               supervisorctl stop pulse:* && \
+              php artisan gh:cancel-builds && \
               sleep 45 \
             " & \
             docker rollout nginx --wait-after-healthy 5 --pre-stop-hook "touch /tmp/drain && sleep 45" & \
