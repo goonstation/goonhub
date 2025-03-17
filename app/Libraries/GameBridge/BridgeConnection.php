@@ -96,6 +96,14 @@ class BridgeConnection
 
     private function handler($address, $port, $options)
     {
+        $parentSpan = \Sentry\SentrySdk::getCurrentHub()->getSpan();
+        $span = null;
+
+        if ($parentSpan !== null) {
+            $span = $parentSpan->startChild(\Sentry\Tracing\SpanContext::make()->setOp('game_bridge'));
+            \Sentry\SentrySdk::getCurrentHub()->setSpan($span);
+        }
+
         $socket = new BridgeConnectionSocket($address, $port, $options);
         $response = '';
         $error = false;
@@ -114,6 +122,11 @@ class BridgeConnection
         }
 
         $socket->disconnect();
+
+        if ($span !== null) {
+            $span->finish();
+            \Sentry\SentrySdk::getCurrentHub()->setSpan($parentSpan);
+        }
 
         return new BridgeConnectionResponse($response, $error, $socket->cacheHit);
     }
