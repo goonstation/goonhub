@@ -14,7 +14,7 @@ class InitialSetup extends Command
      *
      * @var string
      */
-    protected $signature = 'initial-setup';
+    protected $signature = 'gh:setup';
 
     /**
      * The console command description.
@@ -67,6 +67,7 @@ class InitialSetup extends Command
         ]);
         $user->is_admin = true;
         $user->game_admin_id = $gameAdmin->id;
+        $user->email_verified_at = now();
         $user->save();
 
         $this->info('User created!');
