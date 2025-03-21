@@ -21,7 +21,11 @@
       <template v-else>Anon</template>
     </template>
     <template #cell-content-auditable_type="{ props }">
-      <auditable :id="props.row.auditable_id" :model="props.row.auditable_type" />
+      <auditable
+        :id="props.row.auditable_id"
+        :model="props.row.auditable_type"
+        :event="props.row.event"
+      />
     </template>
   </base-table>
 </template>

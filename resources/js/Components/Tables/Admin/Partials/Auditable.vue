@@ -16,6 +16,10 @@ export default {
       type: String,
       required: true,
     },
+    event: {
+      type: String,
+      required: true,
+    },
   },
 
   computed: {
@@ -28,6 +32,8 @@ export default {
     },
 
     target() {
+      if (this.event === 'deleted') return ''
+
       switch (this.type) {
         case 'Ban':
           return this.$route('admin.bans.show', this.id)
