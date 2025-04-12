@@ -428,7 +428,7 @@ class Build
         ], cwd: $workDir);
         $this->runProcess($process);
 
-        File::moveDirectory("$workDir/$version", $this->byondDir);
+        shell_exec("mv $workDir/$version {$this->byondDir}");
         shell_exec("chmod -R 770 {$this->byondDir}");
         File::deleteDirectory($workDir);
 
