@@ -48,6 +48,7 @@ RUN dpkg --add-architecture i386; \
     supervisor \
     libsodium-dev \
     libbrotli-dev \
+    locales \
     # Custom packages
     nano unzip gnupg software-properties-common rsync \
     ffmpeg automake build-essential libasound2-dev libpulse-dev lame \
@@ -97,6 +98,11 @@ RUN dpkg --add-architecture i386; \
     && chmod +x /usr/bin/supercronic \
     && mkdir -p /etc/supercronic \
     && echo "*/1 * * * * php ${ROOT}/artisan schedule:run --no-interaction" > /etc/supercronic/laravel
+
+# Set the locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
+    locale-gen
+ENV LANG=en_US.UTF-8 \ LANGUAGE=en_US \ LC_ALL=en_US.UTF-8
 
 # Create user
 RUN groupadd --force -g ${WWWGROUP} ${USER} \
