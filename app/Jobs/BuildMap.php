@@ -13,7 +13,8 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\File as FileFacade;
 use Illuminate\Support\Str;
 use Intervention\Image\Laravel\Facades\Image;
-use Spatie\ImageOptimizer\OptimizerChainFactory;
+use Spatie\ImageOptimizer\OptimizerChain;
+use Spatie\ImageOptimizer\Optimizers\Pngquant;
 use ZipArchive;
 
 class BuildMap implements ShouldQueue
@@ -113,7 +114,11 @@ class BuildMap implements ShouldQueue
             throw new \Exception('Too few images! Expected '.$imageCounts->total.' but got '.count($inputImages));
         }
 
-        $optimizerChain = OptimizerChainFactory::create();
+        $optimizerChain = (new OptimizerChain)
+            ->addOptimizer(new Pngquant([
+                '--quality=45-85',
+                '--force',
+            ]));
 
         // Build a canvas and generate tiles for our map
         // The canvas is for making a thumbnail of the whole thing afterwards

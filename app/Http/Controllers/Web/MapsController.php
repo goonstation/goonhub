@@ -17,7 +17,7 @@ class MapsController extends Controller
 
     public function index(IndexRequest $request)
     {
-        $query = Map::select('id', 'map_id', 'name', 'last_built_at')
+        $query = Map::select('id', 'map_id', 'name', 'last_built_at', 'admin_only')
             ->with([
                 'latestGameRound' => function ($q) {
                     $q->where('ended_at', '!=', null)
