@@ -152,7 +152,7 @@ Route::middleware([
                 ->breadcrumbs(fn (Trail $trail) => $trail->parent('admin.maps.index')->push('Create', 'admin.maps.create'));
             Route::post('/', 'store')->name('admin.maps.store');
             Route::get('/edit/{map}', 'edit')->whereNumber('map')->name('admin.maps.edit')
-                ->breadcrumbs(fn (Trail $trail, $map) => $trail->parent('admin.map.index')->push('Edit', route('admin.maps.edit', $map)));
+                ->breadcrumbs(fn (Trail $trail, $map) => $trail->parent('admin.maps.index')->push('Edit', route('admin.maps.edit', $map)));
             Route::put('/{map}', 'update')->whereNumber('map')->name('admin.maps.update');
             Route::delete('/{map}', 'destroy')->whereNumber('map')->name('admin.maps.delete');
         });

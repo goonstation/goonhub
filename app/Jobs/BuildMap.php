@@ -91,6 +91,8 @@ class BuildMap implements ShouldQueue
             throw new \Exception('Invalid zip path');
         }
 
+        ini_set('memory_limit', '1G');
+
         // Generate our working directories
         $workDirInput = $this->workDir.'/input';
         $workDirOutput = $this->workDir.'/output';
