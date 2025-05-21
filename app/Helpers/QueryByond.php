@@ -33,7 +33,7 @@ class QueryByond
             if (! $request) {
                 $request = Http::createPendingRequest();
             }
-            $response = $request->timeout(self::REQUEST_TIMEOUT)->get($url);
+            $response = $request->timeout(self::REQUEST_TIMEOUT)->throw()->get($url);
             Cache::delete(self::ERROR_CACHE_KEY);
         } catch (ConnectionException $e) {
             if (Cache::has(self::ERROR_CACHE_KEY)) {
