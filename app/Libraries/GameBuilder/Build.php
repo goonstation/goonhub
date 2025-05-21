@@ -5,7 +5,9 @@ namespace App\Libraries\GameBuilder;
 use App\Events\GameBuildCancelled;
 use App\Events\GameBuildLog as EventsGameBuildLog;
 use App\Events\GameBuildStarted;
+use App\Exceptions\ByondOutageException;
 use App\Facades\GameBridge;
+use App\Helpers\QueryByond;
 use App\Libraries\DiscordBot;
 use App\Models\GameAdmin;
 use App\Models\GameBuild;
@@ -412,8 +414,14 @@ class Build
         $workDir = $this->tmpDir.'/byond-'.time();
         File::makeDirectory($workDir, recursive: true);
 
-        Http::sink("$workDir/byond.zip")
-            ->get("https://www.byond.com/download/build/{$this->settings->byond_major}/{$version}_byond_linux.zip");
+        try {
+            QueryByond::query(
+                "https://www.byond.com/download/build/{$this->settings->byond_major}/{$version}_byond_linux.zip",
+                Http::sink("$workDir/byond.zip")
+            );
+        } catch (ByondOutageException) {
+            throw new \Exception('Byond is experiencing an outage, unable to download new version');
+        }
 
         $zip = new ZipArchive;
         $zip->open("$workDir/byond.zip");

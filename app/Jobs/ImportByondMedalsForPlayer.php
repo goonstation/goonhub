@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Exceptions\ByondOutageException;
+use App\Helpers\QueryByond;
 use App\Models\Medal;
 use App\Models\Player;
 use App\Models\PlayerMedal;
@@ -15,7 +17,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class ImportByondMedalsForPlayer implements ShouldQueue
@@ -75,9 +76,13 @@ class ImportByondMedalsForPlayer implements ShouldQueue
             throw new \Exception("Player '$ckey' has already had their Byond medals imported");
         }
 
-        $res = Http::get("https://www.byond.com/members/$ckey?tab=medals&all=1");
-        $html = $res->getBody();
+        try {
+            $res = QueryByond::query("https://www.byond.com/members/$ckey?tab=medals&all=1");
+        } catch (ByondOutageException) {
+            return;
+        }
 
+        $html = $res->getBody();
         $doc = new DOMDocument;
         $internalErrors = libxml_use_internal_errors(true);
         $doc->loadHTML($html);

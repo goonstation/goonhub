@@ -2,13 +2,13 @@
 
 namespace App\Jobs;
 
+use App\Helpers\QueryByond;
 use App\Models\Player;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 
 class RecordByondJoinDate implements ShouldQueue
 {
@@ -52,7 +52,7 @@ class RecordByondJoinDate implements ShouldQueue
     {
         $response = null;
         try {
-            $response = Http::get("https://secure.byond.com/members/$ckey?format=text");
+            $response = QueryByond::query("https://secure.byond.com/members/$ckey?format=text");
         } catch (\Throwable) {
             return null;
         }
