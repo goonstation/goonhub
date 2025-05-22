@@ -24,6 +24,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $ended_at
+ * @property string|null $cancelled_reason
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\GameAdmin|null $cancelledBy
@@ -44,6 +45,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereBranch($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCancelled($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCancelledBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCancelledReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCommit($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereEndedAt($value)

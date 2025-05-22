@@ -1,3 +1,4 @@
+name: goonhub
 services:
   laravel.test:
     build:

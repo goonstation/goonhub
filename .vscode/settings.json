@@ -41,5 +41,7 @@
   "files.associations": {
     "*.stub": "php"
   },
-  "phpstan.checkValidity": true
+  "phpstan.checkValidity": true,
+  "bladeFormatter.format.wrapLineLength": 100,
+  "bladeFormatter.format.indentSize": 2
 }

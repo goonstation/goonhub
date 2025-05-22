@@ -22,6 +22,8 @@ use Str;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $auditable
+ * @property-read mixed $auditable_clean_type
+ * @property-read mixed $auditable_label
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent|null $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Audit filter(array $input = [], $filter = null)

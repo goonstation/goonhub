@@ -30,7 +30,8 @@
         "hossaini.quasar-intellisense",
         "mrmlnc.vscode-scss",
         "Zignd.html-css-class-completion",
-        "GitHub.vscode-github-actions"
+        "GitHub.vscode-github-actions",
+        "shufo.vscode-blade-formatter"
       ],
       "settings": {
         "extensions.verifySignature": false

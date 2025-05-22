@@ -46,6 +46,7 @@
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+        @if (config('broadcasting.connections.reverb.key'))
         <script type="module">
           window.Echo = new Echo({
             broadcaster: 'reverb',
@@ -57,6 +58,7 @@
             enabledTransports: ['ws', 'wss'],
           })
         </script>
+        @endif
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
