@@ -51,11 +51,12 @@ class AppServiceProvider extends ServiceProvider
             });
         });
 
-        Scramble::afterOpenApiGenerated(function (OpenApi $openApi) {
-            $openApi->secure(
-                SecurityScheme::http('bearer', 'JWT')
-            );
-        });
+        Scramble::configure()
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                $openApi->secure(
+                    SecurityScheme::http('bearer', 'JWT')
+                );
+            });
 
         Scramble::routes(function (Route $route) {
             return $route->getDomain() === preg_replace('(^https?://)', '', config('app.api_url'));

@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\GameBuildsController;
 use App\Http\Controllers\Api\GameBuildSettingsController;
 use App\Http\Controllers\Api\GameBuildTestMergesController;
 use App\Http\Controllers\Api\GameRoundsController;
+use App\Http\Controllers\Api\GameServersController;
 use App\Http\Controllers\Api\GauntletController;
 use App\Http\Controllers\Api\JobBansController;
 use App\Http\Controllers\Api\MapsController;
@@ -44,6 +45,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('test', [TestController::class, 'index'])->can('view-test');
+
+Route::get('servers', [GameServersController::class, 'index']);
 
 Route::middleware(['isadmin'])->group(function () {
     Route::controller(GameRoundsController::class)->prefix('rounds')->group(function () {
