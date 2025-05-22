@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\HealthcheckController;
+use App\Http\Controllers\Api\GameServersController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('healthcheck', [HealthcheckController::class, 'index']);
+Route::get('servers', [GameServersController::class, 'index']);

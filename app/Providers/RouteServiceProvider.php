@@ -28,7 +28,11 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         $this->routes(function () {
+            Route::middleware(['sentry:web-api', 'api'])
+                ->group(base_path('routes/web-api.php'));
+
             Route::middleware(['sentry:api-open', 'api'])
+                ->domain(config('app.api_url'))
                 ->group(base_path('routes/api-open.php'));
 
             Route::middleware(['sentry:api', 'auth:api', 'api'])
