@@ -43,7 +43,7 @@ class GameServersController extends Controller
             'filters.player_count' => 'integer',
             /** @example 12345 */
             'filters.current_round_id' => 'integer',
-            /** @example Delta */
+            /** @example Atlas */
             'filters.current_map' => 'string',
             /**
              * A date or date range
@@ -66,9 +66,9 @@ class GameServersController extends Controller
             },
             'gameBuildSetting' => function ($query) {
                 $query->with('map');
-            }
+            },
         ]);
-        
+
         return GameServerResource::collection(
             $this->indexQuery($query)
         );
