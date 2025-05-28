@@ -61,4 +61,15 @@ class GameServer extends BaseModel
     {
         return $this->hasOne(GameBuildSetting::class, 'server_id', 'server_id');
     }
+
+    public function currentPlayerCount(): HasOne
+    {
+        return $this->hasOne(PlayersOnline::class, 'server_id', 'server_id')
+            ->latest('created_at');
+    }
+
+    public function getCurrentPlayerCount(): int
+    {
+        return $this->currentPlayerCount->online ?? 0;
+    }
 }

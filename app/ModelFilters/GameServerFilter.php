@@ -60,4 +60,11 @@ class GameServerFilter extends ModelFilter
     {
         return $this->where('invisible', $val);
     }
+
+    public function playerCount($val)
+    {
+        return $this->whereHas('currentPlayerCount', function ($query) use ($val) {
+            $query->where('online', $val);
+        });
+    }
 }

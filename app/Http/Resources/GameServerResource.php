@@ -29,6 +29,8 @@ class GameServerResource extends JsonResource
             'invisible' => $this->invisible,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            /** @var int */
+            'player_count' => $this->getCurrentPlayerCount(),
         ];
     }
 }

@@ -39,6 +39,8 @@ class GameServersController extends Controller
             'filters.port' => 'integer',
             'filters.active' => 'boolean',
             'filters.invisible' => 'boolean',
+            /** @example 25 */
+            'filters.player_count' => 'integer',
             /**
              * A date or date range
              *
