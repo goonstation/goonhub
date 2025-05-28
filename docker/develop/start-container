@@ -6,7 +6,9 @@ if [ "$SUPERVISOR_PHP_USER" != "root" ] && [ "$SUPERVISOR_PHP_USER" != "sail" ];
 fi
 
 if [ ! -z "$WWWUSER" ]; then
-    usermod -u $WWWUSER sail
+    usermod -u "$WWWUSER" sail
+    # Fix ownership:
+    chown -R sail:sail /var/www/html
 fi
 
 if [ ! -d /.composer ]; then
@@ -19,7 +21,7 @@ if [ $# -gt 0 ]; then
     if [ "$SUPERVISOR_PHP_USER" = "root" ]; then
         exec "$@"
     else
-        exec gosu $WWWUSER "$@"
+        exec gosu "$WWWUSER" "$@"
     fi
 else
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
