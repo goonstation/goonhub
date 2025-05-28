@@ -38,9 +38,10 @@
       }
     }
   },
-  "remoteUser": "sail",
+  "remoteUser": "root",
   "initializeCommand": "sh .devcontainer/init.sh",
-  "postCreateCommand": "chown -R sail:sail /var/www/html 2>/dev/null || true && composer install && bun install"
+  "postCreateCommand": "chown -R sail:sail /var/www/html && composer install",
+  "postAttachCommand": "su - sail -c 'cd /var/www/html; /bin/bash'"
   // "forwardPorts": [],
   // "runServices": [],
   // "shutdownAction": "none",

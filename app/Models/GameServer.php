@@ -61,4 +61,57 @@ class GameServer extends BaseModel
     {
         return $this->hasOne(GameBuildSetting::class, 'server_id', 'server_id');
     }
+
+    public function currentPlayerCount(): HasOne
+    {
+        return $this->hasOne(PlayersOnline::class, 'server_id', 'server_id')
+            ->latest('created_at');
+    }
+
+    public function getCurrentPlayerCount(): int
+    {
+        return $this->currentPlayerCount->online ?? 0;
+    }
+
+    public function currentRound(): HasOne
+    {
+        return $this->hasOne(GameRound::class, 'server_id', 'server_id')
+            ->whereNull('ended_at')
+            ->latest();
+    }
+
+    public function getCurrentRoundId(): ?int
+    {
+        $round = GameRound::where('server_id', $this->server_id)
+            ->whereNull('ended_at')
+            ->latest()
+            ->first();
+
+        return $round?->id;
+    }
+
+    public function getCurrentMap(): ?string
+    {
+        // Get the current round and check for map name
+        $round = GameRound::with('mapRecord')
+            ->where('server_id', $this->server_id)
+            ->whereNull('ended_at')
+            ->latest()
+            ->first();
+
+        if ($round && $round->mapRecord) {
+            return $round->mapRecord->name;
+        }
+
+        // If no current round or map record, try to get map from GameBuildSetting
+        $buildSetting = GameBuildSetting::with('map')
+            ->where('server_id', $this->server_id)
+            ->first();
+
+        if ($buildSetting && $buildSetting->map) {
+            return $buildSetting->map->name;
+        }
+
+        return null;
+    }
 }

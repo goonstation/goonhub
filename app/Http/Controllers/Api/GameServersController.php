@@ -39,6 +39,12 @@ class GameServersController extends Controller
             'filters.port' => 'integer',
             'filters.active' => 'boolean',
             'filters.invisible' => 'boolean',
+            /** @example 25 */
+            'filters.player_count' => 'integer',
+            /** @example 12345 */
+            'filters.current_round_id' => 'integer',
+            /** @example Atlas */
+            'filters.current_map' => 'string',
             /**
              * A date or date range
              *
@@ -53,8 +59,18 @@ class GameServersController extends Controller
             'filters.updated_at' => new DateRange,
         ]);
 
+        $query = GameServer::with([
+            'currentPlayerCount',
+            'currentRound' => function ($query) {
+                $query->with('mapRecord');
+            },
+            'gameBuildSetting' => function ($query) {
+                $query->with('map');
+            },
+        ]);
+
         return GameServerResource::collection(
-            $this->indexQuery(GameServer::class)
+            $this->indexQuery($query)
         );
     }
 }

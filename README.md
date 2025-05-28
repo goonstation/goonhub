@@ -23,10 +23,11 @@ Docker should be installed on your host machine. On Windows, install "Docker Des
 
   This might take a while as it builds the docker containers.
 
-- Open a VSCode terminal and initiate the first setup command to bootstrap the database:
+- Open a VSCode terminal and initiate the first setup commands to bootstrap the database:
 
 ```bash
-php artisan initial-setup
+bun install
+php artisan gh:setup
 ```
 
 ### Tasks
