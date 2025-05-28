@@ -7,8 +7,6 @@ fi
 
 if [ ! -z "$WWWUSER" ]; then
     usermod -u "$WWWUSER" sail
-    # Fix ownership:
-    chown -R sail:sail /var/www/html
 fi
 
 if [ ! -d /.composer ]; then
