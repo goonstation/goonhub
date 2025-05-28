@@ -31,6 +31,10 @@ class GameServerResource extends JsonResource
             'updated_at' => $this->updated_at,
             /** @var int */
             'player_count' => $this->getCurrentPlayerCount(),
+            /** @var int|null */
+            'current_round_id' => $this->getCurrentRoundId(),
+            /** @var string|null */
+            'current_map' => $this->getCurrentMap(),
         ];
     }
 }

@@ -67,4 +67,21 @@ class GameServerFilter extends ModelFilter
             $query->where('online', $val);
         });
     }
+    
+    public function currentRoundId($val)
+    {
+        return $this->whereHas('currentRound', function ($query) use ($val) {
+            $query->where('id', $val);
+        });
+    }
+    
+    public function currentMap($val)
+    {
+        return $this->whereHas('currentRound.mapRecord', function ($query) use ($val) {
+            $query->where('name', 'ILIKE', '%'.$val.'%');
+        })
+        ->orWhereHas('gameBuildSetting.map', function ($query) use ($val) {
+            $query->where('name', 'ILIKE', '%'.$val.'%');
+        });
+    }
 }
