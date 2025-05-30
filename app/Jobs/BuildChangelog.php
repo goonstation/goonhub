@@ -59,13 +59,18 @@ class BuildChangelog implements ShouldQueue
      */
     public function handle()
     {
-        /** @var \Github\Client */
-        $conn = GitHub::connection();
-        $changelog = $conn->repo()->contents()->download(
-            config('goonhub.github_organization'),
-            config('goonhub.github_repo'),
-            'strings/changelog.txt'
-        );
+        try {
+            /** @var \Github\Client */
+            $conn = GitHub::connection();
+            $changelog = $conn->repo()->contents()->download(
+                config('goonhub.github_organization'),
+                config('goonhub.github_repo'),
+                'strings/changelog.txt'
+            );
+        } catch (\Throwable) {
+            return;
+        }
+
         if (! $changelog) {
             return;
         }
