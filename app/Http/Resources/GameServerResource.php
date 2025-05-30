@@ -30,11 +30,19 @@ class GameServerResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             /** @var int */
-            'player_count' => $this->getCurrentPlayerCount(),
+            'player_count' => $this->currentPlayersOnline->online ?? 0,
             /** @var int|null */
-            'current_round_id' => $this->getCurrentRoundId(),
+            'current_round_id' => $this->currentRound?->id,
             /** @var string|null */
-            'current_map' => $this->getCurrentMap(),
+            'current_map' => $this->when(
+                (bool) $this->currentRound?->mapRecord,
+                fn () => $this->currentRound->mapRecord->name,
+                $this->when(
+                    (bool) $this->gameBuildSetting?->map,
+                    fn () => $this->gameBuildSetting->map->name,
+                    null
+                ),
+            ),
         ];
     }
 }

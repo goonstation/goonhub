@@ -7,6 +7,7 @@ use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameServerResource;
 use App\Models\GameServer;
 use App\Rules\DateRange;
+use App\Rules\Range;
 use App\Traits\IndexableQuery;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -39,8 +40,12 @@ class GameServersController extends Controller
             'filters.port' => 'integer',
             'filters.active' => 'boolean',
             'filters.invisible' => 'boolean',
-            /** @example 25 */
-            'filters.player_count' => 'integer',
+            /**
+             * A value, comparison, or range
+             *
+             * @example 1 or >= 1 or 1-10
+             */
+            'filters.player_count' => new Range,
             /** @example 12345 */
             'filters.current_round_id' => 'integer',
             /** @example Atlas */
@@ -59,18 +64,12 @@ class GameServersController extends Controller
             'filters.updated_at' => new DateRange,
         ]);
 
-        $query = GameServer::with([
-            'currentPlayerCount',
-            'currentRound' => function ($query) {
-                $query->with('mapRecord');
-            },
-            'gameBuildSetting' => function ($query) {
-                $query->with('map');
-            },
-        ]);
-
         return GameServerResource::collection(
-            $this->indexQuery($query)
+            $this->indexQuery(GameServer::with([
+                'currentPlayersOnline',
+                'currentRound.mapRecord',
+                'gameBuildSetting.map',
+            ]))
         );
     }
 }

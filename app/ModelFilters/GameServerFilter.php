@@ -2,12 +2,14 @@
 
 namespace App\ModelFilters;
 
+use App\ModelFilters\Common\HasRangeFilters;
 use App\ModelFilters\Common\HasTimestampFilters;
 use EloquentFilter\ModelFilter;
+use Illuminate\Support\Facades\Auth;
 
 class GameServerFilter extends ModelFilter
 {
-    use HasTimestampFilters;
+    use HasRangeFilters, HasTimestampFilters;
 
     /**
      * Related Models that have ModelFilters as well as the method on the ModelFilter
@@ -15,7 +17,14 @@ class GameServerFilter extends ModelFilter
      *
      * @var array
      */
-    public $relations = [];
+    public $relations = [
+        'currentPlayersOnline' => [
+            'player_count' => 'online',
+        ],
+        'currentRound' => [
+            'current_round_id' => 'id',
+        ],
+    ];
 
     public function id($val)
     {
@@ -58,21 +67,20 @@ class GameServerFilter extends ModelFilter
 
     public function invisible($val)
     {
-        return $this->where('invisible', $val);
+        if (Auth::user()?->game_admin_id) {
+            return $this->where('invisible', $val);
+        }
+
+        return $this;
     }
 
-    public function playerCount($val)
+    public function withInvisible($val)
     {
-        return $this->whereHas('currentPlayerCount', function ($query) use ($val) {
-            $query->where('online', $val);
-        });
-    }
+        if (Auth::user()?->game_admin_id) {
+            return $this->where('invisible', true)->orWhere('invisible', false);
+        }
 
-    public function currentRoundId($val)
-    {
-        return $this->whereHas('currentRound', function ($query) use ($val) {
-            $query->where('id', $val);
-        });
+        return $this;
     }
 
     public function currentMap($val)

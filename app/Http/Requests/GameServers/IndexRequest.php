@@ -30,7 +30,6 @@ class IndexRequest extends IndexQueryRequest
             'filters.server' => 'string',
             'filters.active' => 'boolean',
             'filters.issuer' => 'string',
-            'with_invisible' => 'boolean',
         ]);
     }
 }
