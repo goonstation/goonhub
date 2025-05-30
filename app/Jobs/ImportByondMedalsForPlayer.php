@@ -78,7 +78,13 @@ class ImportByondMedalsForPlayer implements ShouldQueue
 
         try {
             $res = QueryByond::query("https://www.byond.com/members/$ckey?tab=medals&all=1");
-        } catch (ByondOutageException) {
+        } catch (ByondOutageException $e) {
+            $this->fail($e);
+
+            return;
+        } catch (\Throwable) {
+            $this->release();
+
             return;
         }
 

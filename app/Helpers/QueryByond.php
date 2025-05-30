@@ -5,6 +5,7 @@ namespace App\Helpers;
 use App\Exceptions\ByondOutageException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
@@ -35,7 +36,13 @@ class QueryByond
             }
             $response = $request->timeout(self::REQUEST_TIMEOUT)->throw()->get($url);
             Cache::delete(self::ERROR_CACHE_KEY);
-        } catch (ConnectionException $e) {
+        } catch (ConnectionException|RequestException $e) {
+            // Byond (or Cloudflare I guess), returns a 403 when kinda-down
+            if ($e instanceof RequestException && $e->response->status() !== 403) {
+                Cache::delete(self::ERROR_CACHE_KEY);
+                throw $e;
+            }
+
             if (Cache::has(self::ERROR_CACHE_KEY)) {
                 Cache::increment(self::ERROR_CACHE_KEY);
             } else {
