@@ -66,13 +66,13 @@ class GameServer extends BaseModel
 
     public function currentPlayersOnline(): HasOne
     {
-        return $this->hasOne(PlayersOnline::class, 'server_id', 'server_id')->latest();
+        return $this->hasOne(PlayersOnline::class, 'server_id', 'server_id')->latestOfMany();
     }
 
     public function currentRound(): HasOne
     {
         return $this->hasOne(GameRound::class, 'server_id', 'server_id')
             ->whereNull('ended_at')
-            ->latest();
+            ->latestOfMany();
     }
 }
