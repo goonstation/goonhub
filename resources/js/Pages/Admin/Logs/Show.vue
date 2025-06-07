@@ -301,7 +301,7 @@ export default {
 
         // Append ckey to player element inner texts
         const poptsRegex =
-          /(<a href='\?src=%admin_ref%;action=adminplayeropts;targetckey=(.*?)' title='Player Options'>)(.*?)(<\/a>)/g
+          /(<a href='.*?\?src=%admin_ref%;action=adminplayeropts;targetckey=(.*?)' title='Player Options'>)(.*?)(<\/a>)/gi
         for (const logIdx in this.allLogs) {
           const logEntry = this.allLogs[logIdx]
           if (logEntry.source)
