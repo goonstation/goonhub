@@ -77,6 +77,16 @@
       <template #cell-content-overview_name="{ props }">
         <a href="" @click.prevent="openRoundErrors(props.row)">{{ props.row.overview_name }}</a>
       </template>
+
+      <template #cell-content-file="{ props }">
+        <a
+          :href="`https://github.com/goonstation/goonstation/blob/master/${props.row.file}#L${props.row.line}`"
+          target="_blank"
+        >
+          {{ props.row.file }}
+          <q-icon :name="ionOpenOutline" style="margin-top: -3px" />
+        </a>
+      </template>
     </base-table>
 
     <q-dialog v-model="roundErrorsDialog">
@@ -94,7 +104,7 @@
               </tr>
             </thead>
             <tbody class="text-center">
-              <tr v-for="(roundError, roundId) in viewingError.round_error_counts">
+              <tr v-for="(roundError, roundId) in viewingError.round_error_counts" :key="roundId">
                 <td>
                   {{ $helpers.serverIdToFriendlyName(roundError.server_id, true) }}
                 </td>
@@ -144,7 +154,7 @@
 <script>
 import ErrorsByRound from '@/Components/Charts/ErrorsByRound.vue'
 import BaseSelect from '@/Components/Selects/BaseSelect.vue'
-import { ionCloseOutline } from '@quasar/extras/ionicons-v6'
+import { ionCloseOutline, ionOpenOutline } from '@quasar/extras/ionicons-v6'
 import BaseTable from './BaseTable.vue'
 
 export default {
@@ -152,6 +162,7 @@ export default {
   setup() {
     return {
       ionCloseOutline,
+      ionOpenOutline,
     }
   },
   data() {
@@ -194,6 +205,7 @@ export default {
           field: 'file',
           sortable: true,
           align: 'left',
+          style: 'word-break: break-all; min-width: 150px;',
         },
         {
           name: 'line',
