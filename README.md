@@ -1,6 +1,8 @@
 # Goonhub
 
 [![Analyse](https://github.com/goonstation/goonhub/actions/workflows/analyse.yml/badge.svg)](https://github.com/goonstation/goonhub/actions/workflows/analyse.yml)
+[![Build](https://github.com/goonstation/goonhub/actions/workflows/build.yml/badge.svg)](https://github.com/goonstation/goonhub/actions/workflows/build.yml)
+[![Deploy](https://github.com/goonstation/goonhub/actions/workflows/deploy.yml/badge.svg)](https://github.com/goonstation/goonhub/actions/workflows/deploy.yml)
 
 ## Development
 
