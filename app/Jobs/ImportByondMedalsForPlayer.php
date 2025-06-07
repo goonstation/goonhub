@@ -209,4 +209,9 @@ class ImportByondMedalsForPlayer implements ShouldQueue
         // dump($report);
         // echo "Done!\n";
     }
+
+    public function failed(?\Throwable $exception): void
+    {
+        // ignore
+    }
 }
