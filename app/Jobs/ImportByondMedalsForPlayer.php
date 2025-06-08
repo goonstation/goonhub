@@ -82,8 +82,9 @@ class ImportByondMedalsForPlayer implements ShouldQueue
             $this->fail($e);
 
             return;
-        } catch (\Throwable) {
-            $this->release();
+        } catch (\Throwable $e) {
+            // $this->release();
+            $this->fail($e);
 
             return;
         }
@@ -208,10 +209,5 @@ class ImportByondMedalsForPlayer implements ShouldQueue
 
         // dump($report);
         // echo "Done!\n";
-    }
-
-    public function failed(?\Throwable $exception): void
-    {
-        // ignore
     }
 }
