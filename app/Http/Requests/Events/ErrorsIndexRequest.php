@@ -30,6 +30,7 @@ class ErrorsIndexRequest extends IndexQueryRequest
     {
         return array_merge(parent::rules(), [
             'sort_by' => 'in:overview_count,overview_round_count,overview_name,file,line',
+            'per_page' => 'numeric|min:1',
             'filters.server' => 'string',
             'filters.time_range' => 'in:1week,3days,1day',
             'filters.overview_count' => new Range,
