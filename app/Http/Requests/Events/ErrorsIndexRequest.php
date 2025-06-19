@@ -51,4 +51,12 @@ class ErrorsIndexRequest extends IndexQueryRequest
             'filters.overview_name' => 'name filter',
         ]);
     }
+
+    /**
+     * Handle a passed validation attempt.
+     */
+    protected function passedValidation(): void
+    {
+        $this->replace(['per_page' => 1]);
+    }
 }
