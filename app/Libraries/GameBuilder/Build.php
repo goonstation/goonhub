@@ -414,14 +414,17 @@ class Build
         $workDir = $this->tmpDir.'/byond-'.time();
         File::makeDirectory($workDir, recursive: true);
 
-        try {
-            QueryByond::query(
-                "https://www.byond.com/download/build/{$this->settings->byond_major}/{$version}_byond_linux.zip",
-                Http::sink("$workDir/byond.zip")
-            );
-        } catch (ByondOutageException) {
-            throw new \Exception('Byond is experiencing an outage, unable to download new version');
-        }
+        Http::sink("$workDir/byond.zip")
+            ->get("https://spacestation13.github.io/byond-builds/{$this->settings->byond_major}/{$version}_byond_linux.zip");
+
+        // try {
+        //     QueryByond::query(
+        //         "https://www.byond.com/download/build/{$this->settings->byond_major}/{$version}_byond_linux.zip",
+        //         Http::sink("$workDir/byond.zip")
+        //     );
+        // } catch (ByondOutageException) {
+        //     throw new \Exception('Byond is experiencing an outage, unable to download new version');
+        // }
 
         $zip = new ZipArchive;
         $zip->open("$workDir/byond.zip");
