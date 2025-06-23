@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     onRowClick(row) {
-      this.$rtr.visit(route('admin.audit.show', row.id))
+      this.$inertia.visit(route('admin.audit.show', row.id))
     },
   },
 }

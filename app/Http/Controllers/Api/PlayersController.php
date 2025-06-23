@@ -10,15 +10,17 @@ use App\Http\Resources\PlayerSearchResource;
 use App\Http\Resources\PlayerStatsResource;
 use App\Jobs\ImportByondMedalsForPlayer;
 use App\Jobs\RecordByondJoinDate;
-use App\Jobs\RecordPlayerConnection;
 use App\Models\Player;
 use App\Models\PlayerConnection;
+use App\Traits\ManagesPlayers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PlayersController extends Controller
 {
+    use ManagesPlayers;
+
     /**
      * Login
      *
@@ -49,19 +51,11 @@ class PlayersController extends Controller
             $player->key = $data['key'];
         }
 
-        if (isset($data['byond_major'])) {
-            $player->byond_major = $data['byond_major'];
-        }
-        if (isset($data['byond_minor'])) {
-            $player->byond_minor = $data['byond_minor'];
-        }
-        $player->save();
+        $this->loginPlayer($player, $data);
 
         if (empty($player->byond_join_date)) {
             RecordByondJoinDate::dispatch($player->id, $player->ckey);
         }
-
-        RecordPlayerConnection::dispatch($player->id, $data);
 
         if ($creatingPlayer || ! $player->hasImportedMedals) {
             ImportByondMedalsForPlayer::dispatch($player->ckey);

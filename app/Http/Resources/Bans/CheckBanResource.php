@@ -33,7 +33,7 @@ class CheckBanResource extends JsonResource
             'deleted_at' => $this->deleted_at,
             /** @var array{id: int, ckey: string, name: string} */
             'game_admin' => $this->gameAdmin,
-            /** @var array{array{id: int, ban_id: int, ckey: string, comp_id: string, ip: string, created_at: string}} */
+            /** @var array{array{id: int, ban_id: int, ckey: string, comp_id: string, ip: string, player_id: int, created_at: string}} */
             'details' => $this->details,
             'requires_appeal' => $this->requires_appeal,
         ];

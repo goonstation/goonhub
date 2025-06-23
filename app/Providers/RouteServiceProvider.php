@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\CanAccessAdminRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -41,6 +42,17 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware(['sentry:web', 'web'])
                 ->group(base_path('routes/web.php'));
+
+            Route::middleware([
+                'sentry:web',
+                'web',
+                'auth:sanctum',
+                config('jetstream.auth_session'),
+                'nometa',
+                CanAccessAdminRoutes::class,
+            ])
+                ->prefix('/admin')
+                ->group(base_path('routes/admin.php'));
         });
     }
 }

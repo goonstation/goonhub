@@ -3,11 +3,11 @@
 </template>
 
 <script>
-import AuditTable from '@/Components/Tables/Admin/AuditTable.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import AuditTable from '@/Components/Tables/Admin/AuditTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
-  layout: (h, page) => h(AdminLayout, { title: 'Audit' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Audit' }, () => page),
 
   components: {
     AuditTable,

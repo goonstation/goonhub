@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import RoundSummary from '@/Components/RoundSummary.vue'
+import RoundSummary from '@/Components/RoundSummary.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
@@ -23,7 +23,7 @@ export default {
 
   layout: (h, page) =>
     h(
-      AdminLayout,
+      DashboardLayout,
       {
         title: `Round #${page.props.round.id}`,
       },

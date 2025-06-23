@@ -19,18 +19,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
+ * @property-read \App\Models\PlayerBypassCap|null $bypassCap
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerConnection> $connections
  * @property-read int|null $connections_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, EventDeath> $deaths
  * @property-read int|null $deaths_count
  * @property-read \App\Models\PlayerConnection|null $firstConnection
  * @property-read mixed $has_imported_medals
+ * @property-read \App\Models\PlayerHos|null $hos
  * @property-read \App\Models\PlayerMedalsImported|null $importedMedals
+ * @property-read mixed $is_hos
+ * @property-read mixed $is_mentor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\JobBan> $jobBans
  * @property-read int|null $job_bans_count
  * @property-read \App\Models\PlayerConnection|null $latestConnection
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerMedal> $medals
  * @property-read int|null $medals_count
+ * @property-read \App\Models\PlayerMentor|null $mentor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerNote> $notes
  * @property-read int|null $notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerParticipation> $participations
@@ -39,7 +44,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $participations_rp_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerPlaytime> $playtime
  * @property-read int|null $playtime_count
+ * @property-read \App\Models\User|null $user
  * @property-read \App\Models\VpnWhitelist|null $vpnWhitelist
+ * @property-read \App\Models\PlayerWhitelist|null $whitelist
  *
  * @method static \Database\Factories\PlayerFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Player filter(array $input = [], $filter = null)
@@ -69,7 +76,16 @@ class Player extends BaseModel
     protected $fillable = [
         'id',
         'ckey',
+        'key',
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'player_id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -176,9 +192,44 @@ class Player extends BaseModel
         return $this->hasMany(PlayerMedal::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function importedMedals()
     {
         return $this->hasOne(PlayerMedalsImported::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function mentor()
+    {
+        return $this->hasOne(PlayerMentor::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function hos()
+    {
+        return $this->hasOne(PlayerHos::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function whitelist()
+    {
+        return $this->hasOne(PlayerWhitelist::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function bypassCap()
+    {
+        return $this->hasOne(PlayerBypassCap::class);
     }
 
     /** @return Attribute<bool, never> */
@@ -189,6 +240,59 @@ class Player extends BaseModel
         );
     }
 
+    /** @return Attribute<bool, never> */
+    protected function isMentor(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->mentor()->exists()
+        );
+    }
+
+    /** @return Attribute<bool, never> */
+    protected function isHos(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->hos()->exists()
+        );
+    }
+
+    public function isWhitelisted(string $serverId): bool
+    {
+        /** @var \App\Models\PlayerWhitelist|null $whitelist */
+        $whitelist = $this->whitelist()->first();
+        if (! $whitelist) {
+            return false;
+        }
+
+        $servers = $whitelist->servers()->pluck('game_servers.server_id');
+
+        if ($servers->isEmpty() || $servers->contains($serverId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function canBypassCap(string $serverId): bool
+    {
+        /** @var \App\Models\PlayerBypassCap|null $bypassCap */
+        $bypassCap = $this->bypassCap()->first();
+        if (! $bypassCap) {
+            return false;
+        }
+
+        $servers = $bypassCap->servers()->pluck('game_servers.server_id');
+
+        if ($servers->isEmpty() || $servers->contains($serverId)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @return \App\Models\Player
+     */
     public static function getOpenGraphData(int $id)
     {
         $player = self::with([

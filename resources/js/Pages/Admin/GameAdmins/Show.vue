@@ -3,10 +3,10 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
-  layout: (h, page) => h(AdminLayout, { title: 'Admin' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Admin' }, () => page),
 
   props: {
     gameAdmin: Object

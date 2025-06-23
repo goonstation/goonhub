@@ -39,15 +39,15 @@
 </style>
 
 <script>
+import GameBuildSettingForm from '@/Components/Forms/GameBuildSettingForm.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { router } from '@inertiajs/vue3'
 import { ionCloseCircleOutline } from '@quasar/extras/ionicons-v6'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import GameBuildSettingForm from '@/Components/Forms/GameBuildSettingForm.vue'
 import GameBuildsLayout from '../Layout.vue'
 
 export default {
   layout: (h, page) => {
-    return h(AdminLayout, { title: 'Edit Build Settings' }, () => h(GameBuildsLayout, () => page))
+    return h(DashboardLayout, { title: 'Edit Build Settings' }, () => h(GameBuildsLayout, () => page))
   },
 
   components: {

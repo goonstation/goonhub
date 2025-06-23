@@ -29,7 +29,7 @@
 
 <script>
 import GameBuildTestMergeForm from '@/Components/Forms/GameBuildTestMergeForm.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { router } from '@inertiajs/vue3'
 import { ionCloseCircleOutline } from '@quasar/extras/ionicons-v6'
 import GameBuildsIndexLayout from '../IndexLayout.vue'
@@ -38,7 +38,7 @@ import GameBuildsTestMergesIndex from './Index.vue'
 
 export default {
   layout: (h, page) => {
-    return h(AdminLayout, { title: 'Add Test Merge' }, () =>
+    return h(DashboardLayout, { title: 'Add Test Merge' }, () =>
       h(
         GameBuildsLayout,
         () => page,

@@ -150,12 +150,12 @@ tbody {
 </style>
 
 <script>
-import dayjs from 'dayjs'
-import axios from 'axios'
-import { date } from 'quasar'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { router } from '@inertiajs/vue3'
 import { ionInformationCircleOutline } from '@quasar/extras/ionicons-v6'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import axios from 'axios'
+import dayjs from 'dayjs'
+import { date } from 'quasar'
 import BanDetails from './Partials/BanDetails.vue'
 
 export default {
@@ -165,7 +165,7 @@ export default {
 
   layout: (h, page) =>
     h(
-      AdminLayout,
+      DashboardLayout,
       {
         title: `Ban #${page.props.ban.id}`,
       },

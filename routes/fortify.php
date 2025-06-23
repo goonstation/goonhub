@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\DetectAuthFromGame;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -28,7 +27,7 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
     // Authentication...
     if ($enableViews) {
         Route::get(RoutePath::for('login', '/login'), [AuthenticatedSessionController::class, 'create'])
-            ->middleware([DetectAuthFromGame::class, 'guest:'.config('fortify.guard')])
+            ->middleware(['guest:'.config('fortify.guard')])
             ->name('login');
     }
 

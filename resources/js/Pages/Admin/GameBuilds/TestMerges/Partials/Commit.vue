@@ -3,7 +3,7 @@
     <span class="flex-grow q-mr-xs">{{ commit ? commit.substring(0, 7) : '' }}</span>
     <q-btn
       @click="
-        $rtr.visit($route('admin.builds.test-merges.edit-commit', testMergeId), {
+        $inertia.visit($route('admin.builds.test-merges.edit-commit', testMergeId), {
           preserveState: true,
         })
       "

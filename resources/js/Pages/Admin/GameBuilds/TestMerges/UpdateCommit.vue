@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="opened" @hide="$rtr.visit($store.ParentPage.url, { preserveState: true })">
+  <q-dialog v-model="opened" @hide="$inertia.visit($store.ParentPage.url, { preserveState: true })">
     <q-card style="max-width: 500px; width: 100%" flat bordered>
       <div class="gh-card__header q-pa-md bordered">
         <span>Update Test Merge Commit</span>
@@ -32,7 +32,7 @@
 
 <script>
 import GameBuildTestMergeCommitForm from '@/Components/Forms/GameBuildTestMergeCommitForm.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { ionCloseCircleOutline } from '@quasar/extras/ionicons-v6'
 import GameBuildsIndexLayout from '../IndexLayout.vue'
 import GameBuildsLayout from '../Layout.vue'
@@ -40,7 +40,7 @@ import GameBuildsTestMergesIndex from './Index.vue'
 
 export default {
   layout: (h, page) => {
-    return h(AdminLayout, { title: 'Update Test Merge Commit' }, () =>
+    return h(DashboardLayout, { title: 'Update Test Merge Commit' }, () =>
       h(
         GameBuildsLayout,
         () => page,

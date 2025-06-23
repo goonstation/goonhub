@@ -1,6 +1,6 @@
 <template>
   <app-head :title="title" />
-  <q-layout view="lhh LpR fff">
+  <q-layout view="lhh LpR fff" style="max-width: 1920px">
     <q-header class="bg-transparent">
       <q-toolbar class="q-pt-md">
         <q-btn dense flat round :icon="ionMenu" @click="siteNavOpen = !siteNavOpen" />
@@ -23,7 +23,7 @@
                 <q-item-label header>Manage Team</q-item-label>
                 <q-item
                   clickable
-                  @click="router.visit(route('teams.show', $page.props.auth.user.current_team))"
+                  @click="router.visit($route('teams.show', $page.props.auth.user.current_team))"
                   v-close-popup
                 >
                   <q-item-section>Team Settings</q-item-section>
@@ -31,7 +31,7 @@
                 <q-item
                   v-if="$page.props.jetstream.canCreateTeams"
                   clickable
-                  @click="router.visit(route('teams.create'))"
+                  @click="router.visit($route('teams.create'))"
                   v-close-popup
                 >
                   <q-item-section>Create New Team</q-item-section>
@@ -60,13 +60,13 @@
             <user-avatar :user="$page.props.auth.user" />
             <q-menu>
               <q-list style="min-width: 150px">
-                <q-item clickable @click="router.visit(route('profile.show'))" v-close-popup>
+                <q-item clickable @click="router.visit($route('profile.show'))" v-close-popup>
                   <q-item-section>Profile</q-item-section>
                 </q-item>
                 <q-item
-                  v-if="$page.props.jetstream.hasApiFeatures"
+                  v-if="$page.props.jetstream.hasApiFeatures && user.is_admin"
                   clickable
-                  @click="router.visit(route('api-tokens.index'))"
+                  @click="router.visit($route('api-tokens.index'))"
                   v-close-popup
                 >
                   <q-item-section>API Tokens</q-item-section>
@@ -77,7 +77,11 @@
                 <template v-if="user.is_admin">
                   <q-item-label header>Admin Tools</q-item-label>
 
-                  <q-item clickable @click="router.visit(route('admin.users.index'))" v-close-popup>
+                  <q-item
+                    clickable
+                    @click="router.visit($route('admin.users.index'))"
+                    v-close-popup
+                  >
                     <q-item-section>Users</q-item-section>
                   </q-item>
 
@@ -94,11 +98,11 @@
       </q-toolbar>
     </q-header>
 
-    <site-nav v-model:open="siteNavOpen" :home="route('dashboard')" :items="siteNavItems">
+    <site-nav v-model:open="siteNavOpen" :home="$route('dashboard')" :items="siteNavItems">
       <template #bottom>
         <q-separator />
         <div class="site-nav__item">
-          <Link :href="route('home')" class="back-to-site site-nav__item q-pa-sm">
+          <Link :href="$route('home')" class="back-to-site site-nav__item q-pa-sm">
             <div class="site-nav__label">
               <q-icon :name="ionArrowBackCircleOutline" size="2em" />
               Back To Site
@@ -223,6 +227,9 @@ export default {
               route('admin.bans.index'),
               route('admin.job-bans.index'),
               route('admin.notes.index'),
+              route('admin.mentors.index'),
+              route('admin.hos.index'),
+              route('admin.whitelist.index'),
             ],
             children: [
               {
@@ -240,6 +247,18 @@ export default {
               {
                 label: 'Notes',
                 href: route('admin.notes.index'),
+              },
+              {
+                label: 'Mentors',
+                href: route('admin.mentors.index'),
+              },
+              {
+                label: 'Heads of Staff',
+                href: route('admin.hos.index'),
+              },
+              {
+                label: 'Whitelist',
+                href: route('admin.whitelist.index'),
               },
             ],
           },

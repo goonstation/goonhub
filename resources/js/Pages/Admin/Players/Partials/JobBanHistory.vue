@@ -1,5 +1,9 @@
 <template>
-  <q-table :rows="bans" :columns="banHistoryColumns" flat dense>
+  <div class="q-pa-md flex items-center gap-xs-md">
+    <h6 class="q-my-none">Job Bans</h6>
+  </div>
+
+  <q-table :rows="bans" :columns="banHistoryColumns" flat>
     <!-- <template v-slot:body-cell-id="props">
       <q-td :props="props">
         <template v-if="isBanExpiredOrRemoved(props.row)">
@@ -12,7 +16,7 @@
     </template> -->
     <template v-slot:body-cell-admin_ckey="props">
       <q-td :props="props">
-        <Link :href="route('admin.game-admins.show', props.row.game_admin.id)">
+        <Link :href="$route('admin.game-admins.show', props.row.game_admin.id)">
           {{ props.row.game_admin.name || props.row.game_admin.ckey }}
         </Link>
       </q-td>

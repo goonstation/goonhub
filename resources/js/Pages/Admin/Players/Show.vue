@@ -1,23 +1,50 @@
 <template>
-  <div>
-    <q-card class="q-mb-md" flat>
-      <q-card-section class="flex gap-xs-md items-start q-pl-lg q-pr-md q-pb-md">
-        <player-avatar :player="player" class="q-mt-xs" />
-        <div class="q-pb-xs">
-          <div class="text-weight-bold text-h6">
-            <template v-if="player.key">{{ player.key }}</template>
-            <template v-else>{{ $formats.capitalize(player.ckey) }}</template>
-          </div>
-          <div v-if="latestConnection" class="text-caption text-grey-5">
-            Last seen {{ dayjs(latestConnection.created_at).fromNow() }}
-          </div>
-          <div v-if="firstConnection" class="text-caption text-grey-5">
-            Started playing {{ dayjs(firstConnection.created_at).fromNow() }}
-          </div>
-        </div>
-        <q-space />
+  <div class="flex-grow flex column">
+    <div class="row gap-xs-sm q-mb-sm player-header">
+      <q-card flat>
         <div>
-          <div class="q-mb-sm">
+          <q-card-section class="flex gap-xs-md items-start q-px-lg q-pb-none q-mb-none">
+            <player-avatar :player="player" class="q-mt-xs" />
+            <div class="q-pb-xs">
+              <div class="text-weight-bold text-h6">
+                <template v-if="player.key">{{ player.key }}</template>
+                <template v-else>{{ $formats.capitalize(player.ckey) }}</template>
+              </div>
+              <div class="text-caption text-grey-5">
+                Last seen
+                {{
+                  player.latest_connection
+                    ? dayjs(player.latest_connection.created_at).fromNow()
+                    : 'never'
+                }}
+                <template v-if="latestRound">
+                  on round
+                  <Link :href="`/rounds/${latestRound.id}`">
+                    <template v-if="latestRound.latest_station_name">
+                      {{ latestRound.latest_station_name.name }}
+                    </template>
+                    <template v-else> #{{ latestRound.id }} </template>
+                  </Link>
+                </template>
+              </div>
+              <div class="text-caption text-grey-5">
+                Started playing
+                {{
+                  player.first_connection
+                    ? dayjs(player.first_connection.created_at).fromNow()
+                    : 'never'
+                }}
+              </div>
+            </div>
+          </q-card-section>
+        </div>
+        <div>
+          <q-separator class="q-mb-xs" />
+          <q-card-section class="q-py-none">
+            <p class="text-overline q-mb-none">Current Status</p>
+          </q-card-section>
+          <q-separator class="q-mt-xs q-mb-md" />
+          <q-card-section class="q-pt-none flex flex-wrap gap-xs-sm status-chips">
             <q-chip
               v-if="isBanned"
               color="negative"
@@ -38,184 +65,205 @@
             >
               VPN Whitelisted
             </q-chip>
+            <q-chip
+              v-if="player.is_mentor"
+              color="purple-4"
+              text-color="dark"
+              class="text-weight-bold"
+              square
+            >
+              Mentor
+            </q-chip>
+            <q-chip
+              v-if="player.is_hos"
+              color="orange"
+              text-color="dark"
+              class="text-weight-bold"
+              square
+            >
+              HOS
+            </q-chip>
+          </q-card-section>
+        </div>
+      </q-card>
+
+      <q-card class="col" flat>
+        <q-card-section class="flex items-center q-pa-lg">
+          <div class="gh-details-list gh-details-list--small wrap">
+            <div>
+              <div>
+                <template v-if="player.latest_connection">
+                  {{ player.latest_connection.ip }}
+                  <ips :ips="uniqueIps" class="q-ml-sm" />
+                </template>
+                <template v-else>
+                  <em>N/A</em>
+                </template>
+              </div>
+              <div>IP</div>
+            </div>
+            <div>
+              <div>
+                <template v-if="player.latest_connection">
+                  {{ player.latest_connection.comp_id }}
+                  <comp-ids
+                    :comp-ids="uniqueCompIds"
+                    :cursed-comp-ids="cursedCompIds"
+                    class="q-ml-sm"
+                  />
+                </template>
+                <template v-else>
+                  <em>N/A</em>
+                </template>
+              </div>
+              <div>Computer ID</div>
+            </div>
+            <div>
+              <div>
+                {{ $formats.number(player.participations_count) }}
+                ({{
+                  $formats.number(player.participations_count - player.participations_rp_count)
+                }}
+                Classic, {{ $formats.number(player.participations_rp_count) }} RP)
+              </div>
+              <div>Rounds Played</div>
+            </div>
+            <div>
+              <div>
+                {{ $formats.number(totalPlaytime) }}
+              </div>
+              <div>Hours Played</div>
+            </div>
+            <div>
+              <div>
+                <template v-if="player.byond_major && player.byond_minor">
+                  {{ player.byond_major }}.{{ player.byond_minor }}
+                </template>
+                <template v-else><em>N/A</em></template>
+              </div>
+              <div>BYOND Version</div>
+            </div>
           </div>
-          <div class="text-right">
+        </q-card-section>
+        <div>
+          <q-separator class="q-mb-xs" />
+          <q-card-section class="q-py-none">
+            <p class="text-overline q-mb-none">Quick Actions</p>
+          </q-card-section>
+          <q-separator class="q-mt-xs q-mb-md" />
+          <q-card-section class="q-pt-none flex flex-wrap gap-xs-sm">
             <q-btn
               v-if="isBanned"
-              outline
-              color="primary"
-              text-color="primary"
               @click="
-                router.visit(
-                  route('admin.bans.show-remove-details', {
+                $inertia.visit(
+                  $route('admin.bans.show-remove-details', {
                     ckey: player.ckey,
-                    comp_id: latestConnection.comp_id,
-                    ip: latestConnection.ip,
+                    comp_id: player.latest_connection?.comp_id,
+                    ip: player.latest_connection?.ip,
                   })
                 )
               "
+              :icon="mdiBird"
+              color="primary"
+              text-color="primary"
+              class="text-weight-bold"
               label="Unban"
-              size="sm"
+              size="11px"
+              outline
             />
             <q-btn
               v-else
-              outline
-              color="primary"
-              text-color="primary"
               @click="
-                router.visit(
-                  route('admin.bans.create', {
+                $inertia.visit(
+                  $route('admin.bans.create', {
                     ckey: player.ckey,
-                    comp_id: latestConnection.comp_id,
-                    ip: latestConnection.ip,
+                    comp_id: player.latest_connection?.comp_id,
+                    ip: player.latest_connection?.ip,
                   })
                 )
               "
+              :icon="ionBan"
+              color="primary"
+              text-color="primary"
+              class="text-weight-bold"
               label="Ban"
-              size="sm"
+              size="11px"
+              outline
             />
-          </div>
+          </q-card-section>
         </div>
-      </q-card-section>
+      </q-card>
+    </div>
 
-      <q-markup-table class="player-details" bordered dense>
-        <tbody>
-          <tr v-if="latestConnection">
-            <td>Last Seen IP</td>
-            <td>
-              {{ latestConnection.ip }}
-              <ips :connections="player.connections" class="q-ml-sm" />
-            </td>
-          </tr>
-          <tr v-if="latestConnection">
-            <td>Last Seen Computer ID</td>
-            <td>
-              {{ latestConnection.comp_id }}
-              <comp-ids
-                :connections="player.connections"
-                :cursed-comp-ids="cursedCompIds"
-                class="q-ml-sm"
-              />
-            </td>
-          </tr>
-          <tr v-if="latestRound">
-            <td>Last Round Played</td>
-            <td>
-              <Link :href="`/rounds/${latestRound.id}`">
-                <template v-if="latestRound.latest_station_name">
-                  {{ latestRound.latest_station_name.name }}
-                </template>
-                <template v-else> #{{ latestRound.id }} </template>
-              </Link>
-            </td>
-          </tr>
-          <tr>
-            <td>Classic Rounds Played</td>
-            <td>
-              {{ $formats.number(player.participations_count - player.participations_rp_count) }}
-            </td>
-          </tr>
-          <tr>
-            <td>Roleplay Rounds Played</td>
-            <td>{{ $formats.number(player.participations_rp_count) }}</td>
-          </tr>
-          <tr>
-            <td>Hours Played</td>
-            <td>{{ $formats.number(totalPlaytime) }}</td>
-          </tr>
-          <tr v-if="player.byond_major && player.byond_minor">
-            <td>BYOND Version</td>
-            <td>{{ player.byond_major }}.{{ player.byond_minor }}</td>
-          </tr>
-        </tbody>
-      </q-markup-table>
-    </q-card>
-
-    <q-card class="gh-card gh-card--small q-mb-md" flat>
-      <div class="gh-card__header">
-        <q-icon :name="ionEarth" size="22px" />
-        <span>Connections ({{ player.connections.length }})</span>
-      </div>
-      <q-card-section class="q-pa-none">
-        <connections :connections="player.connections" />
-      </q-card-section>
-    </q-card>
-
-    <q-card class="gh-card gh-card--small q-mb-md" flat>
-      <div class="gh-card__header">
-        <q-icon :name="ionBan" size="22px" />
-        <q-tabs v-model="banTab" active-color="primary" indicator-color="transparent">
+    <q-card class="gh-card gh-card--small flex-grow flex" flat>
+      <q-card-section class="flex-grow row no-wrap q-pa-none" style="min-height: 500px">
+        <q-tabs v-model="currentTab" active-color="primary" indicator-color="primary" vertical>
           <q-tab
-            v-for="type in banTabTypes"
-            class="items-center"
-            :name="type"
-            content-class="q-pa-sm text-sm text-weight-medium"
+            v-for="tab in tabs"
+            :key="tab.name"
+            :name="tab.name"
+            content-class="full-width items-baseline q-px-sm"
+            style="justify-content: initial; text-align: left"
           >
-            {{ type }}
-            <template v-if="type === 'Ban History'"> ({{ banHistory.length }}) </template>
-            <template v-else-if="type === 'Job Ban History'">
-              ({{ player.job_bans.length }})
-            </template>
+            <div class="full-width flex items-center justify-between gap-xs-md">
+              <div class="q-tab__label">
+                {{ tab.label }}
+              </div>
+              <q-chip
+                v-if="tab.total"
+                color="grey-7"
+                size="12px"
+                class="q-ma-none text-weight-bolder"
+                square
+              >
+                {{ tab.total }}
+              </q-chip>
+            </div>
           </q-tab>
         </q-tabs>
-      </div>
-      <q-card-section class="q-pa-none">
-        <q-tab-panels v-model="banTab" animated>
-          <q-tab-panel name="Ban History" class="q-pa-none">
-            <ban-history :bans="banHistory" :ckey="player.ckey" />
-          </q-tab-panel>
-          <q-tab-panel name="Job Ban History" class="q-pa-none">
-            <job-ban-history :bans="player.job_bans" />
-          </q-tab-panel>
-        </q-tab-panels>
-      </q-card-section>
-    </q-card>
 
-    <q-card class="gh-card gh-card--small q-mb-md" flat>
-      <div class="gh-card__header flex">
-        <q-icon :name="ionPencil" size="22px" />
-        <span>Notes ({{ player.notes.length }})</span>
-        <q-space />
-        <add-player-note-dialog :player="player" @success="onNoteAdded" size="sm" />
-      </div>
-      <q-card-section class="q-pa-none">
-        <notes :notes="player.notes" />
-      </q-card-section>
-    </q-card>
+        <q-separator vertical style="margin-left: -1px" />
 
-    <q-card class="gh-card gh-card--small q-mb-md" flat>
-      <div class="gh-card__header flex">
-        <q-icon :name="ionMedal" size="22px" />
-        <span>Medals ({{ player.medals.length }})</span>
-        <q-space />
-        <add-player-medal-dialog :player="player" @success="onMedalAdded" size="sm" />
-      </div>
-      <q-card-section class="q-pa-none">
-        <medals v-model="player.medals" :player-id="player.id" />
-      </q-card-section>
-    </q-card>
-
-    <q-card class="gh-card gh-card--small" flat>
-      <div class="gh-card__header">
-        <q-icon :name="ionPeople" size="22px" />
-        <span>Other Accounts ({{ otherAccounts.length }})</span>
-      </div>
-      <q-card-section class="q-pa-none">
-        <q-banner class="bg-grey-10 q-ma-md">
-          <template v-slot:avatar>
-            <q-icon :name="ionInformationCircleOutline" color="primary" size="md" class="q-mt-xs" />
-          </template>
-          These are accounts that have connected with the same IP Address or Computer ID as this
-          player. Please note that this doesn't always mean they are played by the same person. This
-          information is provided for investigation purposes only.
-        </q-banner>
-        <other-accounts :accounts="otherAccounts" />
+        <div class="col scroll" style="width: 0">
+          <q-tab-panels
+            v-model="currentTab"
+            vertical
+            animated
+            transition-prev="jump-up"
+            transition-next="jump-up"
+          >
+            <q-tab-panel v-for="tab in tabs" :key="tab.name" :name="tab.name" class="q-pa-none">
+              <component :is="tab.component" v-bind="tab.props" v-on="tab.on || {}" />
+            </q-tab-panel>
+          </q-tab-panels>
+        </div>
       </q-card-section>
     </q-card>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.player-header {
+  display: grid;
+  grid-template-rows: min-content 1fr;
+
+  > * {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 2;
+  }
+}
+
+@media (min-width: $breakpoint-md-min) {
+  .player-header {
+    grid-template-columns: max-content 1fr;
+
+    > *:first-child {
+      max-width: 400px;
+    }
+  }
+}
+
 .player-details {
   tr {
     td:first-child {
@@ -227,36 +275,42 @@
     }
   }
 }
+
+.status-chips {
+  .q-chip {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
 </style>
 
 <script>
-import dayjs from 'dayjs'
+import PlayerAvatar from '@/Components/PlayerAvatar.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import {
-  ionEarth,
   ionBan,
-  ionPencil,
-  ionPeople,
+  ionEarth,
   ionInformationCircleOutline,
   ionMedal,
+  ionPencil,
+  ionPeople,
 } from '@quasar/extras/ionicons-v6'
-import { router, Link } from '@inertiajs/vue3'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import PlayerAvatar from '@/Components/PlayerAvatar.vue'
-import AddPlayerNoteDialog from '@/Components/AddPlayerNoteDialog.vue'
-import AddPlayerMedalDialog from '@/Components/AddPlayerMedalDialog.vue'
-import Ips from './Partials/Ips.vue'
-import CompIds from './Partials/CompIds.vue'
-import Connections from './Partials/Connections.vue'
+import { mdiBird } from '@quasar/extras/mdi-v7'
+import dayjs from 'dayjs'
 import BanHistory from './Partials/BanHistory.vue'
+import CompIds from './Partials/CompIds.vue'
+// import Connections from './Partials/Connections.vue'
+import Ips from './Partials/Ips.vue'
 import JobBanHistory from './Partials/JobBanHistory.vue'
-import Notes from './Partials/Notes.vue'
 import Medals from './Partials/Medals.vue'
+import Notes from './Partials/Notes.vue'
 import OtherAccounts from './Partials/OtherAccounts.vue'
 
 export default {
   layout: (h, page) =>
     h(
-      AdminLayout,
+      DashboardLayout,
       {
         title: `Player ${page.props.player.key || page.props.player.ckey}`,
       },
@@ -264,13 +318,10 @@ export default {
     ),
 
   components: {
-    Link,
     PlayerAvatar,
-    AddPlayerNoteDialog,
-    AddPlayerMedalDialog,
     Ips,
     CompIds,
-    Connections,
+    // Connections,
     BanHistory,
     JobBanHistory,
     Notes,
@@ -280,7 +331,6 @@ export default {
 
   setup() {
     return {
-      router,
       dayjs,
       ionEarth,
       ionBan,
@@ -288,11 +338,13 @@ export default {
       ionPeople,
       ionInformationCircleOutline,
       ionMedal,
+      mdiBird,
     }
   },
 
   props: {
     player: Object,
+    // connectionsByDay: Object,
     latestRound: Object,
     banHistory: Object,
     otherAccounts: Object,
@@ -303,18 +355,67 @@ export default {
 
   data() {
     return {
-      banTab: 'Ban History',
-      banTabTypes: ['Ban History', 'Job Ban History'],
+      currentTab: 'bans',
     }
   },
 
   computed: {
-    firstConnection() {
-      return this.player.connections[0]
-    },
-
-    latestConnection() {
-      return this.player.connections[this.player.connections.length - 1]
+    tabs() {
+      return [
+        // {
+        //   name: 'connections',
+        //   label: 'Connections',
+        //   component: Connections,
+        //   props: {
+        //     connectionsByDay: this.connectionsByDay,
+        //   },
+        // },
+        {
+          name: 'bans',
+          label: 'Bans',
+          total: this.banHistory.length,
+          component: BanHistory,
+          props: { bans: this.banHistory, ckey: this.player.ckey },
+        },
+        {
+          name: 'job-bans',
+          label: 'Job Bans',
+          total: this.player.job_bans.length,
+          component: JobBanHistory,
+          props: { bans: this.player.job_bans },
+        },
+        {
+          name: 'notes',
+          label: 'Notes',
+          total: this.player.notes.length,
+          component: Notes,
+          props: { modelValue: this.player.notes, playerCkey: this.player.ckey },
+          on: {
+            'update:modelValue': (e) => {
+              this.$page.props.player.notes = e
+            },
+          },
+        },
+        {
+          name: 'medals',
+          label: 'Medals',
+          total: this.player.medals.length,
+          component: Medals,
+          props: { modelValue: this.player.medals, playerId: this.player.id },
+          on: {
+            'update:modelValue': (e) => {
+              this.$page.props.player.medals = e
+            },
+          },
+        },
+        {
+          name: 'other-accounts',
+          label: 'Other Accounts',
+          total: this.otherAccounts.length,
+          component: OtherAccounts,
+          props: { accounts: this.otherAccounts },
+        },
+      ]
     },
 
     totalPlaytime() {
@@ -334,15 +435,6 @@ export default {
         }
       }
       return banned
-    },
-  },
-
-  methods: {
-    onNoteAdded(note) {
-      this.player.notes.unshift(note)
-    },
-    onMedalAdded(medal) {
-      this.player.medals.unshift(medal)
     },
   },
 }

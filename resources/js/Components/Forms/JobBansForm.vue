@@ -28,7 +28,7 @@
             <base-select
               v-model="form.server_id"
               label="Server"
-              load-route="/game-servers?with_invisible=1"
+              load-route="/game-servers"
               option-value="server_id"
               option-label="name"
               filled
@@ -36,6 +36,7 @@
               dense
               emit-value
               map-options
+              :filters="{ with_invisible: true }"
               :error="!!form.errors.server_id"
               :error-message="form.errors.server_id"
               :default-items="[{ name: 'All', server_id: 'all' }]"
@@ -206,15 +207,15 @@
 </template>
 
 <script>
-import { date } from 'quasar'
-import {
-  ionCalendarClearOutline,
-  ionInformationCircleOutline,
-  ionAlertCircleOutline,
-} from '@quasar/extras/ionicons-v6'
-import BaseForm from './BaseForm.vue'
 import BaseSelect from '@/Components/Selects/BaseSelect.vue'
 import JobBanJobs from '@/Components/Selects/JobBanJobs.vue'
+import {
+  ionAlertCircleOutline,
+  ionCalendarClearOutline,
+  ionInformationCircleOutline,
+} from '@quasar/extras/ionicons-v6'
+import { date } from 'quasar'
+import BaseForm from './BaseForm.vue'
 
 export default {
   extends: BaseForm,

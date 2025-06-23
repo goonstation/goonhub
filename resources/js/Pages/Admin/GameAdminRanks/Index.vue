@@ -3,15 +3,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import GameAdminRanksTable from '@/Components/Tables/Admin/GameAdminRanksTable.vue'
+import GameAdminRanksTable from '@/Components/Tables/Admin/GameAdminRanksTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     GameAdminRanksTable
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Admin Ranks' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Admin Ranks' }, () => page),
 
   props: {
     gameAdminRanks: Object

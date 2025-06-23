@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="isGameAdmin">
     <health-list :health="health" class="q-my-md" />
 
     <q-card class="gh-card q-mb-md" flat>
@@ -19,29 +19,46 @@
         <server-orchestration />
       </div>
     </div>
-
-    <game-auth-callback :server="authFromGame" />
+  </div>
+  <div v-else>
+    <q-card class="gh-card q-mb-md" flat>
+      <div class="gh-card__header q-pa-md bordered">
+        <span>Hello</span>
+      </div>
+      <q-card-section>
+        <p>
+          Welcome to the Goonstation Dashboard, this is a work in progress and will be updated in
+          the future.
+        </p>
+        <p class="q-mb-none">
+          For now, you can manage your profile by clicking the profile button in the top right.
+        </p>
+      </q-card-section>
+    </q-card>
   </div>
 </template>
 
 <script>
-import GameAuthCallback from '@/Components/GameAuthCallback.vue'
 import ServerOrchestration from '@/Components/Orchestration/Manager.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import HealthList from './Partials/HealthList.vue'
 
 export default {
-  layout: (h, page) => h(AdminLayout, { title: 'Dashboard' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Dashboard' }, () => page),
 
   components: {
-    GameAuthCallback,
     ServerOrchestration,
     HealthList,
   },
 
   props: {
-    authFromGame: [Object, null],
     health: [Object, null],
+  },
+
+  computed: {
+    isGameAdmin() {
+      return !!this.$page.props.auth.user.game_admin_id || !!this.$page.props.auth.user.is_admin
+    },
   },
 }
 </script>

@@ -26,7 +26,10 @@
       </div>
     </div>
 
-    <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication" class="q-mt-lg">
+    <div
+      v-if="$page.props.jetstream.canManageTwoFactorAuthentication && isGameAdmin"
+      class="q-mt-lg"
+    >
       <div class="row q-col-gutter-sm">
         <div class="col-12 col-md-4">
           <h3 class="q-mb-sm text-h6">Two Factor Authentication</h3>
@@ -52,7 +55,7 @@
       </div>
     </div>
 
-    <template v-if="$page.props.jetstream.hasAccountDeletionFeatures" class="q-mt-lg">
+    <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
       <div class="row q-col-gutter-sm q-mt-lg">
         <div class="col-12 col-md-4">
           <h3 class="q-mb-sm text-h6">Delete Account</h3>
@@ -71,7 +74,7 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import DeleteUserForm from './Partials/DeleteUserForm.vue'
 import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
 import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
@@ -92,6 +95,12 @@ export default {
     sessions: Array,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Profile' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Profile' }, () => page),
+
+  computed: {
+    isGameAdmin() {
+      return !!this.$page.props.auth.user.game_admin_id || !!this.$page.props.auth.user.is_admin
+    },
+  },
 }
 </script>

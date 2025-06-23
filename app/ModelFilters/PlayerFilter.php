@@ -74,4 +74,24 @@ class PlayerFilter extends ModelFilter
             return $query->where('ip', $val);
         });
     }
+
+    public function mentor($val)
+    {
+        return $val === 'true' || $val === '1' ? $this->whereHas('mentor') : $this->whereDoesntHave('mentor');
+    }
+
+    public function hos($val)
+    {
+        return $val === 'true' || $val === '1' ? $this->whereHas('hos') : $this->whereDoesntHave('hos');
+    }
+
+    public function whitelist($val)
+    {
+        return $val === 'true' || $val === '1' ? $this->whereHas('whitelist') : $this->whereDoesntHave('whitelist');
+    }
+
+    public function bypassCap($val)
+    {
+        return $val === 'true' || $val === '1' ? $this->whereHas('bypassCap') : $this->whereDoesntHave('bypassCap');
+    }
 }

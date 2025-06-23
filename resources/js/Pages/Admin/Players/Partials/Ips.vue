@@ -18,7 +18,7 @@
         >
           <template v-slot:body-cell-ip="props">
             <q-td :props="props">
-              <Link :href="route('admin.players.index', { filters: { ip: props.row.ip } })">
+              <Link :href="$route('admin.players.index', { filters: { ip: props.row.ip } })">
                 {{ props.row.ip }}
                 <q-tooltip>Search for other players with this IP</q-tooltip>
               </Link>
@@ -35,7 +35,7 @@ import { ionClose } from '@quasar/extras/ionicons-v6'
 
 export default {
   props: {
-    connections: Object,
+    ips: Object,
   },
 
   setup() {
@@ -68,26 +68,6 @@ export default {
         },
       ],
     }
-  },
-
-  computed: {
-    ips() {
-      const groups = []
-      for (const connection of this.connections) {
-        const groupIdx = groups.findIndex((group) => group.ip === connection.ip)
-        if (groupIdx !== -1) {
-          groups[groupIdx].connections++
-          groups[groupIdx].last_seen = connection.created_at
-        } else {
-          groups.push({
-            ip: connection.ip,
-            connections: 1,
-            last_seen: connection.created_at,
-          })
-        }
-      }
-      return groups
-    },
   },
 }
 </script>

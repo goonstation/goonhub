@@ -1,6 +1,6 @@
 <script setup>
-import ApiTokenManager from './Partials/ApiTokenManager.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import ApiTokenManager from './Partials/ApiTokenManager.vue';
 
 defineProps({
   tokens: Array,
@@ -10,11 +10,11 @@ defineProps({
 </script>
 
 <template>
-  <AdminLayout title="API Tokens">
+  <DashboardLayout title="API Tokens">
     <ApiTokenManager
       :tokens="tokens"
       :available-permissions="availablePermissions"
       :default-permissions="defaultPermissions"
     />
-  </AdminLayout>
+  </DashboardLayout>
 </template>

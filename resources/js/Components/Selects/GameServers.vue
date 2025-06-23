@@ -31,7 +31,7 @@
         v-else
         v-for="server in servers"
         :key="server.id"
-        :active="multiple ? value.includes(server.server_id) : value === server.server_id"
+        :active="multiple ? value.includes(server[serverKey]) : value === server[serverKey]"
         style="padding-left: 4px"
         tag="label"
         v-ripple
@@ -40,7 +40,7 @@
           <component
             :is="multiple ? QCheckbox : QRadio"
             v-model="value"
-            :val="server.server_id"
+            :val="server[serverKey]"
             size="sm"
           />
         </q-item-section>
@@ -81,6 +81,10 @@ import { QCheckbox, QRadio } from 'quasar'
 export default {
   props: {
     modelValue: null,
+    serverKey: {
+      type: String,
+      default: 'server_id',
+    },
     multiple: {
       type: Boolean,
       default: false,

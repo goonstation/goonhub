@@ -28,7 +28,7 @@
               v-model="form.server_id"
               class="q-mb-md"
               label="Server"
-              load-route="/game-servers?with_invisible=1"
+              load-route="/game-servers"
               option-value="server_id"
               option-label="name"
               filled
@@ -37,6 +37,7 @@
               emit-value
               map-options
               hide-bottom-space
+              :filters="{ with_invisible: true }"
               :error="!!form.errors.server_id"
               :error-message="form.errors.server_id"
               :default-items="[{ name: 'All', server_id: 'all' }]"
@@ -72,8 +73,8 @@
 </template>
 
 <script>
-import BaseForm from './BaseForm.vue'
 import BaseSelect from '@/Components/Selects/BaseSelect.vue'
+import BaseForm from './BaseForm.vue'
 
 export default {
   extends: BaseForm,
@@ -84,7 +85,7 @@ export default {
 
   data() {
     return {
-      defaultPlayers: []
+      defaultPlayers: [],
     }
   },
 

@@ -12,7 +12,7 @@
           <base-select
             v-model="form.medal_uuid"
             label="Medal"
-            :load-route="route('admin.medals.unawarded-to-player', player.id)"
+            :load-route="route('admin.medals.unawarded-to-player', playerId)"
             option-value="uuid"
             option-label="title"
             search-key="title"
@@ -63,10 +63,10 @@
 </style>
 
 <script>
+import MedalThumbnail from '@/Components/MedalThumbnail.vue'
+import BaseSelect from '@/Components/Selects/BaseSelect.vue'
 import { useForm } from '@inertiajs/vue3'
 import axios from 'axios'
-import BaseSelect from '@/Components/Selects/BaseSelect.vue'
-import MedalThumbnail from '@/Components/MedalThumbnail.vue'
 
 export default {
   components: {
@@ -75,7 +75,7 @@ export default {
   },
 
   props: {
-    player: Object,
+    playerId: Number,
   },
 
   emits: ['success', 'error'],
@@ -84,7 +84,7 @@ export default {
     return {
       open: false,
       form: useForm({
-        player_id: this.player.id,
+        player_id: this.playerId,
         medal_uuid: null,
       }),
     }

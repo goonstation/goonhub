@@ -76,16 +76,16 @@ tbody {
 </style>
 
 <script>
-import dayjs from 'dayjs'
-import axios from 'axios'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { router } from '@inertiajs/vue3'
 import { ionInformationCircleOutline } from '@quasar/extras/ionicons-v6'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import axios from 'axios'
+import dayjs from 'dayjs'
 
 export default {
   layout: (h, page) =>
     h(
-      AdminLayout,
+      DashboardLayout,
       {
         title: `Note #${page.props.note.id}`,
       },

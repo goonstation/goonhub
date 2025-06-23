@@ -8,6 +8,7 @@ use App\Http\Requests\GameServers\IndexRequest;
 use App\Models\GameServer;
 use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class GameServersController extends Controller
 {
@@ -15,17 +16,13 @@ class GameServersController extends Controller
 
     public function index(IndexRequest $request)
     {
-        $data = $request->validate([
-            'with_invisible' => 'nullable|boolean',
-        ]);
-
-        $query = GameServer::where('invisible', false);
-        if (isset($data['with_invisible']) && $data['with_invisible'] && $request->user()?->game_admin_id) {
-            $query = $query->orWhere('invisible', true);
+        $gameServers = GameServer::query();
+        if (! Auth::user()?->game_admin_id) {
+            $gameServers->where('invisible', false);
         }
 
         $gameServers = $this->indexQuery(
-            $query,
+            $gameServers,
             perPage: 30,
             sortBy: 'name',
             desc: false

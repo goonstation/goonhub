@@ -41,7 +41,7 @@ export default {
           field: 'server_id',
           sortable: true,
           format: (val, row) => row.server?.short_name,
-          filter: { type: 'SelectServersWithInvisible' },
+          filter: { type: 'SelectServers', options: { filters: { with_invisible: true } } },
         },
         {
           name: 'map',

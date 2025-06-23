@@ -64,7 +64,7 @@
         size="sm"
         type="link"
         :href="$route('changelog')"
-        @click.prevent="$rtr.visit($route('changelog'))"
+        @click.prevent="$inertia.visit($route('changelog'))"
         label="View the full changelog"
       />
     </div>

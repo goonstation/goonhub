@@ -1,6 +1,6 @@
 <template>
   <q-item
-    @click="$rtr.visit($route('admin.builds.show', build.build.id))"
+    @click="$inertia.visit($route('admin.builds.show', build.build.id))"
     class="q-pa-none text-sm build-status"
     :class="[type === 'current' ? 'text-primary' : 'text-grey']"
     :clickable="!!build.build"

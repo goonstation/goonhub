@@ -7,15 +7,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import UsersForm from '@/Components/Forms/UsersForm.vue'
+import UsersForm from '@/Components/Forms/UsersForm.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     UsersForm,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Add User' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Add User' }, () => page),
 
   data() {
     return {

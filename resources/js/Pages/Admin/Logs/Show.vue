@@ -216,7 +216,7 @@
 
 <script>
 import RoundSummary from '@/Components/RoundSummary.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { ionExpand } from '@quasar/extras/ionicons-v6'
 import axios from 'axios'
 import LogFilters from './Partials/Filters.vue'
@@ -231,7 +231,7 @@ export default {
     LogEntry,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Logs' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Logs' }, () => page),
 
   setup() {
     return {

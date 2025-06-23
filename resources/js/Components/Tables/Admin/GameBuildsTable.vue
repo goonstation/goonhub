@@ -106,7 +106,7 @@ export default {
           format: (val, row) => {
             return row.game_server.short_name
           },
-          filter: { type: 'SelectServersWithInvisible' },
+          filter: { type: 'SelectServers', options: { filters: { with_invisible: true } } },
           headerClasses: 'q-table--col-auto-width',
         },
         {

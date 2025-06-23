@@ -86,7 +86,6 @@ export default {
         },
         yaxis: [
           {
-            min: 0,
             forceNiceScale: true,
             labels: {
               formatter: function (val) {
@@ -94,17 +93,17 @@ export default {
               },
             },
           },
-          {
-            opposite: true,
-            labels: {
-              show: false,
-            },
-            min: 0,
-            max: (max) => max + 1,
-          },
+          // {
+          //   opposite: true,
+          //   labels: {
+          //     show: false,
+          //   },
+          //   min: 0,
+          //   max: (max) => max + 1,
+          // },
         ],
         stroke: {
-          curve: 'straight',
+          curve: ['stepline', 'smooth'],
           lineCap: 'round',
           width: [1, 2],
         },
@@ -116,7 +115,7 @@ export default {
           show: true,
           borderColor: '#333',
         },
-        colors: ['#ffd125', '#8f7b33'],
+        colors: ['#ffd125', '#1c80b4'],
         tooltip: {
           theme: 'gh',
           x: {
@@ -145,89 +144,99 @@ export default {
   methods: {
     buildGraphData() {
       if (!this.data.length) return
-      this.unixConnections = []
+      // this.unixConnections = []
 
-      let currentDate = dayjs(this.data[0].created_at).startOf('day')
-      const endDate = dayjs(this.data[this.data.length - 1].created_at).endOf('day')
-      let connectionIdx = 0
-      let nextYear = currentDate.endOf('year')
+      // let currentDate = dayjs(this.data[0].created_at).startOf('day')
+      const endDate = dayjs(this.data[this.data.length - 1].x).endOf('day')
+      // let connectionIdx = 0
+      // let nextYear = currentDate.endOf('year')
 
       const connectionsByDay = []
-      const trendData = [[((currentDate.startOf('year').unix() + nextYear.unix()) / 2) * 1000, 0]]
-      // Check every day between the start of connection data and today
-      while (currentDate <= endDate) {
-        const endOfDay = currentDate.endOf('day')
+      const roundIds = []
 
-        let connections = 0
-        let connection = this.data[connectionIdx]
-        let connectionCreated = dayjs(connection.created_at)
-        // Add up the connections for this day
-        while (connection && connectionCreated <= endOfDay) {
-          connections++
-
-          connectionIdx++
-          connection = this.data[connectionIdx]
-          if (connection) {
-            connectionCreated = dayjs(connection.created_at)
-          }
-        }
-
-        if (connections) {
-          connectionsByDay.push([currentDate.unix() * 1000, connections])
-        }
-
-        // Get average amount of connections per year for trend line
-        if (currentDate <= nextYear) {
-          trendData[trendData.length - 1][1] += connections
-        } else {
-          nextYear = nextYear.add(1, 'year')
-          const startOfYear = currentDate.startOf('year').unix()
-          const endOfYear = nextYear.unix()
-          trendData.push([((startOfYear + endOfYear) / 2) * 1000, connections])
-        }
-
-        currentDate = currentDate.add(1, 'day')
+      for (const connection of this.data) {
+        connectionsByDay.push({ x: connection.x, y: connection.y })
+        roundIds.push(connection.round_ids)
       }
+
+      // const trendData = [[((currentDate.startOf('year').unix() + nextYear.unix()) / 2) * 1000, 0]]
+      // // Check every day between the start of connection data and today
+      // while (currentDate <= endDate) {
+      //   const endOfDay = currentDate.endOf('day')
+
+      //   let connections = 0
+      //   let connection = this.data[connectionIdx]
+      //   let connectionCreated = dayjs(connection.created_at)
+      //   // Add up the connections for this day
+      //   while (connection && connectionCreated <= endOfDay) {
+      //     connections++
+
+      //     connectionIdx++
+      //     connection = this.data[connectionIdx]
+      //     if (connection) {
+      //       connectionCreated = dayjs(connection.created_at)
+      //     }
+      //   }
+
+      //   if (connections) {
+      //     connectionsByDay.push([currentDate.unix() * 1000, connections])
+      //   }
+
+      //   // Get average amount of connections per year for trend line
+      //   if (currentDate <= nextYear) {
+      //     trendData[trendData.length - 1][1] += connections
+      //   } else {
+      //     nextYear = nextYear.add(1, 'year')
+      //     const startOfYear = currentDate.startOf('year').unix()
+      //     const endOfYear = nextYear.unix()
+      //     trendData.push([((startOfYear + endOfYear) / 2) * 1000, connections])
+      //   }
+
+      //   currentDate = currentDate.add(1, 'day')
+      // }
 
       // Make sure the chart always ends today
       const today = dayjs()
       if (endDate.isBefore(today)) {
-        connectionsByDay.push([today.unix() * 1000, 0])
+        connectionsByDay.push({ x: today.unix() * 1000, y: 0 })
       }
 
-      // Add unix time data to every connection, for use in the selection method
-      this.unixConnections = this.data.map((connection) => {
-        connection.unix_created_at = dayjs(connection.created_at).unix() * 1000
-        return connection
-      })
+      // // Add unix time data to every connection, for use in the selection method
+      // this.unixConnections = this.data.map((connection) => {
+      //   connection.unix_created_at = dayjs(connection.created_at).unix() * 1000
+      //   return connection
+      // })
 
+      console.log('connectionsByDay', connectionsByDay)
+      console.log('roundIds', roundIds)
       this.series = [
         {
           name: 'Connections',
           data: connectionsByDay,
-          type: 'bar',
+          type: 'line',
         },
       ]
 
-      if (trendData.length > 1) {
-        this.series.push({
-          name: 'Yearly Average',
-          data: trendData,
-          type: 'line',
-        })
-      }
+      // if (this.dataByYear.length > 1) {
+      //   this.series.push({
+      //     name: 'Yearly Average',
+      //     data: this.dataByYear,
+      //     type: 'line',
+      //   })
+      // }
 
-      this.chartOptions.yaxis[0].labels.show = !!connectionsByDay.length
+      this.chartOptions.yaxis[0].labels.show = !!this.data.length
     },
 
     selection(chartContext, { xaxis }) {
-      const selectedConnections = []
-      for (const connection of this.unixConnections) {
-        if (connection.unix_created_at >= xaxis.min && connection.unix_created_at <= xaxis.max) {
-          selectedConnections.push(connection)
-        }
-      }
-      this.$emit('selected-connections', selectedConnections)
+      // const selectedConnections = []
+      console.log('xaxis', xaxis)
+      // for (const connection of this.unixConnections) {
+      //   if (connection.unix_created_at >= xaxis.min && connection.unix_created_at <= xaxis.max) {
+      //     selectedConnections.push(connection)
+      //   }
+      // }
+      // this.$emit('selected-connections', selectedConnections)
     },
 
     clearSelection() {
@@ -248,7 +257,7 @@ export default {
   watch: {
     data: {
       immediate: true,
-      handler(val) {
+      handler() {
         this.buildGraphData()
       },
     },

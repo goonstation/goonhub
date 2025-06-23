@@ -50,7 +50,7 @@ import axios from 'axios'
 
 export default {
   props: {
-    player: Object,
+    playerCkey: String,
   },
 
   emits: ['success', 'error'],
@@ -60,7 +60,7 @@ export default {
       open: false,
       form: useForm({
         return_note: true,
-        ckey: this.player.ckey,
+        ckey: this.playerCkey,
         note: '',
       }),
     }

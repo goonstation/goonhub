@@ -83,7 +83,7 @@ export default {
       this.refresh()
     }, 60 * 1000)
 
-    this.$rtr.on('before', (e) => {
+    this.$inertia.on('before', (e) => {
       if (!e.detail.visit.async) this.cleanup()
     })
   },
@@ -94,7 +94,7 @@ export default {
 
   methods: {
     async refresh() {
-      this.$rtr.reload({
+      this.$inertia.reload({
         only: ['health'],
         preserveUrl: true,
         preserveState: false,

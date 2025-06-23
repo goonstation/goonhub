@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'gameauth' => \App\Http\Middleware\GameAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'isadmin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         'noindex' => \App\Http\Middleware\NoIndex::class,

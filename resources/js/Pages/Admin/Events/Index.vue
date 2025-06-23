@@ -3,15 +3,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import EventsTable from '@/Components/Tables/Admin/EventsTable.vue'
+import EventsTable from '@/Components/Tables/Admin/EventsTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     EventsTable,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Events' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Events' }, () => page),
 
   props: {
     eventTypes: Array,

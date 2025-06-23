@@ -43,6 +43,7 @@ export default {
     optionValue: String,
     optionLabel: String,
     fieldLabel: String,
+    filters: Object,
     defaultItems: Array,
     searchKey: String,
     disabledItems: {
@@ -87,7 +88,7 @@ export default {
         lastPage: 1,
         perPage: 50,
       },
-      filters: {},
+      ourFilters: {},
       loading: false,
       firstLoad: true,
       loadedDefaultItem: false,
@@ -99,13 +100,13 @@ export default {
     // Handle an existing item being selected
     if (this.model) {
       if (this.searchKey) this.search = this.model
-      this.filters[this.optionValue] = this.model
+      this.ourFilters[this.optionValue] = this.model
       this.load().then(() => {
         // Reset state so future calls can correctly query the rest of the resources
         this.pagination.currentPage = 0
         this.pagination.lastPage = 1
         this.pagination.perPage = 50
-        delete this.filters[this.optionValue]
+        delete this.ourFilters[this.optionValue]
         this.loadedDefaultItem = true
       })
     }
@@ -116,7 +117,7 @@ export default {
       if (this.pagination.currentPage >= this.pagination.lastPage) return
 
       this.loading = true
-      let filters = this.filters
+      let filters = this.ourFilters
       if (this.search && this.searchKey) {
         filters = { ...filters, [this.searchKey]: this.search }
       }
@@ -195,6 +196,13 @@ export default {
   },
 
   watch: {
+    filters: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        this.ourFilters = { ...this.ourFilters, ...val }
+      },
+    },
     defaultItems: {
       immediate: true,
       deep: true,

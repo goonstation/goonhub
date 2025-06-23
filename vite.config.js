@@ -20,7 +20,7 @@ export default defineConfig({
   },
   plugins: [
     laravel({
-      input: 'resources/js/app.js',
+      input: ['resources/js/app.js', 'resources/css/game-auth.scss'],
       refresh: true,
     }),
     VueMacros({

@@ -4,8 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
-class DetectAuthFromGame
+class GameAuth
 {
     /**
      * Handle an incoming request.
@@ -15,8 +17,8 @@ class DetectAuthFromGame
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->has('auth_from_game')) {
-            $request->session()->put('auth_from_game', $request->input('auth_from_game'));
+        if (Auth::check()) {
+            return Redirect::route('game-auth.authed');
         }
 
         return $next($request);

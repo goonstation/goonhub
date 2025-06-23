@@ -1,15 +1,29 @@
 <template>
-  <q-table :rows="notes" :columns="notesColumns" flat dense>
+  <div class="q-pa-md flex items-center gap-xs-md">
+    <h6 class="q-my-none">Notes</h6>
+    <q-space />
+    <add-player-note-dialog
+      :player-ckey="playerCkey"
+      @success="onNoteAdded"
+      size="sm"
+      class="text-weight-bold"
+    />
+  </div>
+
+  <q-table :rows="modelValue" :columns="columns" flat>
     <template v-slot:body-cell-id="props">
       <q-td :props="props">
-        <Link :href="route('admin.notes.show', props.row.id)">
+        <Link :href="$route('admin.notes.show', props.row.id)">
           {{ props.row.id }}
         </Link>
       </q-td>
     </template>
     <template v-slot:body-cell-admin_ckey="props">
       <q-td :props="props">
-        <Link v-if="props.row.game_admin" :href="route('admin.game-admins.show', props.row.game_admin.id)">
+        <Link
+          v-if="props.row.game_admin"
+          :href="$route('admin.game-admins.show', props.row.game_admin.id)"
+        >
           {{ props.row.game_admin.name || props.row.game_admin.ckey }}
         </Link>
       </q-td>
@@ -18,14 +32,23 @@
 </template>
 
 <script>
+import AddPlayerNoteDialog from '@/Components/AddPlayerNoteDialog.vue'
+
 export default {
+  emits: ['update:modelValue'],
+
+  components: {
+    AddPlayerNoteDialog,
+  },
+
   props: {
-    notes: Object,
+    modelValue: Object,
+    playerCkey: String,
   },
 
   data() {
     return {
-      notesColumns: [
+      columns: [
         { name: 'id', field: 'id', label: 'ID', sortable: true },
         {
           name: 'note',
@@ -58,6 +81,12 @@ export default {
         },
       ],
     }
+  },
+
+  methods: {
+    onNoteAdded(note) {
+      this.$emit('update:modelValue', [note, ...this.modelValue])
+    },
   },
 }
 </script>

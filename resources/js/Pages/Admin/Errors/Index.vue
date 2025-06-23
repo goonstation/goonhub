@@ -3,15 +3,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import ErrorRoundsTable from '@/Components/Tables/Admin/ErrorRoundsTable.vue'
+import ErrorRoundsTable from '@/Components/Tables/Admin/ErrorRoundsTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     ErrorRoundsTable,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Errors' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Errors' }, () => page),
 
   props: {
     rounds: Object,

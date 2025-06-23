@@ -17,7 +17,8 @@
 .gh-select--denser.q-select {
   font-size: 0.9em;
 
-  .q-field__control, .q-field__native {
+  .q-field__control,
+  .q-field__native {
     min-height: 30px;
   }
 
@@ -75,11 +76,12 @@
   position: relative;
   z-index: 1;
   display: block;
-  padding: map-get($space-md, 'x') map-get($space-md, 'y');
+  padding: map-get($space-md, 'y') map-get($space-md, 'x');
   background: $dark;
   color: white;
   border-radius: $generic-border-radius;
   transition: all 200ms ease-in-out;
+  overflow: hidden;
 
   &:before {
     content: '';
@@ -93,6 +95,7 @@
     border-bottom-left-radius: $generic-border-radius;
     border-bottom-right-radius: $generic-border-radius;
     transition: all 200ms ease-in-out;
+    overflow: hidden;
   }
 
   &--bar-on {
@@ -109,7 +112,10 @@
   &:hover,
   &:focus {
     outline: none;
-    transform: scale(1.02);
+
+    &:not(#{ $self }--no-scale) {
+      transform: scale(1.02);
+    }
 
     &:before {
       height: 5px;
@@ -141,6 +147,10 @@
       height: 100%;
       width: 5px;
     }
+  }
+
+  &--dense {
+    padding: map-get($space-sm, 'y') map-get($space-md, 'x');
   }
 }
 

@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BansTable from '@/Components/Tables/Admin/BansTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import SearchBans from './Partials/Search.vue'
 
 export default {
@@ -24,7 +24,7 @@ export default {
     SearchBans,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Bans' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Bans' }, () => page),
 
   props: {
     bans: Object,

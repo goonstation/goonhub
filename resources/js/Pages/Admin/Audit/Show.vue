@@ -81,12 +81,12 @@
 </style>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   layout: (h, page) =>
     h(
-      AdminLayout,
+      DashboardLayout,
       {
         title: `Audit #${page.props.audit.id}`,
       },

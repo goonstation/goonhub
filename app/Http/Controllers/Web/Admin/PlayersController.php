@@ -12,6 +12,7 @@ use App\Models\PlayerConnection;
 use App\Traits\IndexableQuery;
 use App\Traits\ManagesBans;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PlayersController extends Controller
@@ -20,11 +21,18 @@ class PlayersController extends Controller
 
     public function index(Request $request)
     {
-        $model = Player::withCount(['connections', 'participations']);
+        $model = Player::withCount(['connections', 'participations'])
+            ->with(['whitelist.servers', 'bypassCap.servers']);
+
         if ($request->has('with_latest_connection')) {
             $model = $model->with('latestConnection');
         }
+
         $players = $this->indexQuery($model, perPage: 30);
+        $players->through(fn (Player $player) => $player->append([
+            'is_mentor',
+            'is_hos',
+        ]));
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Players/Index', [
@@ -38,9 +46,11 @@ class PlayersController extends Controller
     public function show(Request $request, Player $player)
     {
         $player->load([
-            'connections' => function ($q) {
-                $q->orderBy('id', 'asc');
-            },
+            'firstConnection',
+            'latestConnection',
+            // 'connections' => function ($q) {
+            //     $q->orderBy('id', 'asc');
+            // },
             'jobBans' => function ($q) {
                 $q->withTrashed()
                     ->orderBy('id', 'desc');
@@ -59,30 +69,54 @@ class PlayersController extends Controller
             ->loadCount([
                 'participations',
                 'participationsRp',
+            ])->append([
+                'is_mentor',
+                'is_hos',
             ]);
 
+        $ips = PlayerConnection::select([
+            'ip',
+            DB::raw('count(*) as connections'),
+            DB::raw('(MAX(ARRAY[created_at]))[1] AS last_seen'),
+        ])
+            ->where('player_id', $player->id)
+            ->groupBy('ip')
+            ->orderBy('last_seen', 'desc')
+            ->get();
+
+        $compIds = PlayerConnection::select([
+            'comp_id',
+            DB::raw('count(*) as connections'),
+            DB::raw('(MAX(ARRAY[created_at]))[1] AS last_seen'),
+        ])
+            ->where('player_id', $player->id)
+            ->groupBy('comp_id')
+            ->orderBy('last_seen', 'desc')
+            ->get();
+
         $latestRound = null;
-        $latestConnection = $player->connections->last();
-        if ($latestConnection?->round_id) {
+        if ($player->latestConnection?->round_id) {
             $latestRound = GameRound::with(['latestStationName'])
-                ->where('id', $latestConnection->round_id)
+                ->where('id', $player->latestConnection->round_id)
                 ->first();
         }
 
         $banHistory = $this->banHistory(
             $player->ckey,
-            $player->connections->pluck('comp_id')->unique(),
-            $player->connections->pluck('ip')->unique(),
+            $compIds->pluck('comp_id'),
+            $ips->pluck('ip'),
         );
 
         $ckey = $player->ckey;
-        $ips = $player->connections->pluck('ip')->unique()->values();
-        $compIds = $player->connections->pluck('comp_id')->unique()->values();
-
         $banHistory = $banHistory->map(function (Ban $ban) use ($ckey, $ips, $compIds) {
             $ban->setAttribute(
                 'player_has_active_details',
-                $this->banPlayerHasActiveDetails($ban, $ckey, $ips->toArray(), $compIds->toArray())
+                $this->banPlayerHasActiveDetails(
+                    $ban,
+                    $ckey,
+                    $ips->pluck('ip')->values()->toArray(),
+                    $compIds->pluck('comp_id')->values()->toArray()
+                )
             );
 
             return $ban;
@@ -94,12 +128,12 @@ class PlayersController extends Controller
 
         // Get other connection details associated with this player
         $otherIps = PlayerConnection::select(['player_id', 'ip'])
-            ->whereIn('ip', $ips)
+            ->whereIn('ip', $ips->pluck('ip')->values()->toArray())
             ->where('player_id', '!=', $player->id)
             ->distinct()
             ->get();
         $otherCompIds = PlayerConnection::select(['player_id', 'comp_id'])
-            ->whereIn('comp_id', $compIds)
+            ->whereIn('comp_id', $compIds->pluck('comp_id')->values()->toArray())
             ->where('player_id', '!=', $player->id)
             ->distinct()
             ->get();
@@ -123,8 +157,20 @@ class PlayersController extends Controller
             return $account;
         });
 
+        // $connectionsByDay = PlayerConnection::select([
+        //     DB::raw("date_trunc('day', created_at) as x"),
+        //     DB::raw('count(*) as y'),
+        //     DB::raw("extract(epoch from date_trunc('day', created_at))::int as epoch"),
+        //     DB::raw('array_to_json(array_agg(distinct round_id)) as round_ids'),
+        // ])
+        //     ->where('player_id', $player->id)
+        //     ->groupBy('x', 'epoch')
+        //     ->orderBy('x', 'asc')
+        //     ->get();
+
         return Inertia::render('Admin/Players/Show', [
             'player' => $player,
+            // 'connectionsByDay' => $connectionsByDay,
             'latestRound' => $latestRound,
             'banHistory' => $banHistory,
             'otherAccounts' => $otherAccounts,

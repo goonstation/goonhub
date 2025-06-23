@@ -1,18 +1,15 @@
 <template>
-  <div class="row">
-    <div class="col-xs-12 col-md-8">
-      <player-connections-over-time
-        :data="connections"
-        @selected-connections="selectedConnections = $event"
-      />
+  <div class="q-pa-md">
+    <div>
+      <player-connections-over-time :data="connectionsByDay" />
     </div>
-    <div class="flex col-xs-12 col-md-4">
+    <div>
       <q-table
         :rows="selectedConnections"
         :columns="columns"
         :rows-per-page-options="[10]"
         :class="{ 'no-data': !selectedConnections.length }"
-        class="selected-connections q-mb-md q-mr-md q-ml-md q-md-ml-none"
+        class="selected-connections q-mb-md"
         title="Selected Connections"
         title-class="text-body1"
         flat
@@ -30,7 +27,7 @@
         </template>
         <template v-slot:body-cell-round_id="props">
           <q-td :props="props">
-            <Link v-if="props.row.round_id" :href="route('rounds.show', props.row.round_id)">
+            <Link v-if="props.row.round_id" :href="$route('rounds.show', props.row.round_id)">
               #{{ props.row.round_id }}
             </Link>
             <template v-else> N/A </template>
@@ -60,7 +57,7 @@ export default {
   },
 
   props: {
-    connections: Object,
+    connectionsByDay: Object,
   },
 
   data() {

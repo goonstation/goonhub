@@ -17,7 +17,7 @@
         color="primary"
         text-color="primary"
         :icon-right="ionEye"
-        @click="$rtr.visit($route('rounds.show', round.id))"
+        @click="$inertia.visit($route('rounds.show', round.id))"
         label="View"
         size="0.75rem"
         padding="xs sm"

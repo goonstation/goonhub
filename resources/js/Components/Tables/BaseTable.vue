@@ -24,10 +24,25 @@
       </template>
 
       <template v-slot:top v-if="!hideTop">
-        <div class="flex full-width gap-xs-sm bg-dark q-pa-md rounded-borders items-start no-wrap">
+        <div
+          class="flex full-width gap-xs-sm bg-dark q-pa-md rounded-borders items-start no-wrap relative"
+          style="z-index: 2"
+          :style="{
+            'border-bottom': showGridFiltersActions ? '1px solid var(--q-dark-page)' : 'none',
+          }"
+        >
           <slot name="top-left" />
 
           <div v-if="showGridFilters" class="gh-grid-filters flex items-start gap-xs-sm">
+            <q-checkbox
+              v-if="canSelect"
+              :model-value="allSelected"
+              @click="handleSelectAll"
+              class="q-mr-sm"
+              style="margin-top: 6px"
+              dense
+            />
+
             <!-- sort button/menu -->
             <q-btn color="grey-9" class="text-sm" padding="xs sm" dense no-caps unelevated>
               <q-icon :name="ionSwapVertical" size="xs" class="q-mr-sm" /> {{ sortedByLabel }}
@@ -143,6 +158,36 @@
           </q-btn>
         </div>
 
+        <div class="full-width">
+          <Vue3SlideUpDown :model-value="showGridFiltersActions" :duration="150">
+            <div
+              class="flex gap-xs-sm bg-dark q-px-md q-pb-md rounded-borders items-start no-wrap"
+              style="margin-top: -5px; padding-top: 21px"
+            >
+              <q-btn
+                v-if="hasMultiEdit"
+                :to="getRoute(routes.editMulti, { selected })"
+                color="primary"
+                size="sm"
+                outline
+              >
+                Edit {{ selected.length }} item<template v-if="selected.length !== 1">s</template>
+              </q-btn>
+              <q-btn
+                v-if="hasMultiDelete"
+                @click="confirmMultiDelete = true"
+                color="negative"
+                size="sm"
+                outline
+              >
+                Delete {{ selected.length }} item<template v-if="selected.length !== 1">s</template>
+              </q-btn>
+
+              <slot name="grid-filters-actions" :props="{ selected }" />
+            </div>
+          </Vue3SlideUpDown>
+        </div>
+
         <slot name="header-bottom" />
       </template>
 
@@ -161,6 +206,7 @@
             <q-th v-for="col in props.cols" :key="col.name">
               <table-filter
                 v-if="col.filterable !== false"
+                v-bind="col.filter?.options || {}"
                 :model-value="filters[col.name]"
                 @update:modelValue="onFilterInput(col.name, $event)"
                 @clear="filters[col.name] = null"
@@ -251,6 +297,14 @@
 
       <template v-slot:bottom="props">
         <slot name="bottom-left" :props="props" />
+        <q-btn
+          v-if="hasMultiEdit && selected.length"
+          :to="getRoute(routes.editMulti, { selected })"
+          color="primary"
+          outline
+        >
+          Edit {{ selected.length }} item<template v-if="selected.length !== 1">s</template>
+        </q-btn>
         <q-btn
           v-if="hasMultiDelete && selected.length"
           @click="confirmMultiDelete = true"
@@ -380,6 +434,7 @@ import {
 import axios from 'axios'
 import { isEmpty, isEqual, merge } from 'lodash'
 import { toRaw } from 'vue'
+import { Vue3SlideUpDown } from 'vue3-slide-up-down'
 import GridHeaderFilter from './Partials/GridHeaderFilter.vue'
 
 export default {
@@ -404,6 +459,7 @@ export default {
     TableFilter,
     TableFormat,
     GridHeaderFilter,
+    Vue3SlideUpDown,
   },
 
   props: {
@@ -462,6 +518,9 @@ export default {
     selection: {
       type: String,
       default: 'none',
+      validator(value) {
+        return ['none', 'single', 'multiple'].includes(value)
+      },
     },
     extraParams: {
       type: Object,
@@ -551,6 +610,10 @@ export default {
       return !this.noFilters && (Object.keys(this.$attrs).includes('grid') || this.gridFilters)
     },
 
+    showGridFiltersActions() {
+      return this.showGridFilters && this.selected.length > 0
+    },
+
     currentSortColumn() {
       return this.columns.find((column) => column.name === this._pagination.sortBy)
     },
@@ -576,6 +639,15 @@ export default {
 
     canSelect() {
       return this.selection !== 'none'
+    },
+
+    allSelected() {
+      if (this.selected.length === 0) return false
+      return this.rows.every((row) => this.selected.includes(row)) || null
+    },
+
+    hasMultiEdit() {
+      return !!this.routes.editMulti
     },
 
     hasMultiDelete() {
@@ -764,7 +836,7 @@ export default {
 
     getRoute(goToRoute, row) {
       if (!row) return goToRoute
-      return goToRoute.replace('_id', row.id)
+      return goToRoute?.replace('_id', row.id) || ''
     },
 
     reset() {
@@ -869,6 +941,14 @@ export default {
               : selectedRows.filter((row) => rangeRows.includes(row) === false)
         }
       })
+    },
+
+    handleSelectAll() {
+      if (this.allSelected || this.allSelected === null) {
+        this.selected = []
+      } else {
+        this.selected = this.rows
+      }
     },
 
     updateTable() {

@@ -75,9 +75,9 @@
 </template>
 
 <script>
-import { router } from '@inertiajs/vue3'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BanLookupForm from '@/Components/Forms/BanLookupForm.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
+import { router } from '@inertiajs/vue3'
 import BanRemovalPlan from './Partials/BanRemovalPlan.vue'
 
 export default {
@@ -86,7 +86,7 @@ export default {
     BanRemovalPlan,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Remove Ban' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Remove Ban' }, () => page),
 
   props: {
     lookup: Object,

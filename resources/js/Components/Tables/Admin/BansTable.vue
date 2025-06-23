@@ -97,7 +97,7 @@ export default {
             if (!val) return 'All'
             return row.game_server.short_name
           },
-          filter: { type: 'SelectServersWithInvisible' },
+          filter: { type: 'SelectServers', options: { filters: { with_invisible: true } } },
         },
         {
           name: 'admin_ckey',

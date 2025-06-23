@@ -94,9 +94,10 @@ class BansController extends Controller
     public function check(Request $request)
     {
         $request->validate([
-            'ckey' => 'required_without_all:comp_id,ip|string|nullable',
-            'comp_id' => 'required_without_all:ckey,ip|string|nullable',
-            'ip' => 'required_without_all:ckey,comp_id|ip|nullable',
+            'ckey' => 'required_without_all:comp_id,ip,player_id|string|nullable',
+            'comp_id' => 'required_without_all:ckey,ip,player_id|string|nullable',
+            'ip' => 'required_without_all:ckey,comp_id,player_id|ip|nullable',
+            'player_id' => 'required_without_all:ckey,comp_id,ip|integer|nullable',
             'server_id' => 'nullable|string',
         ]);
 
@@ -104,6 +105,7 @@ class BansController extends Controller
         $compId = $request->input('comp_id', '');
         $ip = $request->input('ip', '');
         $serverId = $request->input('server_id');
+        $playerId = $request->input('player_id');
 
         /*
         * Criteria:
@@ -114,7 +116,7 @@ class BansController extends Controller
 
         $detailsExist = BanDetail::select(DB::raw(1))
             ->whereColumn('bans.id', 'ban_details.ban_id')
-            ->where(function ($q) use ($ckey, $compId, $ip) {
+            ->where(function ($q) use ($ckey, $compId, $ip, $playerId) {
                 // Check any of the ban details match the provided player details
                 if ($ckey) {
                     $q->orWhere('ckey', $ckey);
@@ -125,16 +127,22 @@ class BansController extends Controller
                 if ($ip) {
                     $q->orWhere('ip', $ip);
                 }
+                if ($playerId) {
+                    $q->orWhere('player_id', $playerId);
+                }
             });
 
         $ban = Ban::select(['*'])
             ->with([
                 'gameAdmin:id,ckey,name',
-                'details:id,ban_id,ckey,comp_id,ip,created_at',
+                'details:id,ban_id,ckey,comp_id,ip,player_id,created_at',
             ])
             ->where(function ($query) use ($serverId) {
                 // Check if the ban applies to all servers, or the server id we were provided
-                $query->whereNull('server_id')->orWhere('server_id', $serverId);
+                $query->whereNull('server_id');
+                if ($serverId) {
+                    $query->orWhere('server_id', $serverId);
+                }
             })
             ->where(function ($query) {
                 // Check the ban is permanent, or has yet to expire
@@ -201,9 +209,10 @@ class BansController extends Controller
         $data = $this->validate($request, [
             'game_admin_ckey' => 'nullable|exists:game_admins,ckey',
             'round_id' => 'nullable|integer|exists:game_rounds,id',
-            'ckey' => 'required_without_all:comp_id,ip|nullable',
-            'comp_id' => 'required_without_all:ckey,ip|nullable',
-            'ip' => 'required_without_all:ckey,comp_id|ip|nullable',
+            'ckey' => 'required_without_all:comp_id,ip,player_id|nullable',
+            'comp_id' => 'required_without_all:ckey,ip,player_id|nullable',
+            'ip' => 'required_without_all:ckey,comp_id,player_id|ip|nullable',
+            'player_id' => 'required_without_all:ckey,comp_id,ip|integer|nullable',
             'evasion' => 'nullable|boolean',
         ]);
 
@@ -211,6 +220,7 @@ class BansController extends Controller
         $banDetail->ckey = isset($data['ckey']) ? $data['ckey'] : null;
         $banDetail->comp_id = isset($data['comp_id']) ? $data['comp_id'] : null;
         $banDetail->ip = isset($data['ip']) ? $data['ip'] : null;
+        $banDetail->player_id = isset($data['player_id']) ? $data['player_id'] : null;
         $ban->details()->save($banDetail);
 
         $banDetail->setAttribute(
@@ -225,7 +235,9 @@ class BansController extends Controller
             $gameAdmin = GameAdmin::where('ckey', ckey($data['game_admin_ckey']))->first();
             $player = null;
             $ckey = isset($data['ckey']) ? ckey($data['ckey']) : null;
-            if ($ckey) {
+            if ($data['player_id']) {
+                $player = Player::find($data['player_id']);
+            } elseif ($ckey) {
                 $player = Player::where('ckey', $ckey)->first();
             }
 

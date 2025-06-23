@@ -7,15 +7,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import MedalsForm from '@/Components/Forms/MedalsForm.vue'
+import MedalsForm from '@/Components/Forms/MedalsForm.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     MedalsForm
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Add Medal' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Add Medal' }, () => page),
 
   data() {
     return {

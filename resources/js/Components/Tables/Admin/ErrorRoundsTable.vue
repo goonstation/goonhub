@@ -10,12 +10,7 @@
     no-timestamp-toggle
   >
     <template #top-left>
-      <q-btn
-        :href="route('admin.errors.summary')"
-        type="a"
-        color="primary"
-        outline
-      >
+      <q-btn :href="route('admin.errors.summary')" type="a" color="primary" outline>
         Error Summary
       </q-btn>
     </template>
@@ -56,7 +51,7 @@ export default {
             if (!val) return 'All'
             return row.server.short_name
           },
-          filter: { type: 'SelectServersWithInvisible' },
+          filter: { type: 'SelectServers', options: { filters: { with_invisible: true } } },
         },
         {
           name: 'created_at',

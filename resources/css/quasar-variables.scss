@@ -1,16 +1,27 @@
-$primary   : #ffd125;
-$secondary : #e87a00;
-$accent    : #e87a00;
+@use 'quasar/src/css/variables' as q;
 
-$dark      : #0f0f0f;
-$dark-page : #303030;
+$primary: #ffd125;
+$secondary: #e87a00;
+$accent: #e87a00;
 
-$positive  : #24c024;
-$negative  : #e33434;
-$info      : #5490ff;
-$warning   : #ffd125;
+$dark: #0f0f0f;
+$dark-page: #303030;
+
+$positive: #24c024;
+$negative: #e33434;
+$info: #5490ff;
+$warning: #ffd125;
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
-$typography-font-family : 'Open Sans', sans-serif !default;
-$text-weights: (thin: 300, light: 300, regular: 400, medium: 500, bold: 600, bolder: 700) !default;
+$typography-font-family: 'Open Sans', sans-serif !default;
+$text-weights: (
+  thin: 300,
+  light: 300,
+  regular: 400,
+  medium: 500,
+  bold: 600,
+  bolder: 700,
+) !default;
+
 // $button-font-weight: 600; // or 400 if you prefer thinner
+$button-padding: 4px 12px;

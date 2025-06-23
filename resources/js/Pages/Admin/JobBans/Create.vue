@@ -7,15 +7,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import JobBansForm from '@/Components/Forms/JobBansForm.vue'
+import JobBansForm from '@/Components/Forms/JobBansForm.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     JobBansForm
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Add Job Ban' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Add Job Ban' }, () => page),
 
   data() {
     return {

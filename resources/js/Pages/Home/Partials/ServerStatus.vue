@@ -186,7 +186,7 @@ export default {
   },
 
   created() {
-    this.$rtr.on('before', (e) => {
+    this.$inertia.on('before', (e) => {
       if (!e.detail.visit.async) this.cleanup()
     })
   },
@@ -207,7 +207,7 @@ export default {
   methods: {
     async refresh() {
       this.error = false
-      this.$rtr.reload({
+      this.$inertia.reload({
         only: ['status'],
         data: { server: this.server.server_id },
         preserveUrl: true,

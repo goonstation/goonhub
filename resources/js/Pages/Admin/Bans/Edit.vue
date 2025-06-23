@@ -9,15 +9,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
 import BansForm from '@/Components/Forms/BansForm.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {
     BansForm,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Edit Ban' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Edit Ban' }, () => page),
 
   props: {
     ban: Object,

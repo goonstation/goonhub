@@ -9,15 +9,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import UsersForm from '@/Components/Forms/UsersForm.vue'
+import UsersForm from '@/Components/Forms/UsersForm.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     UsersForm,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Edit User' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Edit User' }, () => page),
 
   props: {
     editUser: Object,

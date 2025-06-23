@@ -1,5 +1,5 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import DeleteTeamForm from './Partials/DeleteTeamForm.vue'
 import TeamMemberManager from './Partials/TeamMemberManager.vue'
 import UpdateTeamNameForm from './Partials/UpdateTeamNameForm.vue'
@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-  <AdminLayout title="Team Settings">
+  <DashboardLayout title="Team Settings">
     <UpdateTeamNameForm :team="team" :permissions="permissions" />
 
     <TeamMemberManager
@@ -24,5 +24,5 @@ defineProps({
     <template v-if="permissions.canDeleteTeam && !team.personal_team">
       <DeleteTeamForm class="q-mt-lg" :team="team" />
     </template>
-  </AdminLayout>
+  </DashboardLayout>
 </template>

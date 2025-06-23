@@ -51,7 +51,7 @@ export default {
   methods: {
     getTestMergeAuthors() {
       if (this.authors.length) return
-      this.$rtr.reload({ only: ['testMergeAuthors'] })
+      this.$inertia.reload({ only: ['testMergeAuthors'] })
     },
 
     getAuthors(prId) {

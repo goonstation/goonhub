@@ -3,15 +3,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import RedirectsTable from '@/Components/Tables/Admin/RedirectsTable.vue'
+import RedirectsTable from '@/Components/Tables/Admin/RedirectsTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     RedirectsTable
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Redirects' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Redirects' }, () => page),
 
   props: {
     redirects: Object

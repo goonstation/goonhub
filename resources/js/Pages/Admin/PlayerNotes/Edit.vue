@@ -9,15 +9,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import NotesForm from '@/Components/Forms/NotesForm.vue'
+import NotesForm from '@/Components/Forms/NotesForm.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     NotesForm
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Edit Note' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Edit Note' }, () => page),
 
   props: {
     note: Object,

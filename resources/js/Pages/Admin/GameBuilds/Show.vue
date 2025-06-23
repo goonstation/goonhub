@@ -43,7 +43,7 @@
           >
 
           <q-btn
-            @click="$rtr.visit($store.ParentPage.url)"
+            @click="$inertia.visit($store.ParentPage.url)"
             flat
             dense
             round
@@ -284,7 +284,7 @@
 <script>
 import DateSince from '@/Components/DateSince.vue'
 import TestMergesDialog from '@/Components/Dialogs/TestMerges.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { router } from '@inertiajs/vue3'
 import { ionChevronDown, ionCloseCircleOutline, ionEllipse } from '@quasar/extras/ionicons-v6'
 import { date } from 'quasar'
@@ -292,7 +292,7 @@ import GameBuildsLayout from './Layout.vue'
 
 export default {
   layout: (h, page) => {
-    return h(AdminLayout, { title: `Build #${page.props.build.id}` }, () =>
+    return h(DashboardLayout, { title: `Build #${page.props.build.id}` }, () =>
       h(GameBuildsLayout, () => page)
     )
   },
@@ -386,7 +386,7 @@ export default {
 
     onBuildFinished({ serverId }) {
       if (this.build.game_server.id === serverId) {
-        this.$rtr.reload()
+        this.$inertia.reload()
         Echo.private('game-builds').stopListening('GameBuildLog', this.onNewLogs)
       }
     },

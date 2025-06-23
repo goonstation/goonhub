@@ -1,12 +1,16 @@
 <template>
-  <q-table
-    :rows="modelValue"
-    :columns="columns"
-    :pagination="{ sortBy: 'title' }"
-    flat
-    dense
-    wrap-cells
-  >
+  <div class="q-pa-md flex items-center gap-xs-md">
+    <h6 class="q-my-none">Medals</h6>
+    <q-space />
+    <add-player-medal-dialog
+      :player-id="playerId"
+      @success="onMedalAdded"
+      size="sm"
+      class="text-weight-bold"
+    />
+  </div>
+
+  <q-table :rows="modelValue" :columns="columns" :pagination="{ sortBy: 'title' }" flat wrap-cells>
     <template #body-cell-image="props">
       <q-td :props="props">
         <medal-thumbnail :medal="props.row.medal" size="32" />
@@ -45,13 +49,15 @@
 </template>
 
 <script>
-import { ionClose, ionInformationCircleOutline } from '@quasar/extras/ionicons-v6'
+import AddPlayerMedalDialog from '@/Components/AddPlayerMedalDialog.vue'
 import MedalThumbnail from '@/Components/MedalThumbnail.vue'
+import { ionClose, ionInformationCircleOutline } from '@quasar/extras/ionicons-v6'
 
 export default {
   emits: ['update:modelValue'],
 
   components: {
+    AddPlayerMedalDialog,
     MedalThumbnail,
   },
 
@@ -95,7 +101,8 @@ export default {
           align: 'left',
           sortable: true,
           format: (val, row) => row.medal.description,
-          rawSort: (a, b, rowA, rowB) => rowA.medal.description.localeCompare(rowB.medal.description),
+          rawSort: (a, b, rowA, rowB) =>
+            rowA.medal.description.localeCompare(rowB.medal.description),
         },
         {
           name: 'created_at',
@@ -153,6 +160,10 @@ export default {
       this.confirmDelete = false
 
       this.$emit('update:modelValue', newMedals)
+    },
+
+    onMedalAdded(medal) {
+      this.$emit('update:modelValue', [medal, ...this.modelValue])
     },
   },
 }

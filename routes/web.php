@@ -3,10 +3,12 @@
 use App\Http\Controllers\Web\AntagsController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ChangelogController;
+use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\DeathsController;
 use App\Http\Controllers\Web\ErrorsController;
 use App\Http\Controllers\Web\EventsController;
 use App\Http\Controllers\Web\FinesController;
+use App\Http\Controllers\Web\GameAuthController;
 use App\Http\Controllers\Web\GameServersController;
 use App\Http\Controllers\Web\HomeController;
 use App\Http\Controllers\Web\MapsController;
@@ -57,6 +59,20 @@ Route::controller(HomeController::class)->prefix('/')->group(function () {
 Route::controller(AuthController::class)->prefix('/auth')->group(function () {
     Route::get('/redirect', 'redirect')->name('auth.redirect');
     Route::get('/callback', 'callback')->name('auth.callback');
+});
+
+Route::controller(GameAuthController::class)->prefix('/game-auth')->group(function () {
+    Route::middleware('gameauth')->group(function () {
+        Route::get('/login', 'showLogin')->name('game-auth.show-login');
+        Route::post('/login', 'login')->name('game-auth.login');
+        Route::get('/register', 'showRegister')->name('game-auth.show-register');
+        Route::post('/register', 'register')->name('game-auth.register');
+        Route::get('/forgot', 'showForgot')->name('game-auth.show-forgot');
+    });
+    Route::get('/authed', 'authed')->name('game-auth.authed');
+    Route::get('/logout', 'logout')->name('game-auth.logout');
+    Route::get('/discord-redirect', 'discordRedirect')->name('game-auth.discord-redirect');
+    Route::get('/discord-callback', 'discordCallback')->name('game-auth.discord-callback');
 });
 
 Route::controller(ChangelogController::class)->prefix('/changelog')->group(function () {
@@ -167,6 +183,15 @@ Route::controller(MedalsController::class)->prefix('/medals')->group(function ()
     });
 });
 
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'nometa',
+])->group(function () {
+    Route::controller(DashboardController::class)->prefix('dashboard')->group(function () {
+        Route::get('/', 'index')->name('dashboard');
+    });
+});
+
 require __DIR__.'/fortify.php';
-require __DIR__.'/admin.php';
 require __DIR__.'/jetstream.php';

@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\BansController;
 use App\Http\Controllers\Api\DectalkController;
 use App\Http\Controllers\Api\GameAdminRanksController;
 use App\Http\Controllers\Api\GameAdminsController;
+use App\Http\Controllers\Api\GameAuthController;
 use App\Http\Controllers\Api\GameBuildArtifactsController;
 use App\Http\Controllers\Api\GameBuildsController;
 use App\Http\Controllers\Api\GameBuildSettingsController;
@@ -46,6 +47,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('test', [TestController::class, 'index'])->can('view-test');
 
 Route::middleware(['isadmin'])->group(function () {
+    Route::controller(GameAuthController::class)->prefix('game-auth')->group(function () {
+        Route::post('/verify', 'verify');
+    });
     Route::controller(GameRoundsController::class)->prefix('rounds')->group(function () {
         Route::post('/', 'store');
         Route::put('/{gameRound}', 'update');

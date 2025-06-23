@@ -29,12 +29,14 @@ use Laravel\Sanctum\HasApiTokens;
  * @property bool $is_admin
  * @property string|null $discord_id
  * @property int|null $game_admin_id
+ * @property int|null $player_id
  * @property-read \App\Models\Team|null $currentTeam
  * @property-read \App\Models\GameAdmin|null $gameAdmin
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Team> $ownedTeams
  * @property-read int|null $owned_teams_count
+ * @property-read \App\Models\Player|null $player
  * @property-read string $profile_photo_url
  * @property-read \App\Models\Membership|null $membership
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Team> $teams
@@ -62,6 +64,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereLike($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePlayerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereProfilePhotoPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorConfirmedAt($value)
@@ -87,7 +90,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'is_admin', 'is_game_admin',
+        'name', 'email', 'password', 'is_admin', 'discord_id', 'game_admin_id', 'player_id',
     ];
 
     /**
@@ -132,6 +135,14 @@ class User extends Authenticatable implements MustVerifyEmail
     public function gameAdmin()
     {
         return $this->hasOne(GameAdmin::class, 'id', 'game_admin_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function player()
+    {
+        return $this->hasOne(Player::class, 'id', 'player_id');
     }
 
     public function isAdmin()

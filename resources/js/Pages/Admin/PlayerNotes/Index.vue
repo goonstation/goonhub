@@ -3,15 +3,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import PlayerNotesTable from '@/Components/Tables/Admin/PlayerNotesTable.vue'
+import PlayerNotesTable from '@/Components/Tables/Admin/PlayerNotesTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     PlayerNotesTable
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Notes' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Notes' }, () => page),
 
   props: {
     playerNotes: Object

@@ -10,15 +10,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import MapsForm from '@/Components/Forms/MapsForm.vue'
+import MapsForm from '@/Components/Forms/MapsForm.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     MapsForm,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Edit Map' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Edit Map' }, () => page),
 
   props: {
     map: Object,

@@ -64,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('discord', \SocialiteProviders\Discord\Provider::class);
+            $event->extendSocialite('discord-game-auth', \SocialiteProviders\Discord\Provider::class);
         });
 
         Blade::directive('base64img', function (string $expression) {

@@ -132,12 +132,12 @@
 </style>
 
 <script>
-import axios from 'axios'
-import { ionExpand } from '@quasar/extras/ionicons-v6'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
 import RoundSummary from '@/Components/RoundSummary.vue'
-import ErrorFilters from './Partials/Filters.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
+import { ionExpand } from '@quasar/extras/ionicons-v6'
+import axios from 'axios'
 import ErrorEntry from './Partials/ErrorEntry.vue'
+import ErrorFilters from './Partials/Filters.vue'
 
 export default {
   components: {
@@ -146,7 +146,7 @@ export default {
     ErrorEntry,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Errors' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Errors' }, () => page),
 
   setup() {
     return {

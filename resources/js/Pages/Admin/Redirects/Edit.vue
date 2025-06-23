@@ -9,15 +9,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import RedirectsForm from '@/Components/Forms/RedirectsForm.vue'
+import RedirectsForm from '@/Components/Forms/RedirectsForm.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     RedirectsForm,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Edit Redirect' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Edit Redirect' }, () => page),
 
   props: {
     redirect: Object,

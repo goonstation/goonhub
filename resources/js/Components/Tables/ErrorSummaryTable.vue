@@ -31,7 +31,7 @@
             :clearable="false"
             style="min-width: 200px"
             label="Server"
-            load-route="/game-servers?with_invisible=1"
+            load-route="/game-servers"
             option-value="server_id"
             option-label="name"
             filled
@@ -39,6 +39,7 @@
             dense
             emit-value
             map-options
+            :filters="{ with_invisible: true }"
             :default-items="[{ name: 'All', server_id: 'all' }]"
           />
           <q-select

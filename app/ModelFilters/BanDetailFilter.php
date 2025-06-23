@@ -29,5 +29,10 @@ class BanDetailFilter extends ModelFilter
         return $this->whereLike('ip', $val);
     }
 
+    public function player($val)
+    {
+        return $this->where('player_id', $val);
+    }
+
     // removed boolean (deleted_at timestamp existance)
 }

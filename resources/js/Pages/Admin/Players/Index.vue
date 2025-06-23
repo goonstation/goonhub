@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
 import PlayersTable from '@/Components/Tables/Admin/PlayersTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import SearchPlayers from './Partials/Search.vue'
 
 export default {
@@ -14,7 +14,7 @@ export default {
     SearchPlayers
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Players' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Players' }, () => page),
 
   props: {
     players: Object

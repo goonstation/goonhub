@@ -104,13 +104,13 @@
 </template>
 
 <script>
-import Resumable from 'resumablejs'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { useForm } from '@inertiajs/vue3'
-import { ionInformationCircleOutline, ionCloudUpload, ionClose } from '@quasar/extras/ionicons-v6'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import { ionClose, ionCloudUpload, ionInformationCircleOutline } from '@quasar/extras/ionicons-v6'
+import Resumable from 'resumablejs'
 
 export default {
-  layout: (h, page) => h(AdminLayout, { title: 'Upload Map' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Upload Map' }, () => page),
 
   setup() {
     return {

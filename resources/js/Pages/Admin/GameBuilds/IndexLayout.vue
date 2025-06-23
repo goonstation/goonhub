@@ -6,7 +6,7 @@
         :key="item.name"
         :name="item.name"
         :label="item.name"
-        @click.prevent="$rtr.visit(item.href, { preserveState: true })"
+        @click.prevent="$inertia.visit(item.href, { preserveState: true })"
       />
     </q-tabs>
 

@@ -3,14 +3,14 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
 import GameBuildSettingsTable from '@/Components/Tables/Admin/GameBuildSettingsTable.vue'
-import GameBuildsLayout from '../Layout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import GameBuildsIndexLayout from '../IndexLayout.vue'
+import GameBuildsLayout from '../Layout.vue'
 
 export default {
   layout: (h, page) => {
-    return h(AdminLayout, { title: 'Build Settings' }, () =>
+    return h(DashboardLayout, { title: 'Build Settings' }, () =>
       h(
         GameBuildsLayout,
         () => page,

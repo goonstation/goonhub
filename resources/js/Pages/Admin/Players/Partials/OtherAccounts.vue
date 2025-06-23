@@ -1,5 +1,14 @@
 <template>
-  <q-table :rows="accounts" :columns="accountsColumns" flat dense>
+  <q-banner class="bg-grey-10 q-ma-md q-pa-md">
+    <template v-slot:avatar>
+      <q-icon :name="ionInformationCircleOutline" color="primary" size="md" class="q-mt-xs" />
+    </template>
+    These are accounts that have connected with the same IP Address or Computer ID as this player.
+    Please note that this doesn't always mean they are played by the same person. This information
+    is provided for investigation purposes only.
+  </q-banner>
+
+  <q-table :rows="accounts" :columns="accountsColumns" flat>
     <template v-slot:body-cell-id="props">
       <q-td :props="props">
         <Link :href="route('admin.players.show', props.row.id)">
@@ -43,10 +52,10 @@
 </template>
 
 <script>
+import PlayerAvatar from '@/Components/PlayerAvatar.vue'
+import { ionCheckmark, ionClose, ionInformationCircleOutline } from '@quasar/extras/ionicons-v6'
 import dayjs from 'dayjs'
 import { upperFirst } from 'lodash'
-import { ionCheckmark, ionClose } from '@quasar/extras/ionicons-v6'
-import PlayerAvatar from '@/Components/PlayerAvatar.vue'
 
 export default {
   components: {
@@ -63,6 +72,7 @@ export default {
       upperFirst,
       ionCheckmark,
       ionClose,
+      ionInformationCircleOutline,
     }
   },
 

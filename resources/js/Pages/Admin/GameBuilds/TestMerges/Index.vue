@@ -2,7 +2,7 @@
   <div class="q-px-md q-pb-md q-pt-sm">
     <div class="flex items-center q-mb-sm">
       <q-btn
-        @click="$rtr.visit($route('admin.builds.test-merges.create'), { preserveState: true })"
+        @click="$inertia.visit($route('admin.builds.test-merges.create'), { preserveState: true })"
         :icon="ionAddCircleOutline"
         label="Add Test Merge"
         color="primary"
@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { ionAddCircleOutline } from '@quasar/extras/ionicons-v6'
 import GameBuildsIndexLayout from '../IndexLayout.vue'
 import GameBuildsLayout from '../Layout.vue'
@@ -42,7 +42,7 @@ import TestMergeGroup from './Partials/TestMergeGroup.vue'
 
 export default {
   layout: (h, page) => {
-    return h(AdminLayout, { title: 'Build Test Merges' }, () =>
+    return h(DashboardLayout, { title: 'Build Test Merges' }, () =>
       h(
         GameBuildsLayout,
         () => page,

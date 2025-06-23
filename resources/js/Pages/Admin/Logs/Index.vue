@@ -3,15 +3,15 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import LogRoundsTable from '@/Components/Tables/Admin/LogRoundsTable.vue'
+import LogRoundsTable from '@/Components/Tables/Admin/LogRoundsTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     LogRoundsTable,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Logs' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Logs' }, () => page),
 
   props: {
     rounds: Object,

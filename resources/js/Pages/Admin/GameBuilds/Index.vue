@@ -61,7 +61,7 @@
 import GameBuildsOverTime from '@/Components/Charts/GameBuildsOverTime.vue'
 import ChartSkeleton from '@/Components/Skeletons/Chart.vue'
 import GameBuildsTable from '@/Components/Tables/Admin/GameBuildsTable.vue'
-import AdminLayout from '@/Layouts/AdminLayout.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { Deferred } from '@inertiajs/vue3'
 import { date } from 'quasar'
 import GameBuildsIndexLayout from './IndexLayout.vue'
@@ -69,7 +69,7 @@ import GameBuildsLayout from './Layout.vue'
 
 export default {
   layout: (h, page) => {
-    return h(AdminLayout, { title: 'Builds' }, () =>
+    return h(DashboardLayout, { title: 'Builds' }, () =>
       h(
         GameBuildsLayout,
         () => page,

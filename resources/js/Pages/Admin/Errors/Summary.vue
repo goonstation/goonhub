@@ -3,14 +3,14 @@
 </template>
 
 <script>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import ErrorSummaryTable from '@/Components/Tables/ErrorSummaryTable.vue'
+import ErrorSummaryTable from '@/Components/Tables/ErrorSummaryTable.vue';
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
 
 export default {
   components: {
     ErrorSummaryTable,
   },
 
-  layout: (h, page) => h(AdminLayout, { title: 'Errors' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Errors' }, () => page),
 }
 </script>

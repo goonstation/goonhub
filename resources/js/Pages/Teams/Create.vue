@@ -1,10 +1,10 @@
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue'
-import CreateTeamForm from './Partials/CreateTeamForm.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import CreateTeamForm from './Partials/CreateTeamForm.vue';
 </script>
 
 <template>
-  <AdminLayout title="Create Team">
+  <DashboardLayout title="Create Team">
     <CreateTeamForm />
-  </AdminLayout>
+  </DashboardLayout>
 </template>

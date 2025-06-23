@@ -7,6 +7,9 @@ import { createApp, h } from 'vue'
 import VueDOMPurifyHTML from 'vue-dompurify-html'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy'
 
+// import '@quasar/extras/animate/slideInDown.css'
+// import '@quasar/extras/animate/slideOutUp.css'
+
 import dayjs from 'dayjs'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import duration from 'dayjs/plugin/duration'
@@ -24,7 +27,7 @@ dayjs.extend(advancedFormat)
 import VueApexCharts from 'vue3-apexcharts'
 
 // Import icon libraries
-import { ionChevronDown } from '@quasar/extras/ionicons-v6'
+import { ionChevronDown } from '@quasar/extras/ionicons-v7'
 import iconSet from 'quasar/icon-set/svg-ionicons-v6'
 iconSet.arrow.dropdown = ionChevronDown
 

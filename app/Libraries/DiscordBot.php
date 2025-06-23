@@ -17,7 +17,7 @@ class DiscordBot
     /**
      * Export data to a Discord bot
      *
-     * @return string|void
+     * @return array|void
      *
      * @throws \Illuminate\Http\Client\RequestException
      */

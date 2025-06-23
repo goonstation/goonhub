@@ -19,7 +19,7 @@
           <template v-slot:body-cell-comp_id="props">
             <q-td :props="props">
               <Link
-                :href="route('admin.players.index', { filters: { compId: props.row.comp_id } })"
+                :href="$route('admin.players.index', { filters: { compId: props.row.comp_id } })"
               >
                 {{ props.row.comp_id }}
                 <q-tooltip>Search for other players with this Comp ID</q-tooltip>
@@ -54,7 +54,7 @@ import { ionClose } from '@quasar/extras/ionicons-v6'
 
 export default {
   props: {
-    connections: Object,
+    compIds: Object,
     cursedCompIds: Object,
   },
 
@@ -93,26 +93,6 @@ export default {
         },
       ],
     }
-  },
-
-  computed: {
-    compIds() {
-      const groups = []
-      for (const connection of this.connections) {
-        const groupIdx = groups.findIndex((group) => group.comp_id === connection.comp_id)
-        if (groupIdx !== -1) {
-          groups[groupIdx].connections++
-          groups[groupIdx].last_seen = connection.created_at
-        } else {
-          groups.push({
-            comp_id: connection.comp_id,
-            connections: 1,
-            last_seen: connection.created_at,
-          })
-        }
-      }
-      return groups
-    },
   },
 
   methods: {
