@@ -20,13 +20,18 @@
       background: #7289da;
       color: white;
     }
+
+    .login-discord:hover {
+      background: #677bc5;
+      color: white;
+    }
   </style>
 
   <form method="POST" action="{{ route('game-auth.login') }}">
     @csrf
 
     <fieldset>
-      <input type="text" name="name" placeholder="Username" value="{{ old('name') }}"
+      <input type="email" name="email" placeholder="Email" value="{{ old('email') }}"
         maxlength="255" required />
     </fieldset>
 
@@ -53,12 +58,39 @@
       </div>
     @endif
 
+    @php
+      $state = Str::random(32);
+    @endphp
+
     <script>
       document.querySelector('.login-discord').addEventListener('click', function(e) {
         e.preventDefault();
-        var url = "{{ route('auth.redirect') }}";
+        var url = "{{ route('game-auth.discord-redirect', $state) }}";
         window.location.href = 'byond://winset?command=.openlink "' + encodeURIComponent(url) + '"';
+        // window.open(url, '_blank');
       });
+    </script>
+
+    @if (config('broadcasting.connections.reverb.key'))
+      <script>
+        window.EchoPageState = '{{ $state }}';
+        window.EchoConfig = {
+          broadcaster: 'reverb',
+          key: '{{ config('broadcasting.connections.reverb.key') }}',
+          wsHost: '{{ config('broadcasting.connections.reverb.options.host') }}',
+          wsPort: {{ config('broadcasting.connections.reverb.options.port', 80) }},
+          wssPort: {{ config('broadcasting.connections.reverb.options.port', 443) }},
+          forceTLS: {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }},
+          enabledTransports: ['ws', 'wss'],
+        };
+      </script>
+    @endif
+
+    <script
+      src="{{ Vite::useBuildDirectory('build-game-auth')->asset('vite/legacy-polyfills-legacy') }}">
+    </script>
+    <script
+      src="{{ Vite::useBuildDirectory('build-game-auth')->asset('resources/js/game-auth-legacy.js') }}">
     </script>
   </form>
 </x-game-auth-layout>

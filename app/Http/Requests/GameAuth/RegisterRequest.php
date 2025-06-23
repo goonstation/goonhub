@@ -3,6 +3,7 @@
 namespace App\Http\Requests\GameAuth;
 
 use App\Actions\Fortify\PasswordValidationRules;
+use App\Http\Controllers\Web\GameAuthController;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
@@ -24,15 +25,8 @@ class RegisterRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $this->merge(['ckey' => ckey($this->name)]);
-    }
-
-    /**
-     * Handle a passed validation attempt.
-     */
-    protected function passedValidation(): void
-    {
-        $this->replace(['ckey' => ckey($this->name)]);
+        $suffix = GameAuthController::AUTH_SUFFIXES['goonhub'];
+        $this->merge(['ckey' => ckey($this->name.$suffix)]);
     }
 
     /**

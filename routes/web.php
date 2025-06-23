@@ -70,8 +70,9 @@ Route::controller(GameAuthController::class)->prefix('/game-auth')->group(functi
         Route::get('/forgot', 'showForgot')->name('game-auth.show-forgot');
     });
     Route::get('/authed', 'authed')->name('game-auth.authed');
+    Route::get('/authed-discord', 'authedDiscord')->name('game-auth.authed-discord');
     Route::get('/logout', 'logout')->name('game-auth.logout');
-    Route::get('/discord-redirect', 'discordRedirect')->name('game-auth.discord-redirect');
+    Route::get('/discord-redirect/{state}', 'discordRedirect')->name('game-auth.discord-redirect');
     Route::get('/discord-callback', 'discordCallback')->name('game-auth.discord-callback');
 });
 

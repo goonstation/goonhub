@@ -1,5 +1,6 @@
 /node_modules
 /public/build
+/public/build-game-auth
 /public/hot
 /public/storage
 /public/sitemap.xml
