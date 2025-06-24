@@ -86,11 +86,7 @@
       </script>
     @endif
 
-    <script
-      src="{{ Vite::useBuildDirectory('build-game-auth')->asset('vite/legacy-polyfills-legacy') }}">
-    </script>
-    <script
-      src="{{ Vite::useBuildDirectory('build-game-auth')->asset('resources/js/game-auth-legacy.js') }}">
-    </script>
+    <script src="{{ Vite::asset('vite/legacy-polyfills-legacy', 'build-game-auth') }}"></script>
+    <script src="{{ Vite::asset('resources/js/game-auth-legacy.js', 'build-game-auth') }}"></script>
   </form>
 </x-game-auth-layout>
