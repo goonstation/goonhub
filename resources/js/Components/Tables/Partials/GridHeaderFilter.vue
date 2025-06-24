@@ -1,6 +1,6 @@
 <template>
   <q-btn-group v-if="column">
-    <q-btn class="text-sm" color="grey-9" padding="xs sm" dense no-caps unelevated>
+    <q-btn :color="color" class="text-sm" padding="xs sm" dense no-caps unelevated>
       <component
         v-if="filterContentComponent"
         :is="filterContentComponent"
@@ -23,7 +23,7 @@
         </div>
       </q-menu>
     </q-btn>
-    <q-btn class="text-sm" color="grey-9" padding="xs xs" @click="$emit('clear')" dense unelevated>
+    <q-btn :color="color" class="text-sm" padding="xs xs" @click="$emit('clear')" dense unelevated>
       <q-icon :name="ionClose" size="xs" />
     </q-btn>
   </q-btn-group>
@@ -59,6 +59,7 @@ export default {
     column: Object,
     filter: null,
     filterOption: null,
+    color: String,
   },
 
   computed: {

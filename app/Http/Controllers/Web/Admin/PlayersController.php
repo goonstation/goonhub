@@ -22,24 +22,26 @@ class PlayersController extends Controller
     public function index(Request $request)
     {
         $model = Player::withCount(['connections', 'participations'])
-            ->with(['whitelist.servers', 'bypassCap.servers']);
-
-        if ($request->has('with_latest_connection')) {
-            $model = $model->with('latestConnection');
-        }
-
-        $players = $this->indexQuery($model, perPage: 30);
-        $players->through(fn (Player $player) => $player->append([
-            'is_mentor',
-            'is_hos',
-        ]));
+            ->with([
+                'mentor:id,player_id',
+                'hos:id,player_id',
+                'whitelist.servers',
+                'bypassCap.servers',
+            ]);
 
         if ($this->wantsInertia($request)) {
+            $model = $model->with('latestConnection');
+            $players = $this->indexQuery($model, perPage: 30);
+
             return Inertia::render('Admin/Players/Index', [
                 'players' => $players,
             ]);
         } else {
-            return $players;
+            if ($request->has('with_latest_connection')) {
+                $model = $model->with('latestConnection');
+            }
+
+            return $this->indexQuery($model, perPage: 30);
         }
     }
 

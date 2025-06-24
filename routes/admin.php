@@ -180,6 +180,7 @@ Route::controller(HosController::class)->prefix('hos')->group(function () {
     Route::get('/create', 'create')->name('admin.hos.create')
         ->breadcrumbs(fn (Trail $trail) => $trail->parent('admin.hos.index')->push('Create', 'admin.hos.create'));
     Route::post('/', 'store')->name('admin.hos.store');
+    Route::post('/bulk-toggle', 'bulkToggle')->name('admin.hos.bulk-toggle');
 
     Route::delete('/{hos}', 'destroy')->whereNumber('hos')->name('admin.hos.delete');
     Route::delete('/', 'destroyMulti')->name('admin.hos.delete-multi');

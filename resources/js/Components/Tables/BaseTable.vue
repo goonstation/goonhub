@@ -5,7 +5,7 @@
       v-show="!(lazyFetching && firstLoad)"
       v-bind="$attrs"
       v-model:pagination="_pagination"
-      v-model:selected="selected"
+      v-model:selected="selectedModel"
       :rows="rows"
       :columns="_columns"
       :loading="loading"
@@ -25,8 +25,9 @@
 
       <template v-slot:top v-if="!hideTop">
         <div
-          class="flex full-width gap-xs-sm bg-dark q-pa-md rounded-borders items-start no-wrap relative"
+          class="flex full-width gap-xs-sm q-pa-md rounded-borders items-start no-wrap relative"
           style="z-index: 2"
+          :class="{ 'bg-dark': !transparent }"
           :style="{
             'border-bottom': showGridFiltersActions ? '1px solid var(--q-dark-page)' : 'none',
           }"
@@ -44,7 +45,14 @@
             />
 
             <!-- sort button/menu -->
-            <q-btn color="grey-9" class="text-sm" padding="xs sm" dense no-caps unelevated>
+            <q-btn
+              :color="transparent ? 'grey-10' : 'grey-9'"
+              class="text-sm"
+              padding="xs sm"
+              dense
+              no-caps
+              unelevated
+            >
               <q-icon :name="ionSwapVertical" size="xs" class="q-mr-sm" /> {{ sortedByLabel }}
               <q-menu :offset="[0, 10]">
                 <q-list style="min-width: 100px">
@@ -80,6 +88,7 @@
                 :column="columns.find((col) => col.name === name)"
                 :filter="filter"
                 :filter-option="filterOptions[name]?.option"
+                :color="transparent ? 'grey-10' : 'grey-9'"
                 @update="onFilterInput(name, $event)"
                 @update:option="onFilterOptionSelect(name, $event)"
                 @clear="filters[name] = null"
@@ -87,7 +96,14 @@
               </grid-header-filter>
             </template>
 
-            <q-btn class="text-sm" color="grey-9" padding="xs sm" :icon="ionAdd" dense unelevated>
+            <q-btn
+              :color="transparent ? 'grey-10' : 'grey-9'"
+              class="text-sm"
+              padding="xs sm"
+              :icon="ionAdd"
+              dense
+              unelevated
+            >
               <q-tooltip anchor="center right" self="center left"> Add a filter </q-tooltip>
               <q-menu :offset="[0, 10]">
                 <q-markup-table class="q-py-sm" separator="none" flat dense>
@@ -161,17 +177,20 @@
         <div class="full-width">
           <Vue3SlideUpDown :model-value="showGridFiltersActions" :duration="150">
             <div
-              class="flex gap-xs-sm bg-dark q-px-md q-pb-md rounded-borders items-start no-wrap"
-              style="margin-top: -5px; padding-top: 21px"
+              :class="{ 'bg-dark q-pb-md': !transparent }"
+              :style="[!transparent && { marginTop: '-5px', paddingTop: '21px' }]"
+              class="flex gap-xs-sm q-px-md rounded-borders items-start no-wrap"
             >
               <q-btn
                 v-if="hasMultiEdit"
-                :to="getRoute(routes.editMulti, { selected })"
+                :to="getRoute(routes.editMulti, { selected: selectedModel })"
                 color="primary"
                 size="sm"
                 outline
               >
-                Edit {{ selected.length }} item<template v-if="selected.length !== 1">s</template>
+                Edit {{ selectedModel.length }} item<template v-if="selectedModel.length !== 1"
+                  >s</template
+                >
               </q-btn>
               <q-btn
                 v-if="hasMultiDelete"
@@ -180,10 +199,12 @@
                 size="sm"
                 outline
               >
-                Delete {{ selected.length }} item<template v-if="selected.length !== 1">s</template>
+                Delete {{ selectedModel.length }} item<template v-if="selectedModel.length !== 1"
+                  >s</template
+                >
               </q-btn>
 
-              <slot name="grid-filters-actions" :props="{ selected }" />
+              <slot name="grid-filters-actions" :props="{ selected: selectedModel }" />
             </div>
           </Vue3SlideUpDown>
         </div>
@@ -298,20 +319,24 @@
       <template v-slot:bottom="props">
         <slot name="bottom-left" :props="props" />
         <q-btn
-          v-if="hasMultiEdit && selected.length"
-          :to="getRoute(routes.editMulti, { selected })"
+          v-if="hasMultiEdit && selectedModel.length"
+          :to="getRoute(routes.editMulti, { selected: selectedModel })"
           color="primary"
           outline
         >
-          Edit {{ selected.length }} item<template v-if="selected.length !== 1">s</template>
+          Edit {{ selectedModel.length }} item<template v-if="selectedModel.length !== 1"
+            >s</template
+          >
         </q-btn>
         <q-btn
-          v-if="hasMultiDelete && selected.length"
+          v-if="hasMultiDelete && selectedModel.length"
           @click="confirmMultiDelete = true"
           color="negative"
           outline
         >
-          Delete {{ selected.length }} item<template v-if="selected.length !== 1">s</template>
+          Delete {{ selectedModel.length }} item<template v-if="selectedModel.length !== 1"
+            >s</template
+          >
         </q-btn>
         <q-space />
         <div v-if="!hidePagination" class="flex items-center">
@@ -376,8 +401,8 @@
         <q-card-section class="row items-center no-wrap">
           <q-avatar :icon="ionInformationCircleOutline" color="negative" text-color="dark" />
           <span class="q-ml-sm">
-            Are you sure you want to delete {{ selected.length }} item<template
-              v-if="selected.length !== 1"
+            Are you sure you want to delete {{ selectedModel.length }} item<template
+              v-if="selectedModel.length !== 1"
               >s</template
             >
           </span>
@@ -438,6 +463,16 @@ import { Vue3SlideUpDown } from 'vue3-slide-up-down'
 import GridHeaderFilter from './Partials/GridHeaderFilter.vue'
 
 export default {
+  emits: [
+    'loaded',
+    'fetch-start',
+    'fetch-end',
+    'reset',
+    'row-click',
+    'update:selected',
+    'loaded-url-params',
+  ],
+
   setup() {
     return {
       router,
@@ -522,6 +557,10 @@ export default {
         return ['none', 'single', 'multiple'].includes(value)
       },
     },
+    selected: {
+      type: Array,
+      default: () => [],
+    },
     extraParams: {
       type: Object,
       default: () => ({}),
@@ -550,6 +589,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    transparent: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -576,7 +619,7 @@ export default {
       confirmDelete: false,
       confirmMultiDelete: false,
       deletingItem: null,
-      selected: [],
+      selectedInternal: null,
       storedSelectedRow: null,
       scrollToTop: false,
     }
@@ -611,7 +654,7 @@ export default {
     },
 
     showGridFiltersActions() {
-      return this.showGridFilters && this.selected.length > 0
+      return this.showGridFilters && this.selectedModel.length > 0
     },
 
     currentSortColumn() {
@@ -637,13 +680,23 @@ export default {
       return ret
     },
 
+    selectedModel: {
+      get() {
+        return !this.selectedInternal ? this.selected : this.selectedInternal
+      },
+      set(val) {
+        this.selectedInternal = val
+        this.$emit('update:selected', val)
+      },
+    },
+
     canSelect() {
       return this.selection !== 'none'
     },
 
     allSelected() {
-      if (this.selected.length === 0) return false
-      return this.rows.every((row) => this.selected.includes(row)) || null
+      if (this.selectedModel.length === 0) return false
+      return this.rows.every((row) => this.selectedModel.includes(row)) || null
     },
 
     hasMultiEdit() {
@@ -715,6 +768,11 @@ export default {
       }
       this.rows.splice(0, this.rows.length, ...data.data)
 
+      for (const idx in this.selectedModel) {
+        const row = this.rows.find((r) => r.id === this.selectedModel[idx].id)
+        if (row) this.selectedModel[idx] = row
+      }
+
       this._pagination.page = data.current_page
       this._pagination.rowsPerPage = data.per_page
       this._pagination.sortBy = sortBy
@@ -748,6 +806,7 @@ export default {
       if (!isEqual(this.filters, newFilters)) {
         this.settingFiltersFromUrl = true
         this.filters = merge(this.filters, newFilters)
+        this.$emit('loaded-url-params', { filters: this.filters })
         return true
       }
       return false
@@ -765,10 +824,6 @@ export default {
         urlSearch.append('descending', this._pagination.descending)
       if (this._pagination.rowsPerPage !== this.defaultPagination.rowsPerPage)
         urlSearch.append('per_page', this._pagination.rowsPerPage)
-
-      for (const p in this.extraParams) {
-        urlSearch.append(p, this.extraParams[p])
-      }
 
       for (const p in this.filters) {
         const filter = this.filters[p]
@@ -880,7 +935,7 @@ export default {
       try {
         const response = await axios.delete(deleteRoute, {
           data: {
-            ids: this.selected.map((item) => item.id),
+            ids: this.selectedModel.map((item) => item.id),
           },
         })
         this.$q.notify({
@@ -896,7 +951,7 @@ export default {
         return
       }
 
-      this.selected = []
+      this.selectedModel = []
       this.confirmMultiDelete = false
       this.updateTable()
     },
@@ -933,9 +988,9 @@ export default {
 
           const rangeRows = tableRows.slice(firstIndex, lastIndex + 1)
           // we need the original row object so we can match them against the rows in range
-          const selectedRows = this.selected.map(toRaw)
+          const selectedRows = this.selectedModel.map(toRaw)
 
-          this.selected =
+          this.selectedModel =
             added === true
               ? selectedRows.concat(rangeRows.filter((row) => selectedRows.includes(row) === false))
               : selectedRows.filter((row) => rangeRows.includes(row) === false)
@@ -945,13 +1000,14 @@ export default {
 
     handleSelectAll() {
       if (this.allSelected || this.allSelected === null) {
-        this.selected = []
+        this.selectedModel = []
       } else {
-        this.selected = this.rows
+        this.selectedModel = this.rows
       }
     },
 
     updateTable() {
+      if (!this.$refs.tableRef) return
       this.$refs.tableRef.requestServerInteraction()
     },
 

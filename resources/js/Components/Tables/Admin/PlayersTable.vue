@@ -2,23 +2,63 @@
   <base-table
     ref="table"
     v-bind="$attrs"
+    v-model:selected="selected"
     :routes="routes"
     :columns="columns"
     :pagination="{ rowsPerPage: 30 }"
+    :extra-params="{ with_latest_connection: true }"
     selection="multiple"
     no-timestamp-toggle
+    transparent
     grid
     flat
   >
     <template v-slot:grid-filters-actions="{ props }">
       <q-btn
+        v-if="showMakeMentor"
         :loading="toggleMentorLoading"
         @click="toggleMentor(true, props.selected)"
+        class="q-px-sm text-weight-bold"
         color="purple-4"
         size="sm"
-        outline
       >
+        <q-icon :name="ionAdd" class="q-mr-xs" />
         Make Mentor
+      </q-btn>
+      <q-btn
+        v-if="showRemoveMentor"
+        :loading="toggleMentorLoading"
+        @click="toggleMentor(false, props.selected)"
+        class="q-px-sm text-weight-bold"
+        color="purple-4"
+        size="sm"
+      >
+        <q-icon :name="ionRemove" class="q-mr-xs" />
+        Remove Mentor
+      </q-btn>
+      <q-btn
+        v-if="showMakeHos"
+        :loading="toggleHosLoading"
+        @click="toggleHos(true, props.selected)"
+        class="q-px-sm text-weight-bold"
+        color="orange"
+        text-color="dark"
+        size="sm"
+      >
+        <q-icon :name="ionAdd" class="q-mr-xs" />
+        Make HOS
+      </q-btn>
+      <q-btn
+        v-if="showRemoveHos"
+        :loading="toggleHosLoading"
+        @click="toggleHos(false, props.selected)"
+        class="q-px-sm text-weight-bold"
+        color="orange"
+        text-color="dark"
+        size="sm"
+      >
+        <q-icon :name="ionRemove" class="q-mr-xs" />
+        Remove HOS
       </q-btn>
     </template>
 
@@ -30,12 +70,11 @@
         <div class="text-left">Ckey</div>
         <div>Connections</div>
         <div>Participations</div>
-        <div>Byond Version</div>
+        <div>Comp ID</div>
+        <div>IP</div>
+        <div>Byond</div>
         <div></div>
-        <div>Mentor</div>
-        <div>HOS</div>
-        <div>Whitelisted</div>
-        <div>Bypass Cap</div>
+        <div></div>
         <div class="text-right">Created</div>
       </div>
     </template>
@@ -56,73 +95,73 @@
             "
             dense
           />
-          <div class="q-mr-md">
+          <div class="q-py-xs">
             <Link :href="$route('admin.players.show', props.row.id)">
               {{ props.row.ckey }}
             </Link>
           </div>
-          <div class="text-center">
+          <div class="text-center text-caption">
             {{ $formats.number(props.row.connections_count) }}
           </div>
-          <div class="text-center">
+          <div class="text-center text-caption">
             {{ $formats.number(props.row.participations_count) }}
           </div>
-          <div class="text-center">
+          <div class="text-center text-caption">
+            {{ props.row.latest_connection?.comp_id }}
+          </div>
+          <div class="text-center text-caption">
+            {{ props.row.latest_connection?.ip }}
+          </div>
+          <div class="text-center text-caption">
             <template v-if="props.row.byond_major && props.row.byond_minor">
               {{ props.row.byond_major }}.{{ props.row.byond_minor }}
             </template>
             <template v-else>&nbsp;</template>
           </div>
           <div></div>
-          <div class="text-center">
-            <q-chip
-              v-if="props.row.is_mentor"
-              class="text-weight-bold"
-              color="purple-4"
-              label="Mentor"
-              size="sm"
-              square
-              dense
-            />
-            <template v-else>&nbsp;</template>
+          <div class="text-right">
+            <q-btn-group>
+              <q-btn
+                v-if="props.row.mentor"
+                class="q-py-none q-px-sm text-weight-bold"
+                color="purple-4"
+                size="sm"
+                dense
+              >
+                Mentor
+              </q-btn>
+              <q-btn
+                v-if="props.row.hos"
+                class="q-py-none q-px-sm text-weight-bold"
+                color="orange"
+                text-color="dark"
+                size="sm"
+                dense
+              >
+                HOS
+              </q-btn>
+              <q-btn
+                v-if="props.row.whitelist"
+                class="q-py-none q-px-sm text-weight-bold"
+                color="info"
+                size="sm"
+                dense
+              >
+                Whitelisted
+              </q-btn>
+              <q-btn
+                v-if="props.row.bypass_cap"
+                class="q-py-none q-px-sm text-weight-bold"
+                color="green"
+                text-color="dark"
+                size="sm"
+                dense
+              >
+                Bypass Cap
+              </q-btn>
+            </q-btn-group>
           </div>
-          <div class="text-center">
-            <q-chip
-              v-if="props.row.is_hos"
-              class="text-weight-bold"
-              color="orange"
-              label="HOS"
-              size="sm"
-              square
-              dense
-            />
-            <template v-else>&nbsp;</template>
-          </div>
-          <div class="text-center">
-            <q-chip
-              v-if="props.row.whitelist"
-              class="text-weight-bold"
-              color="info"
-              label="Whitelisted"
-              size="sm"
-              square
-              dense
-            />
-            <template v-else>&nbsp;</template>
-          </div>
-          <div class="text-center">
-            <q-chip
-              v-if="props.row.bypass_cap"
-              class="text-weight-bold"
-              color="green"
-              label="Bypass Cap"
-              size="sm"
-              square
-              dense
-            />
-            <template v-else>&nbsp;</template>
-          </div>
-          <div class="text-right">{{ $formats.date(props.row.created_at) }}</div>
+          <div class="text-right text-caption">{{ $formats.date(props.row.created_at) }}</div>
         </q-card>
       </div>
     </template>
@@ -130,11 +169,16 @@
 </template>
 
 <style lang="scss" scoped>
+.gh-link-card--dense {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
 :deep(.q-table--grid) {
   display: grid;
   grid-template:
-    'select ckey connections participations byond spacer mentor hos whitelist bypass_cap created' /
-    min-content max-content max-content max-content max-content 1fr max-content max-content max-content max-content;
+    'select ckey connections participations compid ip byond spacer abilities created' /
+    min-content max-content max-content max-content max-content max-content max-content 1fr max-content max-content;
   column-gap: map-get($space-md, 'x');
 
   > *,
@@ -162,36 +206,46 @@
   padding-bottom: 2px;
 }
 
-@media (max-width: $breakpoint-sm-max) {
-  :deep(.q-table--grid) {
-    grid-template:
-      'select ckey connections participations byond spacer' 1fr
-      'mentor hos whitelist bypass_cap created spacer' 1fr
-      / min-content max-content max-content max-content max-content 1fr;
+// @media (max-width: $breakpoint-sm-max) {
+//   :deep(.q-table--grid) {
+//     grid-template:
+//       'select ckey connections participations spacer' 1fr
+//       'compid ip byond abilities created' 1fr
+//       / min-content max-content max-content max-content max-content;
 
-    > *,
-    .q-table__top,
-    .q-table__grid-content,
-    .q-table__grid-item,
-    .gh-link-card {
-      grid-row: span 2;
-    }
+//     > *,
+//     .q-table__top,
+//     .q-table__grid-content,
+//     .q-table__grid-item,
+//     .gh-link-card {
+//       grid-row: span 2;
+//     }
 
-    .player-columns {
-      display: none;
-    }
-  }
-}
+//     .player-columns {
+//       display: none;
+//     }
+//   }
+// }
 </style>
 
 <script>
+import { ionAdd, ionRemove } from '@quasar/extras/ionicons-v6'
 import BaseTable from '../BaseTable.vue'
 
 export default {
   components: { BaseTable },
+
+  setup() {
+    return {
+      ionAdd,
+      ionRemove,
+    }
+  },
+
   data() {
     return {
       toggleMentorLoading: false,
+      toggleHosLoading: false,
       routes: {
         fetch: '/admin/players',
         view: '/admin/players/_id',
@@ -226,9 +280,11 @@ export default {
             type: 'range',
           },
         },
+        { name: 'compid', label: 'Comp ID', field: 'compid', sortable: true },
+        { name: 'ip', label: 'IP', field: 'ip', sortable: true },
         {
           name: 'byond_version',
-          label: 'Byond Version',
+          label: 'Byond',
           field: (row) => {
             if (!row.byond_major || !row.byond_minor) return ''
             return `${row.byond_major}.${row.byond_minor}`
@@ -237,17 +293,15 @@ export default {
         {
           name: 'mentor',
           label: 'Mentor',
-          field: 'is_mentor',
+          field: 'mentor',
           sortable: true,
-          format: this.$formats.boolean,
           filter: { type: 'boolean' },
         },
         {
           name: 'hos',
           label: 'HOS',
-          field: 'is_hos',
+          field: 'hos',
           sortable: true,
-          format: this.$formats.boolean,
           filter: { type: 'boolean' },
         },
         {
@@ -255,7 +309,6 @@ export default {
           label: 'Whitelist',
           field: 'whitelist',
           sortable: true,
-          // format: this.$formats.boolean,
           filter: { type: 'boolean' },
         },
         {
@@ -263,7 +316,6 @@ export default {
           label: 'Bypass Cap',
           field: 'can_bypass_cap',
           sortable: true,
-          // format: this.$formats.boolean,
           filter: { type: 'boolean' },
         },
         {
@@ -282,7 +334,26 @@ export default {
         //   format: this.$formats.date,
         // },
       ],
+      selected: [],
     }
+  },
+
+  computed: {
+    showMakeMentor() {
+      return this.selected.some((row) => !row.mentor)
+    },
+
+    showRemoveMentor() {
+      return this.selected.some((row) => row.mentor)
+    },
+
+    showMakeHos() {
+      return this.selected.some((row) => !row.hos)
+    },
+
+    showRemoveHos() {
+      return this.selected.some((row) => row.hos)
+    },
   },
 
   methods: {
@@ -293,8 +364,20 @@ export default {
         make_mentor: makeMentor,
       })
 
-      this.$q.notify(data.message)
+      this.$q.notify({ message: data.message, color: 'positive' })
       this.toggleMentorLoading = false
+      this.$refs.table.updateTable()
+    },
+
+    async toggleHos(makeHos, selected) {
+      this.toggleHosLoading = true
+      const { data } = await axios.post(this.$route('admin.hos.bulk-toggle'), {
+        player_ids: selected.map((row) => row.id),
+        make_hos: makeHos,
+      })
+
+      this.$q.notify({ message: data.message, color: 'positive' })
+      this.toggleHosLoading = false
       this.$refs.table.updateTable()
     },
   },

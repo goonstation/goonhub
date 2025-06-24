@@ -3,20 +3,21 @@
     v-bind="$attrs"
     :routes="routes"
     :columns="columns"
+    :search="search"
     :pagination="{ rowsPerPage: 30 }"
     :show-columns="['created_at']"
-    :extra-params="{ type: filteringEvent }"
+    @loaded-url-params="loadedUrlParams"
     flat
     dense
   >
     <template #top-left>
       <q-select
-        v-model="filteringEvent"
+        v-model="search.type"
         :options="eventOptions"
         label="Event Type"
         option-value="type"
         option-label="name"
-        style="width: 200px;"
+        style="width: 200px"
         filled
         emit-value
         map-options
@@ -42,6 +43,9 @@ export default {
   },
   data() {
     return {
+      search: {
+        type: null,
+      },
       routes: {
         fetch: '/admin/events',
       },
@@ -79,7 +83,6 @@ export default {
           align: 'left',
         },
       ],
-      filteringEvent: null,
     }
   },
   computed: {
@@ -95,8 +98,10 @@ export default {
       })
     },
   },
-  created() {
-    this.filteringEvent = this.eventOptions[0].type
-  }
+  methods: {
+    loadedUrlParams({ filters }) {
+      this.search.type = filters.type
+    },
+  },
 }
 </script>

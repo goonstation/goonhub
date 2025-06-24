@@ -15,15 +15,16 @@ class EventsController extends Controller
     public function index(Request $request)
     {
         $eventTypes = [];
+        $filterType = $request->input('filters.type');
         $filteringEvent = null;
         $eventModels = ModelHelper::getModels('App\Models\Events');
         foreach ($eventModels as $modelName) {
             $model = new $modelName;
             $tableName = $model->getTable();
             $eventTypes[] = $tableName;
-            if (! $request->input('type') && ! $filteringEvent) {
+            if (! $filterType && ! $filteringEvent) {
                 $filteringEvent = $model;
-            } elseif ($tableName === $request->input('type')) {
+            } elseif ($tableName === $filterType) {
                 $filteringEvent = $model;
             }
         }

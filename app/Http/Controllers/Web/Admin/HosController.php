@@ -66,4 +66,25 @@ class HosController extends Controller
 
         return ['message' => 'Heads of Staff removed successfully'];
     }
+
+    public function bulkToggle(Request $request)
+    {
+        $data = $request->validate([
+            'player_ids' => 'required|array|exists:players,id',
+            'make_hos' => 'required|boolean',
+        ]);
+
+        if ($data['make_hos']) {
+            $existingHos = PlayerHos::whereIn('player_id', $data['player_ids'])->get();
+            $nonHos = collect($data['player_ids'])->diff($existingHos->pluck('player_id'));
+            PlayerHos::insert(
+                $nonHos->map(fn ($id) => ['player_id' => $id, 'created_at' => now(), 'updated_at' => now()])
+                    ->toArray()
+            );
+        } else {
+            PlayerHos::whereIn('player_id', $data['player_ids'])->delete();
+        }
+
+        return ['message' => 'Heads of Security updated successfully'];
+    }
 }
