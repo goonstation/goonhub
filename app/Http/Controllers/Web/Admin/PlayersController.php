@@ -126,7 +126,9 @@ class PlayersController extends Controller
 
         // Remove any cursed computer IDs (those that are known to belong to shared/common computers)
         $cursedCompIds = CursedCompId::all();
-        $compIds = $compIds->diff($cursedCompIds->pluck('comp_id')->values());
+        if ($compIds->isNotEmpty()) {
+            $compIds = $compIds->whereNotIn('comp_id', $cursedCompIds->pluck('comp_id')->values());
+        }
 
         // Get other connection details associated with this player
         $otherIps = PlayerConnection::select(['player_id', 'ip'])
