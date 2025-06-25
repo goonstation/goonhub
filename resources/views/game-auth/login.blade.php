@@ -25,6 +25,11 @@
       background: #677bc5;
       color: white;
     }
+
+    .login-discord:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   </style>
 
   <form method="POST" action="{{ route('game-auth.login') }}">
@@ -41,9 +46,9 @@
 
     <button type="submit">Login</button>
 
-    <a href="#" class="button login-discord">
+    <button class="button login-discord" disabled>
       Login with Discord
-    </a>
+    </button>
 
     <div class="links">
       <a href="{{ route('game-auth.show-forgot') }}">Reset password</a>
@@ -62,18 +67,9 @@
       $state = Str::random(32);
     @endphp
 
-    <script>
-      document.querySelector('.login-discord').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.listenForDiscordLogin();
-        var url = "{{ route('game-auth.discord-redirect', $state) }}";
-        window.location.href = 'byond://winset?command=.openlink "' + encodeURIComponent(url) + '"';
-        // window.open(url, '_blank');
-      });
-    </script>
-
     @if (config('broadcasting.connections.reverb.key'))
       <script>
+        window.DiscordRedirectUrl = '{{ route('game-auth.discord-redirect', $state) }}';
         window.EchoPageState = '{{ $state }}';
         window.EchoConfig = {
           broadcaster: 'reverb',

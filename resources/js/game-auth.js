@@ -5,7 +5,6 @@ import Pusher from 'pusher-js'
 window.Pusher = Pusher
 
 let echoLoaded = false
-
 window.listenForDiscordLogin = function () {
   if (!window.EchoConfig) return
   if (!echoLoaded) {
@@ -41,3 +40,14 @@ window.listenForDiscordLogin = function () {
     )
   })
 }
+
+const $discordButton = document.querySelector('.login-discord')
+$discordButton.addEventListener('click', function (e) {
+  e.preventDefault()
+  window.listenForDiscordLogin()
+  const url = window.DiscordRedirectUrl
+  window.GHDebug('Opening discord login page to ' + url)
+  window.location = 'byond://winset?command=.openlink "' + encodeURIComponent(url) + '"'
+  // window.open(url, '_blank');
+})
+$discordButton.removeAttribute('disabled')

@@ -149,9 +149,23 @@
       padding: 0.5rem;
     }
 
-    .debug pre {
+    #debug {
       margin: 0;
+      word-break: break-word;
+    }
+
+    #debug:empty:before {
+      content: 'No debug messages';
+      display: block;
       padding: 0.5rem;
+    }
+
+    #debug>div {
+      padding: 0.5rem;
+    }
+
+    #debug>div:not(:last-child) {
+      border-bottom: 1px solid #444;
     }
   </style>
 </head>
@@ -165,10 +179,10 @@
     <div class="content-wrap">
       <div class="debug">
         <h2>Debug</h2>
-        <pre id="debug"></pre>
+        <div id="debug"></div>
         <script>
           window.GHDebug = function(msg) {
-            document.querySelector('#debug').innerHTML += '\n' + msg;
+            document.querySelector('#debug').innerHTML += '<div>' + msg + '</div>';
           };
         </script>
       </div>
