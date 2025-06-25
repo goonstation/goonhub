@@ -105,9 +105,13 @@ class GameAuthController extends Controller
         return view('game-auth.authed-discord');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
+
+        if ($request->input('redirect')) {
+            return redirect()->to($request->input('redirect'));
+        }
 
         return view('game-auth.logout');
     }
