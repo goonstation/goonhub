@@ -26,7 +26,10 @@ class RegisterRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $suffix = GameAuthController::AUTH_SUFFIXES['goonhub'];
-        $this->merge(['ckey' => ckey($this->name.$suffix)]);
+        $this->merge([
+            'ckey' => ckey($this->name.$suffix),
+            'email' => strtolower($this->email),
+        ]);
     }
 
     /**

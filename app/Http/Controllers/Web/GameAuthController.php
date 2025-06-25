@@ -44,6 +44,7 @@ class GameAuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        $credentials['email'] = strtolower($credentials['email']);
         if (Auth::attempt($credentials, true)) {
             $request->session()->regenerate();
 
@@ -195,7 +196,7 @@ class GameAuthController extends Controller
 
                 $user = User::create([
                     'name' => $discordName,
-                    'email' => $discordEmail,
+                    'email' => strtolower($discordEmail),
                     'password' => Hash::make(Str::password()),
                     'discord_id' => $discordId,
                 ]);
