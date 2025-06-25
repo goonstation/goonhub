@@ -7,6 +7,7 @@ use App\Http\Resources\VerifyAuthResource;
 use App\Models\User;
 use App\Traits\ManagesPlayers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @tags Game Auth
@@ -33,6 +34,11 @@ class GameAuthController extends Controller
         ]);
 
         $user = User::whereRememberToken($request->input('session'))->first();
+
+        Log::channel('gameauth')->info('GameAuthController::verify', [
+            'user' => $user,
+            'data' => $data,
+        ]);
 
         if (! $user) {
             return response()->json(['message' => 'Invalid session'], 401);
