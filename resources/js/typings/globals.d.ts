@@ -1,21 +1,16 @@
-import axios from 'axios'
-import Echo from 'laravel-echo'
-import Pusher from 'pusher-js'
-// import { defineComponent } from 'vue'
-import { route as routeFn } from '../../../vendor/tightenco/ziggy'
+import type { Axios } from 'axios'
+import type Echo from 'laravel-echo'
+import type Pusher from 'pusher-js'
+import type { route as routeFn } from '../../../vendor/tightenco/ziggy'
 import formatsPlugin from '../Plugins/formats'
 import helpersPlugin from '../Plugins/helpers'
 import storePlugin from '../Plugins/store'
 
-const axiosFn = axios
-const pusherFn = Pusher
-const echoFn = Echo<any>
-
 declare global {
   var route: typeof routeFn
-  var axios: typeof axiosFn
-  var Pusher: typeof pusherFn
-  var Echo: typeof echoFn.prototype
+  var axios: Axios
+  var Pusher: Pusher
+  var Echo: Echo<"reverb">
   var Ziggy: Object
 }
 
@@ -32,10 +27,4 @@ declare module 'vue' {
   }
 }
 
-// declare module '*.vue' {
-//   const component: typeof defineComponent
-//   export default component
-// }
-
 export { }
-

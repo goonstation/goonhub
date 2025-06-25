@@ -65,6 +65,7 @@
     <script>
       document.querySelector('.login-discord').addEventListener('click', function(e) {
         e.preventDefault();
+        window.listenForDiscordLogin();
         var url = "{{ route('game-auth.discord-redirect', $state) }}";
         window.location.href = 'byond://winset?command=.openlink "' + encodeURIComponent(url) + '"';
         // window.open(url, '_blank');

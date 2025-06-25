@@ -135,6 +135,24 @@
       background: #b48e05;
       color: black;
     }
+
+    .debug {
+      margin-bottom: 1rem;
+      border: 1px solid #444;
+      border-radius: 5px;
+    }
+
+    .debug h2 {
+      margin: 0;
+      font-size: 1rem;
+      background: #222;
+      padding: 0.5rem;
+    }
+
+    .debug pre {
+      margin: 0;
+      padding: 0.5rem;
+    }
   </style>
 </head>
 
@@ -145,6 +163,16 @@
     </div>
 
     <div class="content-wrap">
+      <div class="debug">
+        <h2>Debug</h2>
+        <pre id="debug"></pre>
+        <script>
+          window.GHDebug = function(msg) {
+            document.querySelector('#debug').innerHTML += '\n' + msg;
+          };
+        </script>
+      </div>
+
       @session('success')
         <div class="alert alert--success" style="margin-bottom: 1rem;">
           {{ $value }}

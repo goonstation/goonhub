@@ -48,4 +48,25 @@ class Handler extends ExceptionHandler
             Integration::captureUnhandledException($e);
         });
     }
+
+    public function render($request, Throwable $e)
+    {
+        if ($request->is('game-auth/*')) {
+            /** @var \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface|null */
+            $httpException = $this->isHttpException($e) ? $e : null;
+            $status = $httpException ? $httpException->getStatusCode() : 500;
+
+            return response()->view('game-auth.error', [
+                'exception' => $e,
+                'status' => $status,
+            ], $status);
+        }
+
+        if ($this->isHttpException($e)) {
+            /** @var \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e */
+            return $this->renderHttpException($e);
+        } else {
+            return parent::render($request, $e);
+        }
+    }
 }

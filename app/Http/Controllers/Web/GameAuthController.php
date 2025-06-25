@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
@@ -115,6 +116,10 @@ class GameAuthController extends Controller
         /** @var \SocialiteProviders\Discord\Provider */
         $socialite = Socialite::driver('discord-game-auth');
 
+        Log::channel('gameauth')->info('GameAuthController::discordRedirect', [
+            'state' => $state,
+        ]);
+
         return $socialite->stateless()->with(['state' => $state])->redirect();
     }
 
@@ -147,6 +152,10 @@ class GameAuthController extends Controller
 
     public function discordCallback(Request $request)
     {
+        Log::channel('gameauth')->info('GameAuthController::discordCallback', [
+            'request' => $request->all(),
+        ]);
+
         $user = null;
         try {
             /** @var \SocialiteProviders\Discord\Provider */
@@ -245,6 +254,14 @@ class GameAuthController extends Controller
                 CookieValuePrefix::create($rememberCookie->getName(), $encrypter->getKey()).$rememberCookie->getValue(),
                 EncryptCookies::serialized($rememberCookie->getName())
             );
+
+            Log::channel('gameauth')->info('GameAuthController::discordCallback broadcast', [
+                'channel' => 'discord-login.'.$request->input('state'),
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'session' => $user->getRememberToken(),
+            ]);
 
             Broadcast::on('discord-login.'.$request->input('state'))
                 ->as('DiscordLogin')
