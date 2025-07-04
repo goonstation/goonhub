@@ -16,7 +16,8 @@ fi
 chmod -R ugo+rw /.composer
 chown -R sail:sail /var/www/html
 
-su - sail -c 'cd /var/www/html && composer install && bun install'
+su - sail -c 'cd /var/www/html && composer install'
+su - sail -c '. ~/.nvm/nvm.sh && cd /var/www/html && nvm use default && bun install'
 
 if [ $# -gt 0 ]; then
     if [ "$SUPERVISOR_PHP_USER" = "root" ]; then

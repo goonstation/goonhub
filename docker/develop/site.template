@@ -1,0 +1,96 @@
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    '' close;
+}
+
+upstream laravel_upstream {
+    ip_hash;
+    zone upstreams 64k;
+    server laravel:80;
+    keepalive 512;
+}
+
+server {
+    listen 80;
+    listen 443 ssl;
+    server_name ${APP_DOMAIN} ${API_DOMAIN};
+    charset utf-8;
+    ignore_invalid_headers on;
+    client_max_body_size 200M;
+    client_body_buffer_size 200M;
+
+    sendfile on;
+    sendfile_max_chunk 1m;
+
+    ssl_certificate     /etc/ssl/certs/${APP_DOMAIN}.crt;
+    ssl_certificate_key /etc/ssl/private/${APP_DOMAIN}.key;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        set $suffix "";
+        if ($uri = /index.php) {
+            set $suffix ?$query_string;
+        }
+
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header SERVER_PORT $server_port;
+        proxy_set_header REMOTE_ADDR $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+
+        proxy_temp_file_write_size 64k;
+        proxy_connect_timeout 10080s;
+        proxy_send_timeout 10080;
+        proxy_read_timeout 10080;
+        proxy_buffer_size 64k;
+        proxy_buffers 16 32k;
+        proxy_busy_buffers_size 64k;
+
+        proxy_pass http://laravel_upstream$suffix;
+    }
+}
+
+upstream laravel_socket_upstream {
+    ip_hash;
+    zone upstreams 64k;
+    server laravel:8080;
+    keepalive 512;
+}
+
+server {
+    listen 80;
+    listen 443 ssl;
+    server_name ${REVERB_HOST};
+    charset utf-8;
+    ignore_invalid_headers on;
+
+    ssl_certificate     /etc/ssl/certs/${APP_DOMAIN}.crt;
+    ssl_certificate_key /etc/ssl/private/${APP_DOMAIN}.key;
+    ssl_protocols       TLSv1.2 TLSv1.3;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
+
+    location / {
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header Scheme $scheme;
+        proxy_set_header SERVER_PORT $server_port;
+        proxy_set_header REMOTE_ADDR $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+
+        proxy_temp_file_write_size 64k;
+        proxy_connect_timeout 10080s;
+        proxy_send_timeout 10080;
+        proxy_read_timeout 10080;
+        proxy_buffer_size 64k;
+        proxy_buffers 16 32k;
+        proxy_busy_buffers_size 64k;
+
+        proxy_pass http://laravel_socket_upstream;
+    }
+}

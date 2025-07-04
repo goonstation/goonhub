@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 11.44.1.
+ * Generated for Laravel 11.45.1.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -3337,6 +3337,20 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
             $instance->precompiler($precompiler);
+        }
+
+        /**
+         * Execute the given callback using a custom echo format.
+         *
+         * @param string $format
+         * @param callable $callback
+         * @return string 
+         * @static 
+         */
+        public static function usingEchoFormat($format, $callback)
+        {
+            /** @var \Illuminate\View\Compilers\BladeCompiler $instance */
+            return $instance->usingEchoFormat($format, $callback);
         }
 
         /**
@@ -11788,6 +11802,7 @@ namespace Illuminate\Support\Facades {
      * @method static void deleteToken(\Illuminate\Contracts\Auth\CanResetPassword $user)
      * @method static bool tokenExists(\Illuminate\Contracts\Auth\CanResetPassword $user, string $token)
      * @method static \Illuminate\Auth\Passwords\TokenRepositoryInterface getRepository()
+     * @method static \Illuminate\Support\Timebox getTimebox()
      * @see \Illuminate\Auth\Passwords\PasswordBrokerManager
      * @see \Illuminate\Auth\Passwords\PasswordBroker
      */
@@ -22664,7 +22679,7 @@ namespace Intervention\Image\Laravel\Facades {
         /**
          * Create image manager with given driver
          *
-         * @link https://image.intervention.io/v3/basics/image-manager
+         * @link https://image.intervention.io/v3/basics/configuration-drivers#static-constructor
          * @param string|\Intervention\Image\Interfaces\DriverInterface $driver
          * @param mixed $options
          * @throws DriverException
@@ -22680,7 +22695,7 @@ namespace Intervention\Image\Laravel\Facades {
         /**
          * Create image manager with GD driver
          *
-         * @link https://image.intervention.io/v3/basics/image-manager#static-gd-driver-constructor
+         * @link https://image.intervention.io/v3/basics/configuration-drivers#static-gd-driver-constructor
          * @param mixed $options
          * @throws DriverException
          * @throws InputException
@@ -22695,7 +22710,7 @@ namespace Intervention\Image\Laravel\Facades {
         /**
          * Create image manager with Imagick driver
          *
-         * @link https://image.intervention.io/v3/basics/image-manager#static-imagick-driver-constructor
+         * @link https://image.intervention.io/v3/basics/configuration-drivers#static-imagick-driver-constructor
          * @param mixed $options
          * @throws DriverException
          * @throws InputException
@@ -22711,7 +22726,7 @@ namespace Intervention\Image\Laravel\Facades {
          * Create new image instance with given width & height
          *
          * @see ImageManagerInterface::create()
-         * @link https://image.intervention.io/v3/basics/instantiation#creating-new-images
+         * @link https://image.intervention.io/v3/basics/instantiation#create-new-images
          * @param int $width
          * @param int $height
          * @throws RuntimeException
@@ -22748,7 +22763,7 @@ namespace Intervention\Image\Laravel\Facades {
          * with all available decoders of the driver.
          *
          * @see ImageManagerInterface::read()
-         * @link https://image.intervention.io/v3/basics/instantiation#reading-images
+         * @link https://image.intervention.io/v3/basics/instantiation#read-image-sources
          * @param mixed $input
          * @param string|array<string|DecoderInterface>|\Intervention\Image\Interfaces\DecoderInterface $decoders
          * @throws RuntimeException
@@ -22765,7 +22780,7 @@ namespace Intervention\Image\Laravel\Facades {
          * Create new animated image by given callback
          *
          * @see ImageManagerInterface::animate()
-         * @link https://image.intervention.io/v3/basics/instantiation#creating-animations
+         * @link https://image.intervention.io/v3/basics/instantiation#create-animations
          * @param callable $init
          * @throws RuntimeException
          * @return \Intervention\Image\Interfaces\ImageInterface 
@@ -23621,6 +23636,17 @@ namespace Livewire {
         {
             /** @var \Livewire\LivewireManager $instance */
             return $instance->current();
+        }
+
+        /**
+         * 
+         *
+         * @static 
+         */
+        public static function findSynth($keyOrTarget, $component)
+        {
+            /** @var \Livewire\LivewireManager $instance */
+            return $instance->findSynth($keyOrTarget, $component);
         }
 
         /**
@@ -25072,6 +25098,18 @@ namespace Illuminate\Testing {
             return \Illuminate\Testing\TestResponse::inertiaPage();
         }
 
+        /**
+         * 
+         *
+         * @see \Inertia\Testing\TestResponseMacros::inertiaProps()
+         * @param string|null $propName
+         * @static 
+         */
+        public static function inertiaProps($propName = null)
+        {
+            return \Illuminate\Testing\TestResponse::inertiaProps($propName);
+        }
+
             }
     }
 
@@ -26098,7 +26136,7 @@ namespace  {
          * @param string $pageName
          * @param int|null $page
          * @param \Closure|int|null $total
-         * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator 
+         * @return \Illuminate\Pagination\LengthAwarePaginator 
          * @throws \InvalidArgumentException
          * @static 
          */

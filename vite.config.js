@@ -5,14 +5,20 @@ import path from 'path'
 import VueMacros from 'unplugin-vue-macros/vite'
 import { defineConfig } from 'vite'
 
+const domain = process.env.APP_URL.replace(/https?:\/\//gi, '')
+
 export default defineConfig({
   server: {
     port: 5174,
     hmr: {
-      host: 'localhost',
+      host: domain || 'localhost',
     },
     watch: {
       ignored: ['**/storage/app/**'],
+    },
+    https: {
+      key: domain ? path.resolve(__dirname, `./docker/develop/certs/${domain}.key`) : undefined,
+      cert: domain ? path.resolve(__dirname, `./docker/develop/certs/${domain}.crt`) : undefined,
     },
   },
   build: {

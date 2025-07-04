@@ -4,7 +4,10 @@
   "dockerComposeFile": [
     "../docker-compose.yml"
   ],
-  "service": "laravel.test",
+  "service": "laravel",
+  "runServices": [
+    "nginx"
+  ],
   "workspaceFolder": "/var/www/html",
   "customizations": {
     "vscode": {
