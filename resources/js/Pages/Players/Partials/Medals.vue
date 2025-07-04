@@ -3,7 +3,7 @@
     <q-card-section class="flex items-center justify-between gap-xs-sm">
       <div class="text-subtitle1 flex items-center">
         <q-icon :name="ionMedal" size="md" class="q-mr-md" />
-        <template v-if="showUnearned"> Unearned Medals ({{ unearned.length }}) </template>
+        <template v-if="showUnearned"> Unearned Medals ({{ filteredUnearned.length }}) </template>
         <template v-else> Medals ({{ medals.length }}) </template>
       </div>
       <div>
@@ -16,9 +16,9 @@
     <q-separator />
     <q-card-section class="q-pa-sm">
       <template v-if="showUnearned">
-        <div v-if="unearned.length" class="row q-col-gutter-xs-xs">
+        <div v-if="filteredUnearned.length" class="row q-col-gutter-xs-xs">
           <div
-            v-for="medal in unearned"
+            v-for="medal in filteredUnearned"
             class="items-center gap-xs-md col-xs-12 col-sm-12 col-md-12 col-lg-6 col-xl-4"
           >
             <div class="medal">
@@ -31,7 +31,7 @@
           </div>
         </div>
         <q-banner v-else class="bg-grey-10 q-ma-sm text-center">
-          This player has earned every medal!
+          No unearned medals to show.
         </q-banner>
       </template>
       <template v-else>
@@ -118,6 +118,13 @@ export default {
     return {
       showUnearned: false,
     }
+  },
+
+  computed: {
+    filteredUnearned() {
+      // Filter out hidden medals from the unearned list
+      return this.unearned.filter((medal) => !medal.hidden)
+    },
   },
 }
 </script>
