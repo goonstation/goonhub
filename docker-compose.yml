@@ -36,6 +36,7 @@ services:
       - redis
       - memcached
       - mailpit
+      - browserless
   nginx:
     image: openresty/openresty:latest
     entrypoint: ['/usr/bin/bash', '/usr/local/bin/nginx-entrypoint.sh']
@@ -56,6 +57,8 @@ services:
       - ./docker/develop/site.template:/etc/nginx/templates/site.template
       - ./docker/develop/nginx-entrypoint.sh:/usr/local/bin/nginx-entrypoint.sh
       - ./docker/develop/certs:/certs
+    depends_on:
+      - laravel
   pgsql:
     image: 'postgres:17'
     ports:
