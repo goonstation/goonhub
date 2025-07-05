@@ -5,7 +5,7 @@ import path from 'path'
 import VueMacros from 'unplugin-vue-macros/vite'
 import { defineConfig } from 'vite'
 
-const domain = process.env.APP_URL.replace(/https?:\/\//gi, '')
+const domain = process.env.APP_URL ? process.env.APP_URL.replace(/https?:\/\//gi, '') : undefined
 
 export default defineConfig({
   server: {
