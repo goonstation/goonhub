@@ -60,10 +60,10 @@ class GameAuthController extends Controller
 
     public function showLogin(Request $request)
     {
-        $legacy = $request->input('legacy') ?? false;
+        $token = $request->session()->get('gameauth.token');
+        $cache = Cache::get(ApiGameAuthController::CACHE_PREFIX.$token);
         $discordRedirect = '';
-        if ($legacy) {
-            $token = $request->session()->get('gameauth.token');
+        if (array_key_exists('legacy', $cache) && $cache['legacy']) {
             $discordRedirect = 'byond://winset?command=.openlink "'.
                 urlencode(route('game-auth.discord-redirect', ['token' => $token, 'legacy' => true])).
                 '"';
@@ -165,6 +165,8 @@ class GameAuthController extends Controller
             ->force(true)
             ->sendAndForget();
 
+        $cache['ckey'] = $data['ckey'];
+        $cache['key'] = $data['key'];
         $this->loginPlayer($user->player, $cache);
 
         $request->session()->regenerate();
@@ -195,10 +197,8 @@ class GameAuthController extends Controller
         ]);
     }
 
-    public function discordRedirect(Request $request)
+    public function discordRedirect()
     {
-        $request->session()->put('gameauth.legacy', $request->input('legacy', false));
-
         return Socialite::driver('discord-game-auth')->redirect();
     }
 
@@ -287,10 +287,9 @@ class GameAuthController extends Controller
 
         Auth::login($user, true);
 
-        $legacy = $request->session()->get('gameauth.legacy', false);
-        if ($legacy) {
-            $token = $request->session()->get('gameauth.token');
-            $cache = Cache::get(ApiGameAuthController::CACHE_PREFIX.$token);
+        $token = $request->session()->get('gameauth.token');
+        $cache = Cache::get(ApiGameAuthController::CACHE_PREFIX.$token);
+        if (array_key_exists('legacy', $cache) && $cache['legacy']) {
             $expiresAt = Cache::get(ApiGameAuthController::CACHE_PREFIX_EXPIRES.$token);
 
             $cache['user_id'] = $user->id;

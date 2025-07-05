@@ -32,6 +32,7 @@ class GameAuthController extends Controller
 
         $token = Str::random(32);
         $expiresAt = now()->addMinutes(5);
+        $data['legacy'] = array_key_exists('byond_major', $data) && (int) $data['byond_major'] <= 515;
         Cache::put(self::CACHE_PREFIX.$token, $data, $expiresAt);
         Cache::put(self::CACHE_PREFIX_EXPIRES.$token, $expiresAt, $expiresAt);
 
