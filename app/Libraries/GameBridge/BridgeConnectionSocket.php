@@ -19,7 +19,7 @@ class BridgeConnectionSocket
 
     private bool $force = false;
 
-    private ?Socket $socket = null;
+    private Socket|bool $socket = false;
 
     private ?Lock $lock = null;
 
@@ -64,7 +64,7 @@ class BridgeConnectionSocket
     private function create()
     {
         $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if (! $this->socket) {
+        if (! ($this->socket instanceof Socket)) {
             return $this->error();
         }
     }
