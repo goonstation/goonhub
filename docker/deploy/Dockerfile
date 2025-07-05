@@ -152,7 +152,6 @@ RUN chmod -R a+rw storage \
     && composer clear-cache \
     && bun install --frozen-lockfile \
     && bun run build \
-    && bun run build:game-auth \
     && rm -rf node_modules
 
 COPY --link --chown=${WWWUSER}:${WWWGROUP} docker/deploy/supervisord.conf /etc/

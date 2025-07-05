@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Facades\GameBridge;
+use App\Http\Controllers\Api\GameAuthController as ApiGameAuthController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameAuth\RegisterRequest;
 use App\Libraries\DiscordBot;
@@ -10,12 +12,9 @@ use App\Models\PlayerHos;
 use App\Models\PlayerMentor;
 use App\Models\User;
 use App\Traits\ManagesPlayers;
-use Illuminate\Cookie\CookieValuePrefix;
-use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Broadcast;
-use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -31,102 +30,6 @@ class GameAuthController extends Controller
         'goonhub' => 'G',
         'discord' => 'D',
     ];
-
-    public function showLogin()
-    {
-        return view('game-auth.login');
-    }
-
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
-        ]);
-
-        $credentials['email'] = strtolower($credentials['email']);
-        if (Auth::attempt($credentials, true)) {
-            $request->session()->regenerate();
-
-            return redirect()->route('game-auth.authed');
-        }
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
-    }
-
-    public function showRegister()
-    {
-        return view('game-auth.register');
-    }
-
-    public function register(RegisterRequest $request)
-    {
-        $validated = $request->validated();
-
-        $player = new Player;
-        $player->ckey = ckey($validated['name'].self::AUTH_SUFFIXES['goonhub']);
-        $player->key = ckey($validated['name']).'-'.self::AUTH_SUFFIXES['goonhub'];
-        $player->save();
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'player_id' => $player->id,
-        ]);
-
-        Auth::login($user, true);
-
-        return redirect()->route('game-auth.authed');
-    }
-
-    public function showForgot()
-    {
-        return view('game-auth.forgot');
-    }
-
-    public function authed()
-    {
-        if (! Auth::check()) {
-            return redirect()->route('game-auth.show-login');
-        }
-
-        return view('game-auth.authed');
-    }
-
-    public function authedDiscord()
-    {
-        if (! Auth::check()) {
-            return redirect()->route('game-auth.show-login');
-        }
-
-        return view('game-auth.authed-discord');
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-
-        if ($request->input('redirect')) {
-            return redirect()->to($request->input('redirect'));
-        }
-
-        return view('game-auth.logout');
-    }
-
-    public function discordRedirect(string $state)
-    {
-        /** @var \SocialiteProviders\Discord\Provider */
-        $socialite = Socialite::driver('discord-game-auth');
-
-        Log::channel('gameauth')->info('GameAuthController::discordRedirect', [
-            'state' => $state,
-        ]);
-
-        return $socialite->stateless()->with(['state' => $state])->redirect();
-    }
 
     /**
      * Create a player with a given key, or with a unique suffix if the key is already taken.
@@ -155,6 +58,150 @@ class GameAuthController extends Controller
         });
     }
 
+    public function showLogin(Request $request)
+    {
+        $legacy = $request->input('legacy') ?? false;
+        $discordRedirect = '';
+        if ($legacy) {
+            $token = $request->session()->get('gameauth.token');
+            $discordRedirect = 'byond://winset?command=.openlink "'.
+                urlencode(route('game-auth.discord-redirect', ['token' => $token, 'legacy' => true])).
+                '"';
+        } else {
+            $discordRedirect = route('game-auth.discord-redirect');
+        }
+
+        return view('game-auth.login', [
+            'discordRedirect' => $discordRedirect,
+        ]);
+    }
+
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+
+        $credentials['email'] = strtolower($credentials['email']);
+        if (Auth::attempt($credentials, true)) {
+            return redirect()->route('game-auth.authed');
+        }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->onlyInput('email');
+    }
+
+    public function showRegister()
+    {
+        return view('game-auth.register');
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        $validated = $request->validated();
+        $player = $this->createPlayer($validated['name'], 'goonhub');
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'player_id' => $player->id,
+        ]);
+
+        Auth::login($user, true);
+
+        return redirect()->route('game-auth.authed');
+    }
+
+    public function showForgot()
+    {
+        return view('game-auth.forgot');
+    }
+
+    public function authed(Request $request)
+    {
+        $token = $request->session()->get('gameauth.token');
+        $cache = Cache::pull(ApiGameAuthController::CACHE_PREFIX.$token);
+
+        if (array_key_exists('user_id', $cache)) {
+            $user = User::findOrFail($cache['user_id']);
+            Auth::login($user, true);
+        } else {
+            if (! Auth::check()) {
+                return redirect()->route('game-auth.show-login');
+            }
+
+            $user = Auth::user();
+        }
+
+        // Users that don't have a player registered outside of the game auth flow
+        if (! $user->player) {
+            $player = $this->createPlayer($user->name, 'goonhub');
+            $user->player_id = $player->id;
+            $user->save();
+        }
+
+        $data = [
+            'player_id' => $user->player->id,
+            'ckey' => $user->player->ckey,
+            'key' => $user->player->key,
+            'is_admin' => $user->isGameAdmin(),
+            'admin_rank' => $user->isGameAdmin() ? $user->gameAdmin->rank->rank : null,
+            'is_mentor' => $user->player->isMentor,
+            'is_hos' => $user->player->isHos,
+            'is_whitelisted' => $user->player->isWhitelisted($cache['server_id']),
+            'can_bypass_cap' => $user->player->canBypassCap($cache['server_id']),
+        ];
+
+        GameBridge::create()
+            ->target($cache['server_id'])
+            ->message([
+                'type' => 'auth_callback',
+                'preauth_ckey' => $cache['ckey'],
+                'data' => json_encode($data),
+            ])
+            ->force(true)
+            ->sendAndForget();
+
+        $this->loginPlayer($user->player, $cache);
+
+        $request->session()->regenerate();
+
+        return view('game-auth.authed');
+    }
+
+    public function authedDiscord()
+    {
+        if (! Auth::check()) {
+            return redirect()->route('game-auth.show-login');
+        }
+
+        return view('game-auth.authed-discord');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        if ($request->input('failed_login')) {
+            return redirect()->route('game-auth.show-login')
+                ->withErrors(['Failed to login, please try again.']);
+        }
+
+        return view('game-auth.logout', [
+            'ref' => $request->input('ref') ?? null,
+        ]);
+    }
+
+    public function discordRedirect(Request $request)
+    {
+        $request->session()->put('gameauth.legacy', $request->input('legacy', false));
+
+        return Socialite::driver('discord-game-auth')->redirect();
+    }
+
     public function discordCallback(Request $request)
     {
         Log::channel('gameauth')->info('GameAuthController::discordCallback', [
@@ -163,9 +210,7 @@ class GameAuthController extends Controller
 
         $user = null;
         try {
-            /** @var \SocialiteProviders\Discord\Provider */
-            $socialite = Socialite::driver('discord-game-auth');
-            $discordUser = $socialite->stateless()->user();
+            $discordUser = Socialite::driver('discord-game-auth')->user();
             $discordId = $discordUser->getId();
             $discordDetails = DiscordBot::export('goonhub/auth', 'GET', [
                 'discord_id' => $discordId,
@@ -241,52 +286,33 @@ class GameAuthController extends Controller
         }
 
         Auth::login($user, true);
-        $request->session()->regenerate();
 
-        if ($request->input('state')) {
-            $cookies = Cookie::getQueuedCookies();
-            $rememberCookie = null;
-            foreach ($cookies as $cookie) {
-                if (str_starts_with($cookie->getName(), 'remember_web_')) {
-                    $rememberCookie = $cookie;
-                    break;
-                }
-            }
+        $legacy = $request->session()->get('gameauth.legacy', false);
+        if ($legacy) {
+            $token = $request->session()->get('gameauth.token');
+            $cache = Cache::get(ApiGameAuthController::CACHE_PREFIX.$token);
+            $expiresAt = Cache::get(ApiGameAuthController::CACHE_PREFIX_EXPIRES.$token);
 
-            /** @var \Illuminate\Contracts\Encryption\Encrypter */
-            $encrypter = app('encrypter');
-            $encryptedValue = $encrypter->encrypt(
-                CookieValuePrefix::create($rememberCookie->getName(), $encrypter->getKey()).$rememberCookie->getValue(),
-                EncryptCookies::serialized($rememberCookie->getName())
-            );
+            $cache['user_id'] = $user->id;
+            Cache::put(ApiGameAuthController::CACHE_PREFIX.$token, $cache, $expiresAt);
 
-            Log::channel('gameauth')->info('GameAuthController::discordCallback broadcast', [
-                'channel' => 'discord-login.'.$request->input('state'),
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'session' => $user->getRememberToken(),
-            ]);
-
-            Broadcast::on('discord-login.'.$request->input('state'))
-                ->as('DiscordLogin')
-                ->with([
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'session' => $user->getRememberToken(),
-                    'cookie' => [
-                        'name' => $rememberCookie->getName(),
-                        'value' => $encryptedValue,
-                        'domain' => $rememberCookie->getDomain(),
-                        'path' => $rememberCookie->getPath(),
-                        'expires' => $rememberCookie->getExpiresTime(),
-                        'samesite' => $rememberCookie->getSameSite(),
-                    ],
+            GameBridge::create()
+                ->target($cache['server_id'])
+                ->message([
+                    'type' => 'legacy_discord_auth_callback',
+                    'preauth_ckey' => $cache['ckey'],
                 ])
-                ->sendNow();
+                ->force(true)
+                ->sendAndForget();
+
+            return redirect()->route('game-auth.authed-discord');
         }
 
-        return redirect()->route('game-auth.authed-discord');
+        return redirect()->route('game-auth.authed');
+    }
+
+    public function showError()
+    {
+        return view('game-auth.error');
     }
 }

@@ -66,18 +66,21 @@ Route::controller(AuthController::class)->prefix('/auth')->group(function () {
 Route::controller(GameAuthController::class)->prefix('/game-auth')
     ->withoutMiddleware([HandleInertiaRequests::class, AddLinkHeadersForPreloadedAssets::class])
     ->group(function () {
-        Route::middleware('gameauth')->group(function () {
-            Route::get('/login', 'showLogin')->name('game-auth.show-login');
-            Route::post('/login', 'login')->name('game-auth.login');
-            Route::get('/register', 'showRegister')->name('game-auth.show-register');
-            Route::post('/register', 'register')->name('game-auth.register');
-            Route::get('/forgot', 'showForgot')->name('game-auth.show-forgot');
+        Route::middleware('gameauth.state')->group(function () {
+            Route::middleware('gameauth.redirect')->group(function () {
+                Route::get('/login', 'showLogin')->name('game-auth.show-login');
+                Route::post('/login', 'login')->name('game-auth.login');
+                Route::get('/register', 'showRegister')->name('game-auth.show-register');
+                Route::post('/register', 'register')->name('game-auth.register');
+                Route::get('/forgot', 'showForgot')->name('game-auth.show-forgot');
+            });
+            Route::get('/authed', 'authed')->name('game-auth.authed');
+            Route::get('/authed-discord', 'authedDiscord')->name('game-auth.authed-discord');
+            Route::get('/discord-redirect', 'discordRedirect')->name('game-auth.discord-redirect');
+            Route::get('/discord-callback', 'discordCallback')->name('game-auth.discord-callback');
         });
-        Route::get('/authed', 'authed')->name('game-auth.authed');
-        Route::get('/authed-discord', 'authedDiscord')->name('game-auth.authed-discord');
         Route::get('/logout', 'logout')->name('game-auth.logout');
-        Route::get('/discord-redirect/{state}', 'discordRedirect')->name('game-auth.discord-redirect');
-        Route::get('/discord-callback', 'discordCallback')->name('game-auth.discord-callback');
+        Route::get('/error', 'showError')->name('game-auth.error');
     });
 
 Route::controller(ChangelogController::class)->prefix('/changelog')->group(function () {

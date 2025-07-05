@@ -19,30 +19,15 @@
       border: .4rem solid rgba(255, 255, 255, 0.2);
       border-top-color: #ffd125;
       border-radius: 50%;
-      -webkit-animation: spin 1s linear infinite;
       animation: spin 1s linear infinite;
-    }
-
-    @-webkit-keyframes spin {
-      0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg);
-      }
-
-      100% {
-        -webkit-transform: rotate(360deg);
-        transform: rotate(360deg);
-      }
     }
 
     @keyframes spin {
       0% {
-        -webkit-transform: rotate(0deg);
         transform: rotate(0deg);
       }
 
       100% {
-        -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
       }
     }
@@ -56,18 +41,4 @@
       <p>This window will close automatically when the validation is complete.</p>
     </div>
   </div>
-
-  @if (Auth::check())
-    <script>
-      window.parent.postMessage({
-        type: 'authenticated',
-        user: {
-          id: {{ Auth::user()->id }},
-          name: '{{ Auth::user()->name }}',
-          email: '{{ Auth::user()->email }}',
-          session: '{{ Auth::user()->getRememberToken() }}',
-        }
-      }, '*');
-    </script>
-  @endif
 </x-game-auth-layout>

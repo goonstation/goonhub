@@ -7,6 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="color-scheme" content="dark">
 
   <?= sprintf('<meta name="baggage" content="%s"/>', \Sentry\getBaggage()) ?>
   <?= sprintf('<meta name="sentry-trace" content="%s"/>', \Sentry\getTraceparent()) ?>
@@ -18,40 +19,47 @@
 
     html {
       height: 100%;
-      font-size: 16px;
+      font-size: 14px;
       font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden;
     }
 
     body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       height: 100%;
       margin: 0;
-      padding: 0.5rem;
-      background: #303030;
+      padding: 2px;
+      background: #0f0f0f;
     }
 
     .content {
       display: flex;
       flex-direction: column;
-      height: 100%;
-      background: #0f0f0f;
+      width: 100%;
+      border: 1px solid #303030;
       border-radius: 5px;
       text-align: center;
       color: white;
+      overflow-y: auto;
     }
 
     .content-header {
       padding: 1rem;
       border-bottom: 1px solid #303030;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: bold;
-      letter-spacing: 0.2px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
     }
 
     .content-wrap {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
-      padding: 2rem 3rem;
+      padding: 2rem 2rem;
     }
 
     .alert {
@@ -94,7 +102,7 @@
     }
 
     fieldset {
-      margin: 0 0 1.25rem 0;
+      margin: 0 0 1rem 0;
       padding: 0;
       border: 0;
     }
@@ -135,38 +143,6 @@
       background: #b48e05;
       color: black;
     }
-
-    .debug {
-      margin-bottom: 1rem;
-      border: 1px solid #444;
-      border-radius: 5px;
-    }
-
-    .debug h2 {
-      margin: 0;
-      font-size: 1rem;
-      background: #222;
-      padding: 0.5rem;
-    }
-
-    #debug {
-      margin: 0;
-      word-break: break-word;
-    }
-
-    #debug:empty:before {
-      content: 'No debug messages';
-      display: block;
-      padding: 0.5rem;
-    }
-
-    #debug>div {
-      padding: 0.5rem;
-    }
-
-    #debug>div:not(:last-child) {
-      border-bottom: 1px solid #444;
-    }
   </style>
 </head>
 
@@ -177,16 +153,6 @@
     </div>
 
     <div class="content-wrap">
-      <div class="debug">
-        <h2>Debug</h2>
-        <div id="debug"></div>
-        <script>
-          window.GHDebug = function(msg) {
-            document.querySelector('#debug').innerHTML += '<div>' + msg + '</div>';
-          };
-        </script>
-      </div>
-
       @session('success')
         <div class="alert alert--success" style="margin-bottom: 1rem;">
           {{ $value }}

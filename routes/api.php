@@ -48,7 +48,7 @@ Route::get('test', [TestController::class, 'index'])->can('view-test');
 
 Route::middleware(['isadmin'])->group(function () {
     Route::controller(GameAuthController::class)->prefix('game-auth')->group(function () {
-        Route::post('/verify', 'verify');
+        Route::post('/begin', 'begin');
     });
     Route::controller(GameRoundsController::class)->prefix('rounds')->group(function () {
         Route::post('/', 'store');

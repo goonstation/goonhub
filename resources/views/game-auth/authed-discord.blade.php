@@ -19,10 +19,4 @@
       <p>You may now close this window.</p>
     </div>
   </div>
-
-  <script>
-    setTimeout(function() {
-      window.close();
-    }, 3000);
-  </script>
 </x-game-auth-layout>

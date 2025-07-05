@@ -20,9 +20,9 @@
     </div>
   </div>
 
-  <script>
-    window.parent.postMessage({
-      type: 'logout'
-    }, '*');
-  </script>
+  @if ($ref)
+    <script>
+      window.location = 'byond://?src={{ $ref }};logout=1';
+    </script>
+  @endif
 </x-game-auth-layout>

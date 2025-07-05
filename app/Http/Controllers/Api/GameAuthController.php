@@ -3,29 +3,26 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\VerifyAuthResource;
-use App\Models\User;
-use App\Traits\ManagesPlayers;
+use App\Http\Resources\BeginAuthResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Str;
 
 /**
  * @tags Game Auth
  */
 class GameAuthController extends Controller
 {
-    use ManagesPlayers;
+    const CACHE_PREFIX = 'game_auth_state_';
 
-    /**
-     * Verify
-     *
-     * Verify a session token
-     */
-    public function verify(Request $request)
+    const CACHE_PREFIX_EXPIRES = 'game_auth_state_expires_';
+
+    public function begin(Request $request)
     {
         $data = $request->validate([
-            'session' => 'required|string',
             'server_id' => 'required|string',
+            'ckey' => 'required|string',
             'ip' => 'nullable|ipv4',
             'comp_id' => 'nullable|integer',
             'byond_major' => 'nullable|integer',
@@ -33,19 +30,18 @@ class GameAuthController extends Controller
             'round_id' => 'nullable|integer|exists:game_rounds,id',
         ]);
 
-        $user = User::whereRememberToken($request->input('session'))->first();
+        $token = Str::random(32);
+        $expiresAt = now()->addMinutes(5);
+        Cache::put(self::CACHE_PREFIX.$token, $data, $expiresAt);
+        Cache::put(self::CACHE_PREFIX_EXPIRES.$token, $expiresAt, $expiresAt);
 
-        Log::channel('gameauth')->info('GameAuthController::verify', [
-            'user' => $user,
+        Log::channel('gameauth')->info('GameAuthController::begin', [
+            'token' => $token,
             'data' => $data,
         ]);
 
-        if (! $user) {
-            return response()->json(['message' => 'Invalid session'], 401);
-        }
-
-        $this->loginPlayer($user->player, $data);
-
-        return new VerifyAuthResource($user);
+        return new BeginAuthResource([
+            'token' => $token,
+        ]);
     }
 }

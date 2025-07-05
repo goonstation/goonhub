@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
-class GameAuth
+class GameAuthRedirect
 {
     /**
      * Handle an incoming request.

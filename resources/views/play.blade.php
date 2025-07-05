@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
 
   <meta http-equiv="refresh" content="1;url={{ $server->byond_link }}" />
 
@@ -14,8 +15,8 @@
   <meta property="og:type" content="website">
   <meta property="og:description" content="Join {{ $server->name }}">
 
-  <?= sprintf('<meta name="baggage" content="%s"/>', \Sentry\getBaggage()); ?>
-  <?= sprintf('<meta name="sentry-trace" content="%s"/>', \Sentry\getTraceparent()); ?>
+  <?= sprintf('<meta name="baggage" content="%s"/>', \Sentry\getBaggage()) ?>
+  <?= sprintf('<meta name="sentry-trace" content="%s"/>', \Sentry\getTraceparent()) ?>
 
   <title>Play Goonstation</title>
 

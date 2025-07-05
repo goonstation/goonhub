@@ -4,14 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "dev:game-auth": "vite --config vite.game-auth.config.js",
-    "build:game-auth": "vite build --config vite.game-auth.config.js"
+    "build": "vite build"
   },
   "devDependencies": {
     "@eslint/js": "^9.26.0",
     "@quasar/vite-plugin": "^1.9.0",
-    "@vitejs/plugin-legacy": "^6.1.1",
     "@vitejs/plugin-vue": "^5.2.4",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.5",
@@ -22,7 +19,6 @@
     "postcss": "^8.5.3",
     "pusher-js": "^8.4.0",
     "sass": "^1.88.0",
-    "terser": "^5.43.1",
     "unplugin-vue-macros": "^2.14.5",
     "vite": "^6.3.5"
   },

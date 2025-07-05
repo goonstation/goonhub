@@ -25,11 +25,6 @@
       background: #677bc5;
       color: white;
     }
-
-    .login-discord:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   </style>
 
   <form method="POST" action="{{ route('game-auth.login') }}">
@@ -46,9 +41,9 @@
 
     <button type="submit">Login</button>
 
-    <button class="button login-discord" disabled>
+    <a href="{{ $discordRedirect }}" class="button login-discord">
       Login with Discord
-    </button>
+    </a>
 
     <div class="links">
       <a href="{{ route('game-auth.show-forgot') }}">Reset password</a>
@@ -62,28 +57,5 @@
         @endforeach
       </div>
     @endif
-
-    @php
-      $state = Str::random(32);
-    @endphp
-
-    @if (config('broadcasting.connections.reverb.key'))
-      <script>
-        window.DiscordRedirectUrl = '{{ route('game-auth.discord-redirect', $state) }}';
-        window.EchoPageState = '{{ $state }}';
-        window.EchoConfig = {
-          broadcaster: 'reverb',
-          key: '{{ config('broadcasting.connections.reverb.key') }}',
-          wsHost: '{{ config('broadcasting.connections.reverb.options.host') }}',
-          wsPort: {{ config('broadcasting.connections.reverb.options.port', 80) }},
-          wssPort: {{ config('broadcasting.connections.reverb.options.port', 443) }},
-          forceTLS: {{ config('broadcasting.connections.reverb.options.useTLS') ? 'true' : 'false' }},
-          enabledTransports: ['ws', 'wss'],
-        };
-      </script>
-    @endif
-
-    <script src="{{ Vite::asset('vite/legacy-polyfills-legacy', 'build-game-auth') }}"></script>
-    <script src="{{ Vite::asset('resources/js/game-auth-legacy.js', 'build-game-auth') }}"></script>
   </form>
 </x-game-auth-layout>
