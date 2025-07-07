@@ -233,6 +233,14 @@ class Player extends BaseModel
     }
 
     /** @return Attribute<bool, never> */
+    protected function isAdmin(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->user->game_admin_id !== null,
+        );
+    }
+
+    /** @return Attribute<bool, never> */
     protected function hasImportedMedals(): Attribute
     {
         return Attribute::make(

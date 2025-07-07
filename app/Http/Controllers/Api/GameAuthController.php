@@ -7,7 +7,7 @@ use App\Http\Resources\BeginAuthResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Str;
+use Illuminate\Support\Str;
 
 /**
  * @tags Game Auth

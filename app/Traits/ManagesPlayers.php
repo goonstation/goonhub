@@ -15,7 +15,10 @@ trait ManagesPlayers
         if (isset($data['byond_minor'])) {
             $player->byond_minor = $data['byond_minor'];
         }
-        $player->save();
+
+        Player::withoutAuditing(function () use ($player) {
+            return $player->save();
+        });
 
         RecordPlayerConnection::dispatch($player->id, $data);
 

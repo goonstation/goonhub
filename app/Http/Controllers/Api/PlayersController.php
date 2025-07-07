@@ -36,9 +36,12 @@ class PlayersController extends Controller
             'byond_major' => 'nullable|integer',
             'byond_minor' => 'nullable|integer',
             'round_id' => 'nullable|integer|exists:game_rounds,id',
+            'server_id' => 'required|string',
         ]);
 
-        $player = Player::where('ckey', $data['ckey'])->first();
+        $player = Player::with([
+            'user.gameAdmin.rank',
+        ])->where('ckey', $data['ckey'])->first();
         $creatingPlayer = false;
 
         if (is_null($player)) {
@@ -61,7 +64,10 @@ class PlayersController extends Controller
             ImportByondMedalsForPlayer::dispatch($player->ckey);
         }
 
-        return new PlayerResource($player);
+        $resource = new PlayerResource($player);
+        $resource->serverId = $data['server_id'];
+
+        return $resource;
     }
 
     /**

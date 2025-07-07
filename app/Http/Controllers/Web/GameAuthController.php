@@ -141,6 +141,7 @@ class GameAuthController extends Controller
             $player = $this->createPlayer($user->name, 'goonhub');
             $user->player_id = $player->id;
             $user->save();
+            $user->setRelation('player', $player);
         }
 
         $data = [

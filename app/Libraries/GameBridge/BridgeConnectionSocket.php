@@ -106,7 +106,7 @@ class BridgeConnectionSocket
             }
         }
         if ($this->lock) {
-            $this->lock->release();
+            $this->lock->forceRelease();
         }
     }
 
