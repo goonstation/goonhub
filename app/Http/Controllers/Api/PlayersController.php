@@ -36,7 +36,7 @@ class PlayersController extends Controller
             'byond_major' => 'nullable|integer',
             'byond_minor' => 'nullable|integer',
             'round_id' => 'nullable|integer|exists:game_rounds,id',
-            'server_id' => 'required|string',
+            'server_id' => 'nullable|string',
         ]);
 
         $player = Player::with([
