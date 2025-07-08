@@ -65,7 +65,10 @@ class PlayersController extends Controller
         }
 
         $resource = new PlayerResource($player);
-        $resource->serverId = $data['server_id'];
+
+        if (array_key_exists('server_id', $data)) {
+            $resource->serverId = $data['server_id'];
+        }
 
         return $resource;
     }
