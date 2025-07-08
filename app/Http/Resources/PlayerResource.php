@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin Player */
 class PlayerResource extends JsonResource
 {
-    public $serverId;
+    public $serverId = '';
 
     /**
      * Transform the resource into an array.

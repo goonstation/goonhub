@@ -236,7 +236,7 @@ class Player extends BaseModel
     protected function isAdmin(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->user->game_admin_id !== null,
+            get: fn () => $this->user?->game_admin_id !== null,
         );
     }
 
@@ -274,7 +274,7 @@ class Player extends BaseModel
 
         $servers = $whitelist->servers()->pluck('game_servers.server_id');
 
-        if ($servers->isEmpty() || $servers->contains($serverId)) {
+        if ($servers->isEmpty() || ($serverId && $servers->contains($serverId))) {
             return true;
         }
 
@@ -291,7 +291,7 @@ class Player extends BaseModel
 
         $servers = $bypassCap->servers()->pluck('game_servers.server_id');
 
-        if ($servers->isEmpty() || $servers->contains($serverId)) {
+        if ($servers->isEmpty() || ($serverId && $servers->contains($serverId))) {
             return true;
         }
 
