@@ -10,6 +10,10 @@
         {{ $page.props.flash.error }}
       </q-banner>
 
+      <DiscordRedirectButton>Register with Discord</DiscordRedirectButton>
+
+      <div class="q-mb-md text-center">Or register with email and password</div>
+
       <q-form @submit="submit">
         <q-input
           v-model="form.name"
@@ -92,6 +96,7 @@
 </template>
 
 <script setup>
+import DiscordRedirectButton from '@/Components/DiscordRedirectButton.vue'
 import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { useForm } from '@inertiajs/vue3'
 import { ionPersonAdd } from '@quasar/extras/ionicons-v6'
