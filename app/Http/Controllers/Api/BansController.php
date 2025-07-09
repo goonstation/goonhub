@@ -235,7 +235,7 @@ class BansController extends Controller
             $gameAdmin = GameAdmin::where('ckey', ckey($data['game_admin_ckey']))->first();
             $player = null;
             $ckey = isset($data['ckey']) ? ckey($data['ckey']) : null;
-            if ($data['player_id']) {
+            if (isset($data['player_id']) && $data['player_id']) {
                 $player = Player::find($data['player_id']);
             } elseif ($ckey) {
                 $player = Player::where('ckey', $ckey)->first();
