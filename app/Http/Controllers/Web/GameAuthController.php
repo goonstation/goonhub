@@ -168,7 +168,7 @@ class GameAuthController extends Controller
     {
         /** @var \SocialiteProviders\Discord\Provider */
         $driver = Socialite::driver('discord');
-        $driver->redirectUrl(route('game-auth.discord-callback'));
+        $driver = $driver->redirectUrl(route('game-auth.discord-callback'));
 
         return $driver->redirect();
     }
@@ -181,7 +181,7 @@ class GameAuthController extends Controller
 
         $user = null;
         try {
-            $user = $this->handleDiscordCallback();
+            $user = $this->handleDiscordCallback(route('game-auth.discord-callback'));
         } catch (ValidationException $e) {
             return redirect()->route('game-auth.show-login')->withErrors($e->errors());
         } catch (\Throwable $e) {

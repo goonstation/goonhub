@@ -17,7 +17,7 @@ class AuthController extends Controller
     {
         /** @var \SocialiteProviders\Discord\Provider */
         $driver = Socialite::driver('discord');
-        $driver->redirectUrl(route('auth.discord-callback'));
+        $driver = $driver->redirectUrl(route('auth.discord-callback'));
 
         return $driver->redirect();
     }
@@ -27,7 +27,7 @@ class AuthController extends Controller
         $user = null;
 
         try {
-            $user = $this->handleDiscordCallback();
+            $user = $this->handleDiscordCallback(route('auth.discord-callback'));
         } catch (ValidationException $e) {
             return redirect()->route('login')->withErrors($e->errors());
         } catch (\Throwable $e) {

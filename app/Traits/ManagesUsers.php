@@ -15,10 +15,12 @@ trait ManagesUsers
 {
     use ManagesPlayers;
 
-    private function handleDiscordCallback()
+    private function handleDiscordCallback(string $redirectUrl)
     {
         $user = null;
-        $discordUser = Socialite::driver('discord')->user();
+        /** @var \SocialiteProviders\Discord\Provider */
+        $driver = Socialite::driver('discord');
+        $discordUser = $driver->redirectUrl($redirectUrl)->user();
         $discordId = $discordUser->getId();
         $discordDetails = DiscordBot::export('goonhub/auth', 'GET', [
             'discord_id' => $discordId,
