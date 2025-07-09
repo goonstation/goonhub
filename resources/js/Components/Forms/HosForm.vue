@@ -26,7 +26,7 @@
         <div class="flex">
           <q-space />
           <q-btn
-            :label="(state === 'edit' ? 'Edit' : 'Add') + ' Heads of Staff'"
+            :label="(state === 'edit' ? 'Edit' : 'Add') + ' Heads of Security'"
             type="submit"
             color="primary"
             text-color="black"

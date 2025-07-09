@@ -46,14 +46,14 @@ class HosController extends Controller
         }
 
         return redirect()->route('admin.hos.index')
-            ->with('success', count($data['player_ids']).' Head(s) of Staff added successfully');
+            ->with('success', count($data['player_ids']).' Head(s) of Security added successfully');
     }
 
     public function destroy(PlayerHos $hos)
     {
         $hos->delete();
 
-        return ['message' => 'Head of Staff removed successfully'];
+        return ['message' => 'Head of Security removed successfully'];
     }
 
     public function destroyMulti(Request $request)
@@ -64,7 +64,7 @@ class HosController extends Controller
 
         PlayerHos::whereIn('id', $data['ids'])->delete();
 
-        return ['message' => 'Heads of Staff removed successfully'];
+        return ['message' => 'Heads of Security removed successfully'];
     }
 
     public function bulkToggle(Request $request)

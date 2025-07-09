@@ -176,7 +176,7 @@ Route::controller(MentorsController::class)->prefix('mentors')->group(function (
 
 Route::controller(HosController::class)->prefix('hos')->group(function () {
     Route::get('/', 'index')->name('admin.hos.index')
-        ->breadcrumbs(fn (Trail $trail) => $trail->push('Heads of Staff', 'admin.hos.index'));
+        ->breadcrumbs(fn (Trail $trail) => $trail->push('Heads of Security', 'admin.hos.index'));
     Route::get('/create', 'create')->name('admin.hos.create')
         ->breadcrumbs(fn (Trail $trail) => $trail->parent('admin.hos.index')->push('Create', 'admin.hos.create'));
     Route::post('/', 'store')->name('admin.hos.store');

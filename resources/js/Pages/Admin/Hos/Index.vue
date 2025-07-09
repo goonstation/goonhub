@@ -11,7 +11,7 @@ export default {
     HosTable,
   },
 
-  layout: (h, page) => h(DashboardLayout, { title: 'Heads of Staff' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Heads of Security' }, () => page),
 
   props: {
     hos: Object,

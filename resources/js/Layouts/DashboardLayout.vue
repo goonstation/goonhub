@@ -253,7 +253,7 @@ export default {
                 href: route('admin.mentors.index'),
               },
               {
-                label: 'Heads of Staff',
+                label: 'Heads of Security',
                 href: route('admin.hos.index'),
               },
               {

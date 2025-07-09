@@ -2,7 +2,7 @@
   <hos-form
     :fields="fields"
     :submit-route="$route('admin.hos.store')"
-    success-message="Heads of Staff added"
+    success-message="Heads of Security added"
   />
 </template>
 
@@ -15,7 +15,7 @@ export default {
     HosForm,
   },
 
-  layout: (h, page) => h(DashboardLayout, { title: 'Add Heads of Staff' }, () => page),
+  layout: (h, page) => h(DashboardLayout, { title: 'Add Heads of Security' }, () => page),
 
   data() {
     return {

@@ -5,7 +5,7 @@
     :columns="columns"
     :pagination="{ rowsPerPage: 30 }"
     selection="multiple"
-    create-button-text="Add Heads of Staff"
+    create-button-text="Add Heads of Security"
     flat
     dense
   >
