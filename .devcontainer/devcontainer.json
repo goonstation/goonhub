@@ -29,7 +29,8 @@
         "mrmlnc.vscode-scss",
         "Zignd.html-css-class-completion",
         "GitHub.vscode-github-actions",
-        "shufo.vscode-blade-formatter"
+        "shufo.vscode-blade-formatter",
+        "Gruntfuggly.todo-tree"
       ],
       "settings": {
         "extensions.verifySignature": false

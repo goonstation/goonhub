@@ -13,54 +13,70 @@
       <q-form @submit="submit">
         <q-input
           v-model="form.name"
+          class="q-mb-md"
           type="text"
           label="Name"
           autocomplete="name"
+          pattern="^[a-zA-Z0-9\s]+$"
+          title="The name can only contain letters, numbers, and spaces."
           filled
           lazy-rules
           required
           autofocus
-          :error="!!form.errors.name"
-          :error-message="form.errors.name"
+          hide-bottom-space
+          :error="!!form.errors.name || !!form.errors.ckey"
+          :error-message="form.errors.name || form.errors.ckey"
         />
 
         <q-input
           v-model="form.email"
+          class="q-mb-md"
           type="email"
           label="Email"
+          autocomplete="email"
           filled
           lazy-rules
           required
+          hide-bottom-space
           :error="!!form.errors.email"
           :error-message="form.errors.email"
         />
 
         <q-input
           v-model="form.password"
+          class="q-mb-md"
           type="password"
           label="Password"
           autocomplete="new-password"
           filled
           lazy-rules
           required
+          hide-bottom-space
           :error="!!form.errors.password"
           :error-message="form.errors.password"
         />
 
         <q-input
           v-model="form.password_confirmation"
+          class="q-mb-md"
           type="password"
           label="Confirm Password"
           autocomplete="new-password"
           filled
           lazy-rules
           required
+          hide-bottom-space
           :error="!!form.errors.password_confirmation"
           :error-message="form.errors.password_confirmation"
         />
 
         <div class="flex">
-          <Link :href="route('login')"> Already registered? </Link>
+          <q-btn
+            @click="$inertia.visit($route('login'))"
+            label="Already registered?"
+            color="primary"
+            flat
+          />
           <q-space />
           <q-btn
             label="Register"
@@ -75,42 +91,26 @@
   </q-card>
 </template>
 
-<script>
-import { ionPersonAdd } from '@quasar/extras/ionicons-v6'
-import { Link, useForm } from '@inertiajs/vue3'
+<script setup>
 import AuthLayout from '@/Layouts/AuthLayout.vue'
+import { useForm } from '@inertiajs/vue3'
+import { ionPersonAdd } from '@quasar/extras/ionicons-v6'
 
-export default {
+defineOptions({
   layout: (h, page) => h(AuthLayout, { title: 'Register' }, () => page),
+})
 
-  components: {
-    Link,
-  },
+const form = useForm({
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+  terms: false,
+})
 
-  setup() {
-    return {
-      ionPersonAdd
-    }
-  },
-
-  data() {
-    return {
-      form: useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
-        terms: false,
-      }),
-    }
-  },
-
-  methods: {
-    submit() {
-      this.form.post(route('register'), {
-        onFinish: () => this.form.reset('password', 'password_confirmation'),
-      })
-    },
-  },
+const submit = () => {
+  form.post(route('register'), {
+    onFinish: () => form.reset('password', 'password_confirmation'),
+  })
 }
 </script>

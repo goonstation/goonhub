@@ -12,7 +12,7 @@
           <Link :href="$route('dashboard')" class="dashboard-login site-nav__item q-pa-sm">
             <div class="site-nav__label">
               <q-icon :name="ionLogInOutline" size="2em" />
-              Admin Login
+              Dashboard
             </div>
           </Link>
         </div>

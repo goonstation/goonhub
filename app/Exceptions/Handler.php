@@ -62,11 +62,6 @@ class Handler extends ExceptionHandler
             ], $status);
         }
 
-        if ($this->isHttpException($e)) {
-            /** @var \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface $e */
-            return $this->renderHttpException($e);
-        } else {
-            return parent::render($request, $e);
-        }
+        return parent::render($request, $e);
     }
 }

@@ -24,4 +24,28 @@ trait ManagesPlayers
 
         return $player;
     }
+
+    /**
+     * Create a player with a given key, or with a unique suffix if the key is already taken.
+     */
+    private function createPlayer(string $key, string $suffixKey = 'byond'): Player
+    {
+        $attempts = 0;
+        $canCreatePlayer = false;
+        $key = Player::AUTH_SUFFIXES[$suffixKey] ? $key.'-'.Player::AUTH_SUFFIXES[$suffixKey] : $key;
+        $keyToCreate = null;
+        while (! $canCreatePlayer && $attempts < 10) {
+            $keyToCreate = $key.rand(100, 999);
+            $canCreatePlayer = Player::where('ckey', ckey($keyToCreate))->doesntExist();
+            $attempts++;
+        }
+
+        if (! $canCreatePlayer) {
+            throw new \Exception('Failed to create player');
+        }
+
+        return Player::withoutAuditing(function () use ($keyToCreate) {
+            return Player::create(['ckey' => ckey($keyToCreate), 'key' => $keyToCreate]);
+        });
+    }
 }

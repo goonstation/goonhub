@@ -3,8 +3,9 @@
 namespace App\Http\Requests\GameAuth;
 
 use App\Actions\Fortify\PasswordValidationRules;
-use App\Http\Controllers\Web\GameAuthController;
+use App\Models\Player;
 use Illuminate\Foundation\Http\FormRequest;
+use Laravel\Jetstream\Jetstream;
 
 class RegisterRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class RegisterRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        $suffix = GameAuthController::AUTH_SUFFIXES['goonhub'];
+        $suffix = Player::AUTH_SUFFIXES['goonhub'];
         $this->merge([
             'ckey' => ckey($this->name.$suffix),
             'email' => strtolower($this->email),
@@ -44,6 +45,7 @@ class RegisterRequest extends FormRequest
             'ckey' => ['required', 'unique:players,ckey'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => $this->passwordRules(),
+            'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ];
     }
 

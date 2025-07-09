@@ -21,7 +21,7 @@ class ApiSanctumGuard extends SanctumGuard
             $model = Sanctum::$personalAccessTokenModel;
             $accessToken = $model::findToken($token);
             /** @var \App\Models\User */
-            $user = $accessToken->tokenable;
+            $user = $accessToken?->tokenable;
 
             if (! $this->isValidAccessToken($accessToken) ||
                 ! $this->supportsTokens($user)) {

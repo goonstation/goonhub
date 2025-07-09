@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read mixed $has_imported_medals
  * @property-read \App\Models\PlayerHos|null $hos
  * @property-read \App\Models\PlayerMedalsImported|null $importedMedals
+ * @property-read mixed $is_admin
  * @property-read mixed $is_hos
  * @property-read mixed $is_mentor
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\JobBan> $jobBans
@@ -72,6 +73,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Player extends BaseModel
 {
     use Filterable, HasFactory, HasOpenGraphData;
+
+    const AUTH_SUFFIXES = [
+        'byond' => '',
+        'goonhub' => 'G',
+        'discord' => 'D',
+    ];
 
     protected $fillable = [
         'id',

@@ -29,6 +29,12 @@
         />
 
         <div class="flex q-mt-sm">
+          <q-btn
+            @click="$inertia.visit($route('login'))"
+            label="Back to Login"
+            color="primary"
+            flat
+          />
           <q-space />
           <q-btn
             label="Email Password Reset Link"
@@ -44,9 +50,9 @@
 </template>
 
 <script>
+import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { useForm } from '@inertiajs/vue3'
 import { ionHelpCircle } from '@quasar/extras/ionicons-v6'
-import AuthLayout from '@/Layouts/AuthLayout.vue'
 
 export default {
   layout: (h, page) => h(AuthLayout, { title: 'Forgot Password' }, () => page),

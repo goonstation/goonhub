@@ -13,7 +13,7 @@
         {{ $page.props.flash.error }}
       </q-banner>
 
-      <a :href="route('auth.redirect')" class="login-discord q-mb-md rounded-borders">
+      <a :href="$route('auth.discord-redirect')" class="login-discord q-mb-md rounded-borders">
         <q-icon :name="ionLogoDiscord" size="30px" class="q-mr-sm" />
         Login with Discord
       </a>
@@ -52,12 +52,18 @@
         <div class="flex items-center q-mb-md">
           <q-toggle v-model="form.remember" label="Remember me" />
           <q-space />
-          <Link v-if="canResetPassword" :href="route('password.request')">
+          <Link v-if="canResetPassword" :href="$route('password.request')">
             Forgot your password?
           </Link>
         </div>
 
         <div class="flex">
+          <q-btn
+            @click="$inertia.visit($route('register'))"
+            label="Create Account"
+            color="primary"
+            flat
+          />
           <q-space />
           <q-btn
             label="Log In"
@@ -73,7 +79,7 @@
 </template>
 
 <style lang="scss" scoped>
-@use "sass:color";
+@use 'sass:color';
 
 .login-discord {
   display: block;
@@ -93,9 +99,9 @@
 </style>
 
 <script>
+import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { useForm } from '@inertiajs/vue3'
 import { ionLogIn, ionLogoDiscord } from '@quasar/extras/ionicons-v6'
-import AuthLayout from '@/Layouts/AuthLayout.vue'
 
 export default {
   layout: (h, page) => h(AuthLayout, { title: 'Login' }, () => page),

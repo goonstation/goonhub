@@ -59,8 +59,8 @@ Route::controller(HomeController::class)->prefix('/')->group(function () {
 });
 
 Route::controller(AuthController::class)->prefix('/auth')->group(function () {
-    Route::get('/redirect', 'redirect')->name('auth.redirect');
-    Route::get('/callback', 'callback')->name('auth.callback');
+    Route::get('/discord-redirect', 'discordRedirect')->name('auth.discord-redirect');
+    Route::get('/discord-callback', 'discordCallback')->name('auth.discord-callback');
 });
 
 Route::controller(GameAuthController::class)->prefix('/game-auth')

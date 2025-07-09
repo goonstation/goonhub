@@ -3,36 +3,39 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use App\Traits\ManagesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    public function redirect()
+    use ManagesUsers;
+
+    public function discordRedirect()
     {
-        return Socialite::driver('discord')->redirect();
+        /** @var \SocialiteProviders\Discord\Provider */
+        $driver = Socialite::driver('discord');
+        $driver->redirectUrl(route('auth.discord-callback'));
+
+        return $driver->redirect();
     }
 
-    public function callback()
+    public function discordCallback()
     {
         $user = null;
+
         try {
-            $discordUser = Socialite::driver('discord')->user();
-            $user = User::where('discord_id', $discordUser->getId())->first();
-        } catch (\Exception $e) {
-            // pass
+            $user = $this->handleDiscordCallback();
+        } catch (ValidationException $e) {
+            return redirect()->route('login')->withErrors($e->errors());
+        } catch (\Throwable $e) {
+            return redirect()->route('login')->withErrors([$e->getMessage()]);
         }
 
-        if ($user) {
-            Auth::login($user, true);
+        Auth::login($user, true);
 
-            return redirect(RouteServiceProvider::HOME);
-        } else {
-            // No user exists for this discord account, tell them their login failed
-            return redirect('/login')
-                ->with('error', 'Unable to login with Discord, please try again.');
-        }
+        return redirect(RouteServiceProvider::HOME);
     }
 }

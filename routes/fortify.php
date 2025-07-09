@@ -73,8 +73,13 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
                 ->name('register');
         }
 
+        $registerLimiter = config('fortify.limiters.register');
+
         Route::post(RoutePath::for('register', '/register'), [RegisteredUserController::class, 'store'])
-            ->middleware(['guest:'.config('fortify.guard')]);
+            ->middleware(array_filter([
+                'guest:'.config('fortify.guard'),
+                $registerLimiter ? 'throttle:'.$registerLimiter : null,
+            ]));
     }
 
     // Email Verification...

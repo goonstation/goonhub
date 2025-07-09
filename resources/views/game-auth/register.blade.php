@@ -12,7 +12,8 @@
 
     <fieldset>
       <input type="text" name="name" placeholder="Username" value="{{ old('name') }}"
-        maxlength="255" required />
+        maxlength="255" pattern="^[a-zA-Z0-9\s]+$"
+        title="The username can only contain letters, numbers, and spaces." required />
     </fieldset>
 
     <fieldset>
