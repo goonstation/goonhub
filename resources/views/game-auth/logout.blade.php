@@ -20,9 +20,15 @@
     </div>
   </div>
 
-  @if ($ref)
-    <script>
+  <script>
+    @if ($ref)
       window.location = 'byond://?src={{ $ref }};logout=1';
-    </script>
-  @endif
+      const message = [
+        'Logged out',
+        'You have been logged out. Goodbye!'
+      ]
+      window.location =
+        `byond://winset?command=.output browseroutput:showAuthMessage "${encodeURIComponent(message.join('&'))}"`;
+    @endif
+  </script>
 </x-game-auth-layout>
