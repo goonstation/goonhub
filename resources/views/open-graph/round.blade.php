@@ -16,12 +16,14 @@
           {{ $data->mapRecord->name ?? $data->map }}
         </div>
       </div>
-      <div class="footer">
-        <div>
-          {!! File::get(resource_path('img/icons/calendar-outline.svg')) !!}
-          {{ $data->created_at->format('D, M j, Y g:i A e') }}
+      @if ($data->created_at)
+        <div class="footer">
+          <div>
+            {!! File::get(resource_path('img/icons/calendar-outline.svg')) !!}
+            {{ $data->created_at->format('D, M j, Y g:i A e') }}
+          </div>
         </div>
-      </div>
+      @endif
     </div>
     <div class="logo">
       <img src="@base64img(resource_path('img/logo.png'))" width="200" height="200" />
