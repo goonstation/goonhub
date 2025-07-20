@@ -15,11 +15,20 @@ class DatabaseSeeder extends SeederOnce
      */
     public function run()
     {
-        $seeders = scandir(dirname(__FILE__));
-        foreach ($seeders as $file) {
-            if ($file !== 'DatabaseSeeder.php' && $file[0] !== '.') {
-                $this->call('Database\Seeders\\'.explode('.', $file)[0]);
-            }
-        }
+        $production = [
+            DiscordSettingSeeder::class,
+            GameServerSeeder::class,
+            MapSeeder::class,
+            GameRoundSeeder::class,
+            GameAdminRankSeeder::class,
+        ];
+
+        $development = [
+            ...$production,
+            PlayerSeeder::class,
+        ];
+
+        $seeders = app()->isProduction() ? $production : $development;
+        $this->call($seeders);
     }
 }

@@ -20,8 +20,11 @@ class GameRoundFactory extends Factory
             'server_id' => $this->faker->randomElement(['main1', 'main2', 'main3', 'main4']),
             'map' => $this->faker->randomElement(['COGMAP', 'COGMAP2', 'DESTINY', 'OSHAN']),
             'game_type' => $this->faker->randomElement(['secret', 'mixed', 'extended']),
+            'rp_mode' => false,
             'crashed' => false,
             'ended_at' => null,
+            'created_at' => null,
+            'updated_at' => null,
         ];
     }
 }

@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Player;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Player>
@@ -25,12 +24,18 @@ class PlayerFactory extends Factory
      */
     public function definition(): array
     {
-        $ckey = Str::random(10);
+        $name = $this->faker->unique()->firstName();
+
+        $byondMajor = $this->faker->randomElement([515, 516]);
+        $byondMinor = $byondMajor === 515 ? $this->faker->numberBetween(1589, 1648) : $this->faker->numberBetween(1647, 1667);
 
         return [
-            'ckey' => $ckey,
-            'key' => Str::ucfirst($ckey),
-            'byond_join_date' => now(),
+            'ckey' => ckey($name),
+            'key' => $name,
+            'byond_join_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'byond_major' => $byondMajor,
+            'byond_minor' => $byondMinor,
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\PlayerConnection;
+use GeoIp2\Database\Reader;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,9 +25,21 @@ class PlayerConnectionFactory extends Factory
      */
     public function definition(): array
     {
+        $ip = $this->faker->ipv4();
+        $geoRecord = null;
+        try {
+            $geoReader = new Reader(storage_path('app').'/GeoLite2/GeoLite2-Country.mmdb');
+            $geoRecord = $geoReader->country($ip);
+        } catch (\Throwable $e) {
+            // pass
+        }
+
         return [
-            'ip' => $this->faker->ipv4(),
+            'ip' => $ip,
             'comp_id' => $this->faker->numberBetween(10000000, 99999999),
+            'country' => $geoRecord ? $geoRecord->country->name : null,
+            'country_iso' => $geoRecord ? $geoRecord->country->isoCode : null,
+            'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];
     }
 }
