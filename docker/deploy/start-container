@@ -4,10 +4,10 @@ set -e
 if [ "$1" != "" ]; then
     exec "$@"
 else
-    php artisan optimize:clear
     php artisan optimize
     php artisan migrate --seed --force
     php artisan gh:generate-sitemap
+    php artisan gh:update-geo-lite
 
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.app.conf
 fi

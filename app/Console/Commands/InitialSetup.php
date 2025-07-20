@@ -38,6 +38,8 @@ class InitialSetup extends Command
 
         $this->call('storage:link');
 
+        $this->call('gh:update-geo-lite');
+
         // User creation
 
         $this->info('Create your admin user');
