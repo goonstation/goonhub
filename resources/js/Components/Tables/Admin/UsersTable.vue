@@ -10,11 +10,6 @@
     <template v-slot:cell-content-profile_photo_url="{ props }">
       <user-avatar :user="props.row" />
     </template>
-    <template v-slot:cell-content-all_teams="{ props }">
-      <q-chip v-for="team in props.row.all_teams" color="grey-9" class="text-sm">
-        {{ team.name }}
-      </q-chip>
-    </template>
   </base-table>
 </template>
 
@@ -42,7 +37,6 @@ export default {
         { name: 'profile_photo_url', label: 'Avatar', field: 'profile_photo_url' },
         { name: 'name', label: 'Name', field: 'name', sortable: true },
         { name: 'email', label: 'Email', field: 'email', sortable: true },
-        { name: 'all_teams', label: 'Teams', field: 'all_teams', filterable: false },
         {
           name: 'created_at',
           label: 'Created',

@@ -1,7 +1,8 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
-import { router, useForm, usePage } from '@inertiajs/vue3'
+import Alert from '@/Components/Alert.vue'
 import ConfirmsPassword from '@/Components/ConfirmsPassword.vue'
+import { router, useForm, usePage } from '@inertiajs/vue3'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   requiresConfirmation: Boolean,
@@ -18,7 +19,9 @@ const confirmationForm = useForm({
   code: '',
 })
 
-const twoFactorEnabled = computed(() => !enabling.value && usePage().props.auth.user?.two_factor_enabled)
+const twoFactorEnabled = computed(
+  () => !enabling.value && usePage().props.auth.user?.two_factor_enabled
+)
 
 watch(twoFactorEnabled, () => {
   if (!twoFactorEnabled.value) {
@@ -93,48 +96,92 @@ const disableTwoFactorAuthentication = () => {
 </script>
 
 <template>
-  <q-card flat>
-    <q-card-section>
-      <h4 v-if="twoFactorEnabled && !confirming" class="text-lg q-mt-none q-mb-md">
-        You have enabled two factor authentication.
-      </h4>
-
-      <h4 v-else-if="twoFactorEnabled && confirming" class="text-lg q-mt-none q-mb-md">
-        Finish enabling two factor authentication.
-      </h4>
-
-      <h4 v-else class="text-lg q-mt-none q-mb-md">
-        You have not enabled two factor authentication.
-      </h4>
-
+  <Alert v-if="twoFactorEnabled && !confirming" type="positive">
+    <div class="flex items-center justify-between gap-xs-sm">
+      <span>You have enabled two factor authentication.</span>
+      <div class="flex gap-xs-sm">
+        <ConfirmsPassword v-if="recoveryCodes.length > 0" @confirmed="regenerateRecoveryCodes">
+          <q-btn
+            label="Regenerate Recovery Codes"
+            type="button"
+            color="positive"
+            class="text-sm q-px-sm q-py-xs"
+            flat
+          />
+        </ConfirmsPassword>
+        <ConfirmsPassword v-if="recoveryCodes.length === 0" @confirmed="showRecoveryCodes">
+          <q-btn
+            label="Show Recovery Codes"
+            type="button"
+            color="positive"
+            class="text-sm q-px-sm q-py-xs"
+            flat
+          />
+        </ConfirmsPassword>
+        <ConfirmsPassword @confirmed="disableTwoFactorAuthentication">
+          <q-btn
+            label="Disable"
+            type="button"
+            color="negative"
+            class="text-sm text-weight-medium q-px-sm q-py-xs"
+            :loading="disabling"
+            flat
+          />
+        </ConfirmsPassword>
+      </div>
+    </div>
+    <template v-if="recoveryCodes.length > 0" #bottom>
       <div class="text-body2">
         <p>
-          When two factor authentication is enabled, you will be prompted for a secure, random token
-          during authentication. You may retrieve this token from your phone's Google Authenticator
-          application.
+          Store these recovery codes in a secure password manager. They can be used to recover
+          access to your account if your two factor authentication device is lost.
         </p>
       </div>
 
-      <div v-if="twoFactorEnabled">
-        <div v-if="qrCode">
+      <div class="q-pa-md text-sm rounded-lg bg-grey-10">
+        <div v-for="code in recoveryCodes" :key="code" class="q-my-xs">
+          {{ code }}
+        </div>
+      </div>
+    </template>
+  </Alert>
+
+  <Alert v-else type="warning">
+    <div class="flex items-center justify-between gap-xs-sm">
+      <span v-if="confirming">Finish enabling two factor authentication.</span>
+      <span v-else>You have not enabled two factor authentication.</span>
+      <div v-if="!confirming">
+        <ConfirmsPassword @confirmed="enableTwoFactorAuthentication">
+          <q-btn
+            label="Enable"
+            type="button"
+            color="warning"
+            class="text-sm q-px-md q-py-xs"
+            :loading="enabling"
+            outline
+          />
+        </ConfirmsPassword>
+      </div>
+    </div>
+    <template #bottom>
+      <div v-if="twoFactorEnabled && qrCode" class="flex items-center no-wrap gap-xs-lg">
+        <div
+          v-html="qrCode"
+          class="q-pa-xs bg-white bordered inline-block rounded-borders self-start"
+          style="line-height: 1"
+        />
+
+        <div>
           <div class="text-body2">
             <p v-if="confirming">
-              To finish enabling two factor authentication, scan the following QR code using your
-              phone's authenticator application or enter the setup key and provide the generated OTP
-              code.
+              To finish enabling two factor authentication, scan the QR code using your phone's
+              authenticator application or enter the setup key and provide the generated OTP code.
             </p>
-
             <p v-else>
               Two factor authentication is now enabled. Scan the following QR code using your
               phone's authenticator application or enter the setup key.
             </p>
           </div>
-
-          <div
-            v-html="qrCode"
-            class="q-pa-xs bg-white bordered inline-block rounded-borders"
-            style="line-height: 1"
-          />
 
           <div v-if="setupKey" class="q-mt-sm text-sm">
             <p>Setup Key: <span v-html="setupKey"></span></p>
@@ -156,95 +203,39 @@ const disableTwoFactorAuthentication = () => {
               :error-message="confirmationForm.errors.code"
             />
           </div>
-        </div>
 
-        <div v-if="recoveryCodes.length > 0 && !confirming">
-          <div class="text-body2">
-            <p>
-              Store these recovery codes in a secure password manager. They can be used to recover
-              access to your account if your two factor authentication device is lost.
-            </p>
-          </div>
-
-          <div class="q-pa-md text-sm rounded-lg bg-grey-10">
-            <div v-for="code in recoveryCodes" :key="code" class="q-my-xs">
-              {{ code }}
-            </div>
+          <div class="flex gap-xs-sm">
+            <q-space />
+            <ConfirmsPassword @confirmed="disableTwoFactorAuthentication">
+              <q-btn
+                label="Cancel"
+                type="button"
+                color="grey"
+                class="text-sm q-px-md q-py-xs"
+                :loading="disabling"
+                outline
+              />
+            </ConfirmsPassword>
+            <ConfirmsPassword @confirmed="confirmTwoFactorAuthentication">
+              <q-btn
+                label="Confirm"
+                type="button"
+                color="warning"
+                class="text-sm q-px-md q-py-xs"
+                :loading="enabling"
+                outline
+              />
+            </ConfirmsPassword>
           </div>
         </div>
       </div>
-
-      <div class="q-mt-lg">
-        <div v-if="!twoFactorEnabled">
-          <ConfirmsPassword @confirmed="enableTwoFactorAuthentication">
-            <q-btn
-              label="Enable"
-              type="button"
-              color="primary"
-              text-color="black"
-              :loading="enabling"
-            />
-          </ConfirmsPassword>
-        </div>
-
-        <div v-else>
-          <ConfirmsPassword @confirmed="confirmTwoFactorAuthentication">
-            <q-btn
-              v-if="confirming"
-              label="Confirm"
-              type="button"
-              color="primary"
-              text-color="black"
-              class="q-mr-sm"
-              :loading="enabling"
-            />
-          </ConfirmsPassword>
-
-          <ConfirmsPassword @confirmed="regenerateRecoveryCodes">
-            <q-btn
-              v-if="recoveryCodes.length > 0 && !confirming"
-              label="Regenerate Recovery Codes"
-              type="button"
-              color="grey"
-              class="q-mr-sm"
-              outline
-            />
-          </ConfirmsPassword>
-
-          <ConfirmsPassword @confirmed="showRecoveryCodes">
-            <q-btn
-              v-if="recoveryCodes.length === 0 && !confirming"
-              label="Show Recovery Codes"
-              type="button"
-              color="grey"
-              class="q-mr-sm"
-              outline
-            />
-          </ConfirmsPassword>
-
-          <ConfirmsPassword @confirmed="disableTwoFactorAuthentication">
-            <q-btn
-              v-if="confirming"
-              label="Cancel"
-              type="button"
-              color="grey"
-              outline
-              :loading="disabling"
-            />
-          </ConfirmsPassword>
-
-          <ConfirmsPassword @confirmed="disableTwoFactorAuthentication">
-            <q-btn
-              v-if="!confirming"
-              label="Disable"
-              type="button"
-              color="negative"
-              outline
-              :loading="disabling"
-            />
-          </ConfirmsPassword>
-        </div>
+      <div v-else class="text-body2">
+        <p class="q-mb-none">
+          When two factor authentication is enabled, you will be prompted for a secure, random token
+          during authentication. You may retrieve this token from your phone's Google Authenticator
+          application.
+        </p>
       </div>
-    </q-card-section>
-  </q-card>
+    </template>
+  </Alert>
 </template>

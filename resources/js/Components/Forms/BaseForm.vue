@@ -6,7 +6,7 @@ export default {
     state: {
       type: String,
       required: false,
-      default: 'create'
+      default: 'create',
     },
     fields: {
       type: Object,
@@ -20,7 +20,7 @@ export default {
     submitMethod: {
       type: String,
       required: false,
-      default: 'post'
+      default: 'post',
     },
     successMessage: {
       type: String,
@@ -60,9 +60,9 @@ export default {
             message: error,
             color: 'negative',
           })
-        }
+        },
       })
-    }
-  }
+    },
+  },
 }
 </script>

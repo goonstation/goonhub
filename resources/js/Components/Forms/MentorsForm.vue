@@ -8,6 +8,7 @@
               v-model="form.player_ids"
               class="q-mb-md"
               label="Players"
+              search-key="ckey"
               filled
               lazy-rules
               emit-value

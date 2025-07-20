@@ -24,7 +24,7 @@
     <template v-slot:body-cell-status="props">
       <q-td :props="props">
         <q-badge v-if="props.row.deleted_at" color="negative"> Removed </q-badge>
-        <q-badge v-else-if="isBanExpired(props.row.expires_at)" color="warning" text-color="black">
+        <q-badge v-else-if="isBanExpired(props.row.expires_at)" color="primary" text-color="black">
           Expired
         </q-badge>
       </q-td>

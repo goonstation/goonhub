@@ -1,106 +1,99 @@
 <template>
-  <div>
-    <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-      <div class="row q-col-gutter-sm">
-        <div class="col-12 col-md-4">
-          <h3 class="q-mb-sm text-h6">Profile Information</h3>
-          <div class="q-mb-md">Update your account's profile information and email address.</div>
-        </div>
-        <div class="col-12 col-md-8">
-          <UpdateProfileInformationForm :user="$page.props.auth.user" />
-        </div>
-      </div>
-    </div>
+  <div class="q-mx-auto q-mt-md" style="width: 100%; max-width: 800px">
+    <Alert v-if="page.props.flash.error" type="negative" class="q-mb-md">
+      <span class="text-weight-medium">{{ page.props.flash.error }}</span>
+    </Alert>
 
-    <div v-if="$page.props.jetstream.canUpdatePassword" class="q-mt-lg">
-      <div class="row q-col-gutter-sm">
-        <div class="col-12 col-md-4">
-          <h3 class="q-mb-sm text-h6">Update Password</h3>
-          <div class="q-mb-md">
-            Ensure your account is using a long, random password to stay secure.
-          </div>
-        </div>
-        <div class="col-12 col-md-8">
-          <UpdatePasswordForm />
-        </div>
-      </div>
-    </div>
+    <Alert v-if="page.props.flash.success" :opacity="20" type="positive" class="q-mb-md">
+      <span class="text-weight-medium">{{ page.props.flash.success }}</span>
+    </Alert>
 
-    <div
+    <q-card v-if="$page.props.jetstream.canUpdateProfileInformation" class="gh-card q-mb-md" flat>
+      <div class="gh-card__header q-pa-md bordered">
+        <span>Profile Information</span>
+      </div>
+      <q-card-section>
+        <UpdateProfileInformationForm :user="$page.props.auth.user" />
+      </q-card-section>
+    </q-card>
+
+    <q-card class="gh-card q-mb-md" flat>
+      <div class="gh-card__header q-pa-md bordered">
+        <span>Connections</span>
+      </div>
+      <q-card-section>
+        <LinkByond class="q-mb-md" />
+        <LinkDiscord />
+      </q-card-section>
+    </q-card>
+
+    <q-card v-if="$page.props.jetstream.canUpdatePassword" class="gh-card q-mb-md" flat>
+      <div class="gh-card__header q-pa-md bordered">
+        <span>Update Password</span>
+      </div>
+      <q-card-section>
+        <UpdatePasswordForm />
+      </q-card-section>
+    </q-card>
+
+    <q-card
       v-if="$page.props.jetstream.canManageTwoFactorAuthentication && isGameAdmin"
-      class="q-mt-lg"
+      class="gh-card"
+      flat
     >
-      <div class="row q-col-gutter-sm">
-        <div class="col-12 col-md-4">
-          <h3 class="q-mb-sm text-h6">Two Factor Authentication</h3>
-          <div class="q-mb-md">
-            Add additional security to your account using two factor authentication.
-          </div>
-        </div>
-        <div class="col-12 col-md-8">
-          <TwoFactorAuthenticationForm :requires-confirmation="confirmsTwoFactorAuthentication" />
-        </div>
+      <div class="gh-card__header q-pa-md bordered">
+        <span>Two Factor Authentication</span>
       </div>
-    </div>
+      <q-card-section>
+        <TwoFactorAuthenticationForm :requires-confirmation="confirmsTwoFactorAuthentication" />
+      </q-card-section>
+    </q-card>
 
-    <div class="row q-col-gutter-sm q-mt-lg">
-      <div class="col-12 col-md-4">
-        <h3 class="q-mb-sm text-h6">Browser Sessions</h3>
-        <div class="q-mb-md">
-          Manage and log out your active sessions on other browsers and devices.
-        </div>
+    <!-- <q-card class="gh-card q-mb-md" flat>
+      <div class="gh-card__header q-pa-md bordered">
+        <span>Browser Sessions</span>
       </div>
-      <div class="col-12 col-md-8">
+      <q-card-section>
         <LogoutOtherBrowserSessionsForm :sessions="sessions" />
-      </div>
-    </div>
+      </q-card-section>
+    </q-card> -->
 
-    <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-      <div class="row q-col-gutter-sm q-mt-lg">
-        <div class="col-12 col-md-4">
-          <h3 class="q-mb-sm text-h6">Delete Account</h3>
-          <div class="q-mb-md">
-            Once your account is deleted, all of its resources and data will be permanently deleted.
-            Before deleting your account, please download any data or information that you wish to
-            retain.
-          </div>
-        </div>
-        <div class="col-12 col-md-8">
-          <DeleteUserForm />
-        </div>
+    <!-- <q-card v-if="$page.props.jetstream.hasAccountDeletionFeatures" class="gh-card" flat>
+      <div class="gh-card__header q-pa-md bordered">
+        <span>Delete Account</span>
       </div>
-    </template>
+      <q-card-section>
+        <DeleteUserForm />
+      </q-card-section>
+    </q-card> -->
   </div>
 </template>
 
-<script>
+<script setup>
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
-import DeleteUserForm from './Partials/DeleteUserForm.vue'
-import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
+import { usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
+// import DeleteUserForm from './Partials/DeleteUserForm.vue'
+// import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
+import Alert from '@/Components/Alert.vue'
+import LinkByond from './Partials/LinkByond.vue'
+import LinkDiscord from './Partials/LinkDiscord.vue'
 import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue'
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue'
 
-export default {
-  components: {
-    DeleteUserForm,
-    LogoutOtherBrowserSessionsForm,
-    TwoFactorAuthenticationForm,
-    UpdatePasswordForm,
-    UpdateProfileInformationForm,
-  },
-
-  props: {
-    confirmsTwoFactorAuthentication: Boolean,
-    sessions: Array,
-  },
-
+defineOptions({
   layout: (h, page) => h(DashboardLayout, { title: 'Profile' }, () => page),
+})
 
-  computed: {
-    isGameAdmin() {
-      return !!this.$page.props.auth.user.game_admin_id || !!this.$page.props.auth.user.is_admin
-    },
-  },
-}
+defineProps({
+  confirmsTwoFactorAuthentication: Boolean,
+  sessions: Array,
+})
+
+const page = usePage()
+
+const isGameAdmin = computed(() => {
+  return !!page.props.auth.user.game_admin_id || !!page.props.auth.user.is_admin
+})
 </script>

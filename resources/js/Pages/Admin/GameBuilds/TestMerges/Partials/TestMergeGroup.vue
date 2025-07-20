@@ -127,7 +127,7 @@
     <q-dialog v-model="updateAllCommitsOpened">
       <q-card flat bordered>
         <q-card-section class="row items-center no-wrap">
-          <q-avatar :icon="ionInformationCircleOutline" color="warning" text-color="dark" />
+          <q-avatar :icon="ionInformationCircleOutline" color="primary" text-color="dark" />
           <span class="q-ml-sm"
             >Are you sure you want to update the commit to latest for all test merges on pull
             request #{{ prId }}?</span
@@ -139,7 +139,7 @@
           <q-btn
             flat
             label="Confirm"
-            color="warning"
+            color="primary"
             @click="updateAllCommits"
             :loading="loadingUpdateCommits"
           />

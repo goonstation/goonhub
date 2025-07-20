@@ -301,11 +301,19 @@ export default {
           },
           {
             label: 'Site',
-            match: [route('admin.audit.index'), route('admin.redirects.index')],
+            match: [
+              route('admin.audit.index'),
+              route('admin.discord-settings.index'),
+              route('admin.redirects.index'),
+            ],
             children: [
               {
                 label: 'Audit Logs',
                 href: route('admin.audit.index'),
+              },
+              {
+                label: 'Discord Settings',
+                href: route('admin.discord-settings.index'),
               },
               {
                 label: 'Redirects',

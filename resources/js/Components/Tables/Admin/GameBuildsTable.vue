@@ -43,7 +43,7 @@
         v-else-if="props.row.cancelled"
         class="q-my-none"
         style="padding: 0 6px"
-        color="warning"
+        color="primary"
         size="0.8em"
         outline
         square

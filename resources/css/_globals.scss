@@ -1,4 +1,4 @@
-@use "sass:color";
+@use 'sass:color';
 
 a {
   text-decoration: none;
@@ -27,31 +27,106 @@ a {
   }
 }
 
-.text-xs { font-size: 0.75em; }
-.text-sm { font-size: 0.9em; }
-.text-md { font-size: 1em; }
-.text-lg { font-size: 1.5em; }
-.text-xl { font-size: 2em; }
+.text-xs {
+  font-size: 0.75em;
+}
+.text-sm {
+  font-size: 0.9em;
+}
+.text-md {
+  font-size: 1em;
+}
+.text-lg {
+  font-size: 1.5em;
+}
+.text-xl {
+  font-size: 2em;
+}
 
-.opacity-20 { opacity: 0.2; }
-.opacity-40 { opacity: 0.4; }
-.opacity-60 { opacity: 0.6; }
-.opacity-80 { opacity: 0.8; }
-.opacity-100 { opacity: 1; }
+.opacity-20 {
+  opacity: 0.2;
+}
+.opacity-40 {
+  opacity: 0.4;
+}
+.opacity-60 {
+  opacity: 0.6;
+}
+.opacity-80 {
+  opacity: 0.8;
+}
+.opacity-100 {
+  opacity: 1;
+}
 
-.text-opacity-20 { color: color-mix(in srgb, currentColor 20%, transparent); }
-.text-opacity-40 { color: color-mix(in srgb, currentColor 40%, transparent); }
-.text-opacity-60 { color: color-mix(in srgb, currentColor 60%, transparent); }
-.text-opacity-80 { color: color-mix(in srgb, currentColor 80%, transparent); }
-.text-opacity-100 { color: color-mix(in srgb, currentColor 100%, transparent); }
+.text-opacity-20 {
+  color: color-mix(in srgb, currentColor 20%, transparent);
+}
+.text-opacity-40 {
+  color: color-mix(in srgb, currentColor 40%, transparent);
+}
+.text-opacity-60 {
+  color: color-mix(in srgb, currentColor 60%, transparent);
+}
+.text-opacity-80 {
+  color: color-mix(in srgb, currentColor 80%, transparent);
+}
+.text-opacity-100 {
+  color: color-mix(in srgb, currentColor 100%, transparent);
+}
 
-.flex-grow { flex-grow: 1; }
-.flex-grow-none { flex-grow: 0; }
+.bg-opacity-20 {
+  background-color: color-mix(in srgb, currentColor 20%, transparent) !important;
+}
+.bg-opacity-40 {
+  background-color: color-mix(in srgb, currentColor 40%, transparent) !important;
+}
+.bg-opacity-60 {
+  background-color: color-mix(in srgb, currentColor 60%, transparent) !important;
+}
+.bg-opacity-80 {
+  background-color: color-mix(in srgb, currentColor 80%, transparent) !important;
+}
+.bg-opacity-100 {
+  background-color: color-mix(in srgb, currentColor 100%, transparent) !important;
+}
 
-.bordered { border: 1px solid; }
-.break-all { word-break: break-all; }
-.gh-sprite { image-rendering: pixelated; }
-.relative { position: relative; }
+.border-opacity-20 {
+  border-color: color-mix(in srgb, currentColor 20%, transparent);
+}
+.border-opacity-40 {
+  border-color: color-mix(in srgb, currentColor 40%, transparent);
+}
+.border-opacity-60 {
+  border-color: color-mix(in srgb, currentColor 60%, transparent);
+}
+.border-opacity-80 {
+  border-color: color-mix(in srgb, currentColor 80%, transparent);
+}
+.border-opacity-100 {
+  border-color: color-mix(in srgb, currentColor 100%, transparent);
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+.flex-grow-none {
+  flex-grow: 0;
+}
+
+.bordered {
+  border-width: 1px;
+  border-style: solid;
+}
+.break-all {
+  word-break: break-all;
+}
+.gh-sprite {
+  image-rendering: pixelated;
+}
+.relative {
+  position: relative;
+}
 
 // Scrollbar customization for Chrome, Edge and Safari
 // Firefox has poor customization controls and can thus get boned
@@ -68,8 +143,8 @@ a {
   background-color: #8d8d8d;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #F0C523;
+  background-color: #f0c523;
 }
 *::-webkit-scrollbar-thumb:active {
-  background-color: #F0C523;
+  background-color: #f0c523;
 }

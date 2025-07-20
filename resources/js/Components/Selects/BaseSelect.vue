@@ -46,6 +46,11 @@ export default {
     filters: Object,
     defaultItems: Array,
     searchKey: String,
+    filterClientside: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     disabledItems: {
       type: Array,
       required: false,
@@ -57,7 +62,7 @@ export default {
     model: {
       get() {
         if (!this.modelValue) return
-        if (this.$helpers.isNumeric(this.modelValue)) return parseInt(this.modelValue)
+        // if (this.$helpers.isNumeric(this.modelValue)) return parseInt(this.modelValue)
         return this.modelValue
       },
       set(val) {
@@ -83,6 +88,7 @@ export default {
   data() {
     return {
       options: [],
+      initialOptions: [],
       pagination: {
         currentPage: 0,
         lastPage: 1,
@@ -117,19 +123,37 @@ export default {
       if (this.pagination.currentPage >= this.pagination.lastPage) return
 
       this.loading = true
-      let filters = this.ourFilters
-      if (this.search && this.searchKey) {
-        filters = { ...filters, [this.searchKey]: this.search }
-      }
-      const response = await axios.get(this.loadRoute, {
-        params: {
-          page: this.pagination.currentPage + 1,
-          per_page: this.pagination.perPage,
-          filters,
-        },
-      })
+      let newOptions = []
 
-      let newOptions = response.data.data
+      if (this.filterClientside && !this.firstLoad) {
+        if (this.search && this.searchKey) {
+          newOptions = this.initialOptions.filter((option) =>
+            option[this.searchKey].toLowerCase().includes(this.search.toLowerCase())
+          )
+        } else {
+          newSearch = true
+          newOptions = this.initialOptions
+        }
+      } else {
+        let filters = this.ourFilters
+        if (this.search && this.searchKey) {
+          filters = { ...filters, [this.searchKey]: this.search }
+        }
+
+        const response = await axios.get(this.loadRoute, {
+          params: {
+            page: this.pagination.currentPage + 1,
+            per_page: this.pagination.perPage,
+            filters,
+          },
+        })
+
+        this.pagination.currentPage = response.data.current_page
+        this.pagination.lastPage = response.data.last_page
+        this.pagination.perPage = response.data.per_page
+
+        newOptions = response.data.data
+      }
 
       // Ensure we don't have duplicate items if we already loaded a default item
       if (!newSearch) {
@@ -148,11 +172,11 @@ export default {
       }
 
       this.options = newSearch ? newOptions : this.options.concat(newOptions)
-      this.$refs.select.refresh()
+      // this.$refs.select.refresh()
 
-      this.pagination.currentPage = response.data.current_page
-      this.pagination.lastPage = response.data.last_page
-      this.pagination.perPage = response.data.per_page
+      if (this.firstLoad) {
+        this.initialOptions = [...this.options]
+      }
 
       this.loading = false
       this.firstLoad = false
@@ -168,26 +192,28 @@ export default {
     },
 
     filterFn(val, update) {
+      let newSearch = false
       if (this.searchKey && val !== this.search) {
         // new search
+        newSearch = true
         this.search = val
-        this.pagination.currentPage = 0
-        this.pagination.lastPage = 1
-        update(() => {
-          this.load(true)
-        })
-        return
+        if (!this.filterClientside) {
+          this.pagination.currentPage = 0
+          this.pagination.lastPage = 1
+        }
       }
 
-      if (!this.firstLoad) {
-        // already loaded
-        update()
-        return
-      }
-
-      update(() => {
-        this.load()
-      })
+      update(
+        () => {
+          this.load(newSearch)
+        },
+        (ref) => {
+          if (val !== '' && ref.options.length > 0) {
+            ref.setOptionIndex(-1)
+            ref.moveOptionSelection(1, true)
+          }
+        }
+      )
     },
 
     optionDisable(option) {

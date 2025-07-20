@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, nextTick } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
 
 const emit = defineEmits(['confirmed'])
 
@@ -73,8 +73,12 @@ const closeModal = () => {
       <slot />
     </span>
 
-    <q-dialog v-model="confirmingPassword" @hide="closeModal">
-      <q-card flat>
+    <q-dialog
+      v-model="confirmingPassword"
+      @hide="closeModal"
+      backdrop-filter="blur(4px) grayscale(100%)"
+    >
+      <q-card class="bordered border-opacity-20" flat>
         <q-card-section>
           <div class="text-h6">{{ title }}</div>
           <div>{{ content }}</div>

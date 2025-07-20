@@ -1,117 +1,141 @@
 <template>
-  <q-card class="gh-card q-pa-sm" flat>
-    <q-card-section>
-      <q-form @submit="updateProfileInformation">
-        <div v-if="$page.props.jetstream.managesProfilePhotos" class="q-mb-md">
-          <input ref="photoInput" type="file" class="hidden" @change="updatePhotoPreview" />
-
-          <div class="q-mb-md text-weight-medium text-body1">Photo</div>
-
-          <!-- Current Profile Photo -->
-          <div v-show="!photoPreview" class="q-mt-sm">
-            <user-avatar :user="user" />
-          </div>
-
-          <!-- New Profile Photo Preview -->
-          <div v-show="photoPreview" class="q-mt-sm">
-            <span class="photo block" :style="'background-image: url(\'' + photoPreview + '\');'" />
-          </div>
-
-          <q-btn
-            type="button"
-            class="q-mt-sm q-mr-sm"
-            @click="selectNewPhoto"
-            color="grey-4"
-            outline
-          >
-            Select A New Photo
-          </q-btn>
-
-          <q-btn v-if="user.profile_photo_path" type="button" class="q-mt-sm" @click="deletePhoto">
-            Remove Photo
-          </q-btn>
-
-          <div v-if="form.errors.photo" class="text-negative q-mt-sm">
-            {{ form.errors.photo }}
-          </div>
-        </div>
-
-        <q-input
-          v-model="form.name"
-          class="q-mb-sm"
-          type="text"
-          label="Name"
-          filled
-          required
-          hide-bottom-space
-          autocomplete="name"
-          :error="!!form.errors.name"
-          :error-message="form.errors.name"
-        />
-
-        <q-input
-          v-model="form.email"
-          class="q-mb-sm"
-          type="email"
-          label="Email"
-          filled
-          required
-          hide-bottom-space
-          :error="!!form.errors.email"
-          :error-message="form.errors.email"
-        />
-
-        <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null">
-          <p class="text-sm q-mt-sm">
-            Your email address is unverified.
-            <q-btn
-              class="q-ml-sm"
-              label="Click here to re-send the verification email"
-              type="button"
-              color="primary"
-              text-color="black"
-              size="sm"
-              @click="sendEmailVerification"
+  <q-form @submit="updateProfileInformation">
+    <div>
+      <div class="row gap-xs-lg">
+        <div
+          v-if="$page.props.jetstream.managesProfilePhotos"
+          class="col-12 col-sm-auto text-center"
+        >
+          <div class="inline-block relative">
+            <input
+              ref="photoInput"
+              @change="updatePhotoPreview"
+              type="file"
+              class="hidden"
+              accept="image/png, image/jpeg"
             />
-          </p>
-
-          <div
-            v-show="verificationLinkSent"
-            class="q-mt-sm text-weight-medium text-sm text-positive"
-          >
-            A new verification link has been sent to your email address.
+            <user-avatar :user="user" size="5rem" font-size="1.5rem" color="grey-10">
+              <div
+                v-if="photoPreview"
+                :style="'background-image: url(\'' + photoPreview + '\'); background-size: cover'"
+                class="absolute fit"
+              ></div>
+            </user-avatar>
+            <q-btn
+              @click="selectNewPhoto"
+              :icon="ionPencil"
+              class="absolute-bottom-right"
+              style="margin: 0 -5px -5px 0"
+              color="primary"
+              text-color="dark"
+              size="xs"
+              round
+            />
+            <q-btn
+              v-if="user.profile_photo_path"
+              @click="deletePhoto"
+              :icon="ionTrash"
+              class="absolute-top-right"
+              style="margin: -5px -5px 0 0"
+              color="negative"
+              text-color="dark"
+              size="xs"
+              round
+            />
           </div>
         </div>
 
-        <div class="flex items-center q-mt-md">
-          <q-space />
-          <ActionMessage :on="form.recentlySuccessful" class="q-mr-sm"> Saved. </ActionMessage>
-          <q-btn
-            label="Save"
-            type="submit"
-            color="primary"
-            text-color="black"
-            :loading="form.processing"
+        <div class="col-12 col-sm">
+          <q-input
+            v-model="form.name"
+            class="q-mb-sm"
+            type="text"
+            label="Name"
+            filled
+            required
+            hide-bottom-space
+            autocomplete="name"
+            :error="!!form.errors.name"
+            :error-message="form.errors.name"
           />
+
+          <q-input
+            v-model="form.email"
+            class="q-mb-sm"
+            type="email"
+            label="Email"
+            filled
+            required
+            hide-bottom-space
+            :error="!!form.errors.email"
+            :error-message="form.errors.email"
+          />
+
+          <Alert
+            v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null"
+            type="warning"
+          >
+            <div class="flex items-center justify-between gap-xs-sm">
+              <span>Your email address is unverified.</span>
+              <q-btn
+                @click="sendEmailVerification"
+                label="Send verification email"
+                color="warning"
+                class="text-sm q-px-md q-py-xs"
+                type="button"
+                outline
+              />
+            </div>
+          </Alert>
         </div>
-      </q-form>
-    </q-card-section>
-  </q-card>
+      </div>
+
+      <q-banner
+        v-if="form.errors.photo"
+        class="text-center text-negative bg-opacity-20"
+        rounded
+        dense
+      >
+        {{ form.errors.photo }}
+      </q-banner>
+    </div>
+
+    <div class="flex items-center gap-xs-sm q-mt-sm">
+      <div v-if="verificationLinkSent" class="text-center text-weight-medium text-sm text-positive">
+        A new verification link has been sent to your email address.
+      </div>
+      <q-space />
+      <div class="flex items-center gap-xs-sm q-ml-auto">
+        <ActionMessage :on="form.recentlySuccessful">Saved</ActionMessage>
+        <q-btn label="Save" type="submit" color="primary" :loading="form.processing" flat />
+      </div>
+    </div>
+  </q-form>
 </template>
 
 <script>
-import { router, useForm } from '@inertiajs/vue3'
 import ActionMessage from '@/Components/ActionMessage.vue'
+import Alert from '@/Components/Alert.vue'
 import UserAvatar from '@/Components/UserAvatar.vue'
+import { router, useForm } from '@inertiajs/vue3'
+import { ionPencil, ionTrash } from '@quasar/extras/ionicons-v6'
 
 export default {
   components: {
     ActionMessage,
     UserAvatar,
+    Alert,
   },
 
   props: {
     user: Object,
+  },
+
+  setup() {
+    return {
+      ionPencil,
+      ionTrash,
+    }
   },
 
   data() {

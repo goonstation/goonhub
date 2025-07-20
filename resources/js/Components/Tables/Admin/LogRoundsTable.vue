@@ -11,7 +11,7 @@
   >
     <template v-slot:cell-content-ended_at="{ props, col }">
       <template v-if="col.value">{{ col.value }}</template>
-      <q-badge v-else color="warning" text-color="dark">Round in progress</q-badge>
+      <q-badge v-else color="primary" text-color="dark">Round in progress</q-badge>
     </template>
   </base-table>
 </template>

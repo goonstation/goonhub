@@ -23,7 +23,7 @@
           <q-chip
             v-else-if="build.cancelled"
             class="q-my-none"
-            color="warning"
+            color="primary"
             size="0.9em"
             outline
             square
