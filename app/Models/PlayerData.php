@@ -15,15 +15,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\Player $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerData whereValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerData whereValue($value)
  *
  * @mixin \Eloquent
  */

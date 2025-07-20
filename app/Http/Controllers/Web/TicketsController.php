@@ -5,29 +5,24 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Events\TicketsIndexRequest;
 use App\Models\Events\EventTicket;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class TicketsController extends Controller
 {
-    use IndexableQuery;
-
     private function getTickets()
     {
-        return $this->indexQuery(
-            EventTicket::select('id', 'round_id', 'issuer', 'issuer_job', 'reason', 'target')
-                ->withSum([
-                    'votes as votes' => function ($query) {
-                        $query->select(DB::raw('COALESCE(SUM(value), 0)'));
-                    },
-                ], 'value')
-                ->with('userVotes:voteable_id,value')
-                ->whereRelation('gameRound', 'ended_at', '!=', null)
-                ->whereRelation('gameRound.server', 'invisible', false),
-            perPage: 20
-        );
+        return EventTicket::select('id', 'round_id', 'issuer', 'issuer_job', 'reason', 'target')
+            ->withSum([
+                'votes as votes' => function ($query) {
+                    $query->select(DB::raw('COALESCE(SUM(value), 0)'));
+                },
+            ], 'value')
+            ->with('userVotes:voteable_id,value')
+            ->whereRelation('gameRound', 'ended_at', '!=', null)
+            ->whereRelation('gameRound.server', 'invisible', false)
+            ->indexFilterPaginate(perPage: 20);
     }
 
     public function index(TicketsIndexRequest $request)

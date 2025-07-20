@@ -17,15 +17,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\Poll $poll
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption whereOption($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption wherePollId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption wherePosition($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PollOption whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption whereOption($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption wherePollId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption wherePosition($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PollOption whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

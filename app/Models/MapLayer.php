@@ -15,14 +15,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\Map $layer
  * @property-read \App\Models\Map $map
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer whereLayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer whereMapId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapLayer whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereLayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereMapId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapLayer whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

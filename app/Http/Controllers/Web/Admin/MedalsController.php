@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Medal;
 use App\Models\PlayerMedal;
-use App\Traits\IndexableQuery;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -14,26 +12,20 @@ use Inertia\Inertia;
 
 class MedalsController extends Controller
 {
-    use IndexableQuery;
-
     public function index(Request $request)
     {
-        $medals = $this->indexQuery(
-            Medal::select([
-                '*',
-                DB::raw('COALESCE(pm.earned_count, 0) AS earned_count'),
-            ])
-                ->joinSub(
-                    'SELECT medal_id, COUNT(*) AS earned_count FROM player_medals GROUP BY medal_id',
-                    'pm', 'medals.id', '=', 'pm.medal_id', 'left'
-                ),
-            perPage: 30,
-            sortBy: 'title',
-            desc: false);
+        /** @var \Illuminate\Pagination\LengthAwarePaginator */
+        $medals = Medal::select([
+            '*',
+            DB::raw('COALESCE(pm.earned_count, 0) AS earned_count'),
+        ])
+            ->joinSub(
+                'SELECT medal_id, COUNT(*) AS earned_count FROM player_medals GROUP BY medal_id',
+                'pm', 'medals.id', '=', 'pm.medal_id', 'left'
+            )
+            ->indexFilterPaginate(perPage: 30, sortBy: 'title', desc: false);
 
-        /** @var Collection */
-        $collection = $medals->getCollection();
-        $medals->setCollection($collection->makeVisible(['id']));
+        $medals->through(fn (Medal $medal) => $medal->makeVisible(['id']));
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Medals/Index', [
@@ -46,15 +38,10 @@ class MedalsController extends Controller
 
     public function medalsPlayerDoesntHave(Request $request, int $player)
     {
-        $medals = $this->indexQuery(
-            Medal::whereDoesntHave('earned', function ($q) use ($player) {
-                $q->where('player_id', $player);
-            }),
-            perPage: 30,
-            sortBy: 'title',
-            desc: false);
-
-        return $medals;
+        return Medal::whereDoesntHave('earned', function ($q) use ($player) {
+            $q->where('player_id', $player);
+        })
+            ->indexFilterPaginate(perPage: 30, sortBy: 'title', desc: false);
     }
 
     public function create()

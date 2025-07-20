@@ -8,15 +8,12 @@ use App\Http\Resources\RedirectResource;
 use App\Models\Redirect;
 use App\Rules\DateRange;
 use App\Rules\Range;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class RedirectsController extends Controller
 {
-    use IndexableQuery;
-
     /**
      * List
      *
@@ -51,7 +48,7 @@ class RedirectsController extends Controller
         ]);
 
         return RedirectResource::collection(
-            $this->indexQuery(Redirect::class)
+            Redirect::indexFilterPaginate()
         );
     }
 

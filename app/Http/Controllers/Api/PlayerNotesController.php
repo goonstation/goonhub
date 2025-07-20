@@ -8,7 +8,6 @@ use App\Http\Resources\PlayerNoteResource;
 use App\Models\Player;
 use App\Models\PlayerNote;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesPlayerNotes;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -19,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class PlayerNotesController extends Controller
 {
-    use IndexableQuery, ManagesPlayerNotes;
+    use ManagesPlayerNotes;
 
     /**
      * List
@@ -54,7 +53,8 @@ class PlayerNotesController extends Controller
         ]);
 
         return PlayerNoteResource::collection(
-            $this->indexQuery(PlayerNote::with(['player', 'gameAdmin']))
+            PlayerNote::with(['player', 'gameAdmin'])
+                ->indexFilterPaginate()
         );
     }
 

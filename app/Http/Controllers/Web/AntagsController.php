@@ -5,33 +5,28 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Events\AntagsIndexRequest;
 use App\Models\Events\EventAntag;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class AntagsController extends Controller
 {
-    use IndexableQuery;
-
     private function getAntags()
     {
-        return $this->indexQuery(
-            EventAntag::with([
-                'objectives:id,round_id,player_id,success',
-            ])
-                ->select(
-                    'id',
-                    'round_id',
-                    'player_id',
-                    'mob_job',
-                    'mob_name',
-                    'success',
-                    'traitor_type'
-                )
-                ->whereRelation('gameRound', 'ended_at', '!=', null)
-                ->whereRelation('gameRound.server', 'invisible', false),
-            perPage: 20
-        );
+        return EventAntag::with([
+            'objectives:id,round_id,player_id,success',
+        ])
+            ->select(
+                'id',
+                'round_id',
+                'player_id',
+                'mob_job',
+                'mob_name',
+                'success',
+                'traitor_type'
+            )
+            ->whereRelation('gameRound', 'ended_at', '!=', null)
+            ->whereRelation('gameRound.server', 'invisible', false)
+            ->indexFilterPaginate(perPage: 20);
     }
 
     public function index(AntagsIndexRequest $request)

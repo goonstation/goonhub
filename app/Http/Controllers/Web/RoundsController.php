@@ -5,26 +5,21 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameRounds\IndexRequest;
 use App\Models\GameRound;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class RoundsController extends Controller
 {
-    use IndexableQuery;
-
     private function getRounds()
     {
-        return $this->indexQuery(
-            GameRound::with([
-                'server:server_id,name',
-                'mapRecord:id,map_id,name',
-                'latestStationName:id,round_id,name',
-            ])
-                ->where('ended_at', '!=', null)
-                ->whereRelation('server', 'invisible', '!=', true),
-            perPage: 30
-        );
+        return GameRound::with([
+            'server:server_id,name',
+            'mapRecord:id,map_id,name',
+            'latestStationName:id,round_id,name',
+        ])
+            ->where('ended_at', '!=', null)
+            ->whereRelation('server', 'invisible', '!=', true)
+            ->indexFilterPaginate(perPage: 30);
     }
 
     public function index(IndexRequest $request)

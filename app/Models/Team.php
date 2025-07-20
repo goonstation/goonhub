@@ -23,15 +23,15 @@ use Laravel\Jetstream\Team as JetstreamTeam;
  * @property-read int|null $users_count
  *
  * @method static \Database\Factories\TeamFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team wherePersonalTeam($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Team whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team wherePersonalTeam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Team whereUserId($value)
  *
  * @mixin \Eloquent
  */

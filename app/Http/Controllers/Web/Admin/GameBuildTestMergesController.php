@@ -5,17 +5,17 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameBuildTestMergeCreateRequest;
 use App\Models\GameBuildTestMerge;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesGameBuildTestMerges;
 use Github\ResultPager;
 use GrahamCampbell\GitHub\Facades\GitHub;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class GameBuildTestMergesController extends Controller
 {
-    use IndexableQuery, ManagesGameBuildTestMerges;
+    use ManagesGameBuildTestMerges;
 
     private function getTestMergeGroups()
     {
@@ -27,7 +27,7 @@ class GameBuildTestMergesController extends Controller
         ])
             ->get()
             ->groupBy('pr_id')
-            ->map(function ($item) {
+            ->map(function (Collection $item) {
                 return $item->sortBy('buildSettings.gameServer.id')->values()->all();
             });
     }

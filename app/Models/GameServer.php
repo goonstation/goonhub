@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use EloquentFilter\Filterable;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -25,32 +28,35 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \App\Models\GameBuildSetting|null $gameBuildSetting
  * @property-read mixed $byond_link
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereInvisible($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereOrchestrator($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer wherePort($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereShortName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameServer whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereGroupId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereInvisible($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereOrchestrator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer wherePort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereShortName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class GameServer extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $appends = ['byond_link'];
 

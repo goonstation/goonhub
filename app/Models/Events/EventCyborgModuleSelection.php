@@ -4,7 +4,6 @@ namespace App\Models\Events;
 
 use App\Models\GameRound;
 use App\Models\Player;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -17,31 +16,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read GameRound $gameRound
- * @property-read Player|null $player
+ * @property-read \App\Models\GameRound $gameRound
+ * @property-read \App\Models\Player|null $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereBorgType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereModule($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventCyborgModuleSelection whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereBorgType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereModule($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventCyborgModuleSelection whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class EventCyborgModuleSelection extends BaseEventModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $table = 'events_cyborg_module_selections';
 

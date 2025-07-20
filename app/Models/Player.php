@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Models\Events\EventDeath;
 use App\Traits\HasOpenGraphData;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -22,7 +21,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\PlayerBypassCap|null $bypassCap
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerConnection> $connections
  * @property-read int|null $connections_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, EventDeath> $deaths
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Events\EventDeath> $deaths
  * @property-read int|null $deaths_count
  * @property-read \App\Models\PlayerConnection|null $firstConnection
  * @property-read mixed $has_imported_medals
@@ -50,29 +49,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\PlayerWhitelist|null $whitelist
  *
  * @method static \Database\Factories\PlayerFactory factory($count = null, $state = [])
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereByondJoinDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereByondMajor($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereByondMinor($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereCkey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Player whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereByondJoinDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereByondMajor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereByondMinor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereCkey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class Player extends BaseModel
 {
-    use Filterable, HasFactory, HasOpenGraphData;
+    use HasFactory, HasOpenGraphData;
 
     const AUTH_SUFFIXES = [
         'byond' => '',

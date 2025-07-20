@@ -3,7 +3,6 @@
 namespace App\Models\Events;
 
 use App\Models\GameRound;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -16,30 +15,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read GameRound $gameRound
+ * @property-read \App\Models\GameRound $gameRound
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereHighestWave($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereNames($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereScore($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventGauntletHighScore whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereHighestWave($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereNames($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventGauntletHighScore whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class EventGauntletHighScore extends BaseEventModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $table = 'events_gauntlet_high_scores';
 

@@ -4,22 +4,18 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameBuildSetting;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class GameBuildSettingsController extends Controller
 {
-    use IndexableQuery;
-
     public function index()
     {
         return Inertia::render('Admin/GameBuilds/Settings/Index', [
             'settings' => Inertia::lazy(function () {
-                return $this->indexQuery(
-                    GameBuildSetting::with(['gameServer', 'map'])
-                        ->withAggregate('gameServer', 'id')
-                );
+                return GameBuildSetting::with(['gameServer', 'map'])
+                    ->withAggregate('gameServer', 'id')
+                    ->indexFilterPaginate();
             }),
         ]);
     }

@@ -4,21 +4,15 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UsersController extends Controller
 {
-    use IndexableQuery;
-
     public function index(Request $request)
     {
-        $users = $this->indexQuery(User::with('teams'), perPage: 30);
-        foreach ($users as $user) {
-            $user->all_teams = $user->allTeams();
-        }
+        $users = User::with('teams')->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Users/Index', [

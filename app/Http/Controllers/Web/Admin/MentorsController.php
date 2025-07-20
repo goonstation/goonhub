@@ -5,21 +5,16 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mentors\StoreMentorRequest;
 use App\Models\PlayerMentor;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class MentorsController extends Controller
 {
-    use IndexableQuery;
-
     public function index(Request $request)
     {
-        $mentors = $this->indexQuery(
-            PlayerMentor::with([
-                'player:id,ckey,key',
-            ]),
-            perPage: 30);
+        $mentors = PlayerMentor::with([
+            'player:id,ckey,key',
+        ])->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Mentors/Index', [

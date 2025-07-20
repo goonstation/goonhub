@@ -5,40 +5,35 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Events\DeathsIndexRequest;
 use App\Models\Events\EventDeath;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DeathsController extends Controller
 {
-    use IndexableQuery;
-
     private function getDeaths()
     {
-        return $this->indexQuery(
-            EventDeath::select(
-                'id',
-                'round_id',
-                'bruteloss',
-                'fireloss',
-                'gibbed',
-                'last_words',
-                'mob_job',
-                'mob_name',
-                'oxyloss',
-                'toxloss'
-            )
-                ->withSum([
-                    'votes as votes' => function ($query) {
-                        $query->select(DB::raw('COALESCE(SUM(value), 0)'));
-                    },
-                ], 'value')
-                ->with('userVotes:voteable_id,value')
-                ->whereRelation('gameRound', 'ended_at', '!=', null)
-                ->whereRelation('gameRound.server', 'invisible', false),
-            perPage: 20
-        );
+        return EventDeath::select(
+            'id',
+            'round_id',
+            'bruteloss',
+            'fireloss',
+            'gibbed',
+            'last_words',
+            'mob_job',
+            'mob_name',
+            'oxyloss',
+            'toxloss'
+        )
+            ->withSum([
+                'votes as votes' => function ($query) {
+                    $query->select(DB::raw('COALESCE(SUM(value), 0)'));
+                },
+            ], 'value')
+            ->with('userVotes:voteable_id,value')
+            ->whereRelation('gameRound', 'ended_at', '!=', null)
+            ->whereRelation('gameRound.server', 'invisible', false)
+            ->indexFilterPaginate(perPage: 20);
     }
 
     public function index(DeathsIndexRequest $request)

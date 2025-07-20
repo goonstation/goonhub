@@ -8,7 +8,6 @@ use App\Http\Requests\BanRequest;
 use App\Libraries\DiscordBot;
 use App\Models\Ban;
 use App\Models\BanDetail;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesBans;
 use Carbon\Carbon;
 use Exception;
@@ -18,16 +17,15 @@ use Inertia\Inertia;
 
 class BansController extends Controller
 {
-    use IndexableQuery, ManagesBans;
+    use ManagesBans;
 
     public function index(Request $request)
     {
-        $bans = $this->indexQuery(
-            Ban::withCount(['details'])
-                ->with(['originalBanDetail', 'gameAdmin', 'gameServer'])
-                ->where('expires_at', '>', Carbon::now())
-                ->orWhere('expires_at', null),
-            perPage: 30);
+        $bans = Ban::withCount(['details'])
+            ->with(['originalBanDetail', 'gameAdmin', 'gameServer'])
+            ->where('expires_at', '>', Carbon::now())
+            ->orWhere('expires_at', null)
+            ->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Bans/Index', [
@@ -40,17 +38,16 @@ class BansController extends Controller
 
     public function indexRemoved(Request $request)
     {
-        $bans = $this->indexQuery(
-            Ban::withTrashed()
-                ->withCount(['details'])
-                ->with([
-                    'originalBanDetail',
-                    'gameAdmin',
-                    'gameServer',
-                ])
-                ->where('deleted_at', '!=', null)
-                ->orWhere('expires_at', '<=', Carbon::now()),
-            perPage: 30);
+        $bans = Ban::withTrashed()
+            ->withCount(['details'])
+            ->with([
+                'originalBanDetail',
+                'gameAdmin',
+                'gameServer',
+            ])
+            ->where('deleted_at', '!=', null)
+            ->orWhere('expires_at', '<=', Carbon::now())
+            ->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Bans/IndexRemoved', [

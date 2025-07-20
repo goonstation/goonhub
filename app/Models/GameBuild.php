@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,9 +20,9 @@ use Illuminate\Support\Carbon;
  * @property bool $cancelled
  * @property bool $map_switch
  * @property int|null $cancelled_by
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property Carbon|null $ended_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $ended_at
  * @property string|null $cancelled_reason
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
@@ -35,36 +34,38 @@ use Illuminate\Support\Carbon;
  * @property-read \App\Models\Map|null $map
  * @property-read \App\Models\GameAdmin|null $startedBy
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereBranch($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCancelled($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCancelledBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCancelledReason($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCommit($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereEndedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereFailed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereMapId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereMapSwitch($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereStartedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereTestMerges($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuild whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereBranch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereCancelled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereCancelledBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereCancelledReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereCommit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereEndedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereFailed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereMapId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereMapSwitch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereStartedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereTestMerges($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class GameBuild extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $casts = [
         'test_merges' => 'array',

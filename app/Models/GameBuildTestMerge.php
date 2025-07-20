@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -20,29 +19,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\GameBuildSetting $buildSettings
  * @property-read \App\Models\GameAdmin|null $updatedBy
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereAddedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereCommit($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge wherePrId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereSettingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildTestMerge whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereAddedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereCommit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge wherePrId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereSettingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge whereUpdatedBy($value)
  *
  * @mixin \Eloquent
  */
 class GameBuildTestMerge extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $table = 'game_build_test_merges';
 

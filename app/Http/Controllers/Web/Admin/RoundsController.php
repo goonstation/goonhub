@@ -4,20 +4,14 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameRound;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class RoundsController extends Controller
 {
-    use IndexableQuery;
-
     public function index(Request $request)
     {
-        $rounds = $this->indexQuery(
-            GameRound::with(['server', 'mapRecord']),
-            perPage: 30
-        );
+        $rounds = GameRound::with(['server', 'mapRecord'])->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Rounds/Index', [

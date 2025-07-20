@@ -5,29 +5,24 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Events\FinesIndexRequest;
 use App\Models\Events\EventFine;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class FinesController extends Controller
 {
-    use IndexableQuery;
-
     private function getFines()
     {
-        return $this->indexQuery(
-            EventFine::select('id', 'round_id', 'amount', 'issuer', 'issuer_job', 'target', 'reason')
-                ->withSum([
-                    'votes as votes' => function ($query) {
-                        $query->select(DB::raw('COALESCE(SUM(value), 0)'));
-                    },
-                ], 'value')
-                ->with('userVotes:voteable_id,value')
-                ->whereRelation('gameRound', 'ended_at', '!=', null)
-                ->whereRelation('gameRound.server', 'invisible', false),
-            perPage: 20
-        );
+        return EventFine::select('id', 'round_id', 'amount', 'issuer', 'issuer_job', 'target', 'reason')
+            ->withSum([
+                'votes as votes' => function ($query) {
+                    $query->select(DB::raw('COALESCE(SUM(value), 0)'));
+                },
+            ], 'value')
+            ->with('userVotes:voteable_id,value')
+            ->whereRelation('gameRound', 'ended_at', '!=', null)
+            ->whereRelation('gameRound.server', 'invisible', false)
+            ->indexFilterPaginate(perPage: 20);
     }
 
     public function index(FinesIndexRequest $request)

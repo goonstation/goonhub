@@ -6,14 +6,11 @@ use App\Facades\GameBridge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameServers\IndexRequest;
 use App\Models\GameServer;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class GameServersController extends Controller
 {
-    use IndexableQuery;
-
     public function index(IndexRequest $request)
     {
         $gameServers = GameServer::query();
@@ -21,14 +18,7 @@ class GameServersController extends Controller
             $gameServers->where('invisible', false);
         }
 
-        $gameServers = $this->indexQuery(
-            $gameServers,
-            perPage: 30,
-            sortBy: 'name',
-            desc: false
-        );
-
-        return $gameServers;
+        return $gameServers->indexFilterPaginate(perPage: 30, sortBy: 'name', desc: false);
     }
 
     public function status(Request $request)

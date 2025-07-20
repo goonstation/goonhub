@@ -13,13 +13,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\Player|null $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedalsImported newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedalsImported newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedalsImported query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedalsImported whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedalsImported whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedalsImported wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedalsImported whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedalsImported whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

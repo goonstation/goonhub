@@ -16,17 +16,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereError($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereResponse($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereService($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnCheck whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereError($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereResponse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereService($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnCheck whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

@@ -13,14 +13,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId whereCompId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId whereReason($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CursedCompId whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereCompId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\CursedCompId whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

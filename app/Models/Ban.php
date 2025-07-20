@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -36,35 +35,38 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $notes_count
  * @property-read \App\Models\BanDetail|null $originalBanDetail
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban onlyTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereDeletedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereExpiresAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereGameAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereReason($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereRequiresAppeal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban withTrashed()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Ban withoutTrashed()
+ * @method static \Database\Factories\BanFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban onlyTrashed()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereGameAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereRequiresAppeal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban withoutTrashed()
  *
  * @mixin \Eloquent
  */
 class Ban extends BaseModel
 {
-    use Filterable, HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $casts = [
         'expires_at' => 'datetime',

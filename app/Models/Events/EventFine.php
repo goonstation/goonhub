@@ -6,7 +6,6 @@ use App\Models\GameRound;
 use App\Models\Player;
 use App\Traits\HasOpenGraphData;
 use App\Traits\Voteable;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -23,40 +22,42 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read GameRound $gameRound
+ * @property-read \App\Models\GameRound $gameRound
  * @property-read mixed $total_votes
- * @property-read Player|null $player
+ * @property-read \App\Models\Player|null $player
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $userVotes
  * @property-read int|null $user_votes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $votes
  * @property-read int|null $votes_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereIssuer($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereIssuerCkey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereIssuerJob($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereReason($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereTarget($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventFine whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereIssuer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereIssuerCkey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereIssuerJob($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereTarget($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventFine whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class EventFine extends BaseEventModel
 {
-    use Filterable, HasFactory, HasOpenGraphData, Voteable;
+    use HasFactory, HasOpenGraphData, Voteable;
 
     protected $table = 'events_fines';
 

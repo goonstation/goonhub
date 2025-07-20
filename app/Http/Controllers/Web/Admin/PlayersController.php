@@ -9,7 +9,6 @@ use App\Models\CursedCompId;
 use App\Models\GameRound;
 use App\Models\Player;
 use App\Models\PlayerConnection;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesBans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +16,7 @@ use Inertia\Inertia;
 
 class PlayersController extends Controller
 {
-    use IndexableQuery, ManagesBans;
+    use ManagesBans;
 
     public function index(Request $request)
     {
@@ -31,7 +30,7 @@ class PlayersController extends Controller
 
         if ($this->wantsInertia($request)) {
             $model = $model->with('latestConnection');
-            $players = $this->indexQuery($model, perPage: 30);
+            $players = $model->indexFilterPaginate(perPage: 30);
 
             return Inertia::render('Admin/Players/Index', [
                 'players' => $players,
@@ -41,7 +40,7 @@ class PlayersController extends Controller
                 $model = $model->with('latestConnection');
             }
 
-            return $this->indexQuery($model, perPage: 30);
+            return $model->indexFilterPaginate(perPage: 30);
         }
     }
 

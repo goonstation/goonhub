@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -15,26 +14,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\Player|null $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata whereMetadata($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMetadata whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata whereMetadata($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMetadata whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class PlayerMetadata extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

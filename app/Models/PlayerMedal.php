@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -18,27 +17,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\Medal $medal
  * @property-read \App\Models\Player $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereMedalId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerMedal whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereMedalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerMedal whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class PlayerMedal extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'player_id',

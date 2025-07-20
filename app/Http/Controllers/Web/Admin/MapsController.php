@@ -7,7 +7,6 @@ use App\Http\Requests\Maps\IndexRequest;
 use App\Jobs\BuildMap;
 use App\Models\Map;
 use App\Models\MapLayer;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesFileUploads;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
@@ -20,7 +19,7 @@ use ZipArchive;
 
 class MapsController extends Controller
 {
-    use IndexableQuery, ManagesFileUploads;
+    use ManagesFileUploads;
 
     private function associateMapLayers(Map $map, ?array $layers)
     {
@@ -56,12 +55,8 @@ class MapsController extends Controller
 
     public function index(IndexRequest $request)
     {
-        $maps = $this->indexQuery(
-            Map::with(['gameAdmin']),
-            sortBy: 'name',
-            desc: false,
-            perPage: 30
-        );
+        $maps = Map::with(['gameAdmin'])
+            ->indexFilterPaginate(sortBy: 'name', desc: false, perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Maps/Index', [

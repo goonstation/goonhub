@@ -15,15 +15,15 @@ use Laravel\Jetstream\TeamInvitation as JetstreamTeamInvitation;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Team $team
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation whereRole($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation whereTeamId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|TeamInvitation whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation whereTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\TeamInvitation whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

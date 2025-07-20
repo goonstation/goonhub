@@ -9,7 +9,6 @@ use App\Models\Medal;
 use App\Models\Player;
 use App\Models\PlayerMedal;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -20,8 +19,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class PlayerMedalsController extends Controller
 {
-    use IndexableQuery;
-
     /**
      * List
      *
@@ -57,7 +54,7 @@ class PlayerMedalsController extends Controller
         }
 
         return PlayerMedalResource::collection(
-            $this->indexQuery($query)
+            $query->indexFilterPaginate()
         );
     }
 

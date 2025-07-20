@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -16,18 +15,26 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read Model|\Eloquent $voteable
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $voteable
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereValue($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereVoteableId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vote whereVoteableType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereValue($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereVoteableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Vote whereVoteableType($value)
  *
  * @mixin \Eloquent
  */

@@ -7,7 +7,6 @@ use App\Http\Requests\GameBuildCancelRequest;
 use App\Http\Requests\GameBuildCreateRequest;
 use App\Models\GameAdmin;
 use App\Models\GameBuild;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesGameBuilds;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +14,7 @@ use Inertia\Inertia;
 
 class GameBuildsController extends Controller
 {
-    use IndexableQuery, ManagesGameBuilds;
+    use ManagesGameBuilds;
 
     private function getCounts()
     {
@@ -50,12 +49,10 @@ class GameBuildsController extends Controller
 
     private function getBuilds()
     {
-        return $this->indexQuery(
-            GameBuild::with([
-                'gameServer:id,server_id,short_name',
-                'startedBy',
-            ])->whereNotNull('ended_at')
-        );
+        return GameBuild::with([
+            'gameServer:id,server_id,short_name',
+            'startedBy',
+        ])->whereNotNull('ended_at')->indexFilterPaginate();
     }
 
     public function index()

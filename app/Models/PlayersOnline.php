@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -15,26 +14,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\GameServer $server
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereOnline($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayersOnline whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereOnline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayersOnline whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class PlayersOnline extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $table = 'players_online';
 

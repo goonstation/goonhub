@@ -7,7 +7,6 @@ use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameAdminRankResource;
 use App\Models\GameAdminRank;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,8 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class GameAdminRanksController extends Controller
 {
-    use IndexableQuery;
-
     /**
      * List
      *
@@ -46,7 +43,7 @@ class GameAdminRanksController extends Controller
         ]);
 
         return GameAdminRankResource::collection(
-            $this->indexQuery(GameAdminRank::class)
+            GameAdminRank::indexFilterPaginate()
         );
     }
 

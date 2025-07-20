@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\JobBan;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesJobBans;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -12,16 +11,14 @@ use Inertia\Inertia;
 
 class JobBansController extends Controller
 {
-    use IndexableQuery, ManagesJobBans;
+    use ManagesJobBans;
 
     public function index(Request $request)
     {
-        $jobBans = $this->indexQuery(
-            JobBan::with([
-                'gameAdmin:id,name,ckey',
-                'gameServer:id,server_id,short_name',
-            ]),
-            perPage: 30);
+        $jobBans = JobBan::with([
+            'gameAdmin:id,name,ckey',
+            'gameServer:id,server_id,short_name',
+        ])->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/JobBans/Index', [

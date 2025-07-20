@@ -5,21 +5,16 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hos\StoreHosRequest;
 use App\Models\PlayerHos;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class HosController extends Controller
 {
-    use IndexableQuery;
-
     public function index(Request $request)
     {
-        $hos = $this->indexQuery(
-            PlayerHos::with([
-                'player:id,ckey,key',
-            ]),
-            perPage: 30);
+        $hos = PlayerHos::with([
+            'player:id,ckey,key',
+        ])->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Hos/Index', [

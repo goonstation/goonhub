@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,36 +29,38 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read mixed $duration
  * @property-read mixed $duration_human
  *
- * @method static Builder<static>|JobBan filter(array $input = [], $filter = null)
- * @method static Builder<static>|JobBan newModelQuery()
- * @method static Builder<static>|JobBan newQuery()
- * @method static Builder<static>|JobBan onlyTrashed()
- * @method static Builder<static>|JobBan paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static Builder<static>|JobBan query()
- * @method static Builder<static>|JobBan simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static Builder<static>|JobBan whereBannedFromJob($value)
- * @method static Builder<static>|JobBan whereBeginsWith($column, $value, $boolean = 'and')
- * @method static Builder<static>|JobBan whereCkey($value)
- * @method static Builder<static>|JobBan whereCreatedAt($value)
- * @method static Builder<static>|JobBan whereDeletedAt($value)
- * @method static Builder<static>|JobBan whereDeletedBy($value)
- * @method static Builder<static>|JobBan whereEndsWith($column, $value, $boolean = 'and')
- * @method static Builder<static>|JobBan whereExpiresAt($value)
- * @method static Builder<static>|JobBan whereGameAdminId($value)
- * @method static Builder<static>|JobBan whereId($value)
- * @method static Builder<static>|JobBan whereLike($column, $value, $boolean = 'and')
- * @method static Builder<static>|JobBan whereReason($value)
- * @method static Builder<static>|JobBan whereRoundId($value)
- * @method static Builder<static>|JobBan whereServerId($value)
- * @method static Builder<static>|JobBan whereUpdatedAt($value)
- * @method static Builder<static>|JobBan withTrashed()
- * @method static Builder<static>|JobBan withoutTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan onlyTrashed()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereBannedFromJob($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereCkey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereDeletedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereGameAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan withTrashed(bool $withTrashed = true)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan withoutTrashed()
  *
  * @mixin \Eloquent
  */
 class JobBan extends BaseModel
 {
-    use Filterable, HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $casts = [
         'expires_at' => 'datetime',

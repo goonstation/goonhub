@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -23,31 +22,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\GameServer|null $gameServer
  * @property-read \App\Models\Player|null $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereCkey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereGameAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereLegacyData($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereNote($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerNote whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereCkey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereGameAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereLegacyData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class PlayerNote extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'game_admin_id',

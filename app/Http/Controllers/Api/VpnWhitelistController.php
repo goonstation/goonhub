@@ -8,7 +8,6 @@ use App\Http\Resources\VpnWhitelistResource;
 use App\Models\GameAdmin;
 use App\Models\VpnWhitelist;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -18,8 +17,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class VpnWhitelistController extends Controller
 {
-    use IndexableQuery;
-
     /**
      * List
      *
@@ -47,7 +44,8 @@ class VpnWhitelistController extends Controller
         ]);
 
         return VpnWhitelistResource::collection(
-            $this->indexQuery(VpnWhitelist::with(['gameAdmin:id,ckey,name']))
+            VpnWhitelist::with(['gameAdmin:id,ckey,name'])
+                ->indexFilterPaginate()
         );
     }
 

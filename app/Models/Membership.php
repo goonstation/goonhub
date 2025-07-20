@@ -12,15 +12,15 @@ use Laravel\Jetstream\Membership as JetstreamMembership;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereRole($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereTeamId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Membership whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership whereTeamId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Membership whereUserId($value)
  *
  * @mixin \Eloquent
  */

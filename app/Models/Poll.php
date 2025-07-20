@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -22,29 +21,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PollOption> $options
  * @property-read int|null $options_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereExpiresAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereGameAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereMultipleChoice($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereQuestion($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereServers($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Poll whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereGameAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereMultipleChoice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereQuestion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereServers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Poll whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class Poll extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $casts = [
         'expires_at' => 'datetime',

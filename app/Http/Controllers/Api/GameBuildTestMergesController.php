@@ -9,7 +9,6 @@ use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameBuildTestMergeResource;
 use App\Models\GameBuildTestMerge;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesGameBuildTestMerges;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -19,7 +18,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class GameBuildTestMergesController extends Controller
 {
-    use IndexableQuery, ManagesGameBuildTestMerges;
+    use ManagesGameBuildTestMerges;
 
     /**
      * List
@@ -52,7 +51,8 @@ class GameBuildTestMergesController extends Controller
         ]);
 
         return GameBuildTestMergeResource::collection(
-            $this->indexQuery(GameBuildTestMerge::with(['buildSettings', 'addedBy', 'updatedBy']))
+            GameBuildTestMerge::with(['buildSettings', 'addedBy', 'updatedBy'])
+                ->indexFilterPaginate()
         );
     }
 

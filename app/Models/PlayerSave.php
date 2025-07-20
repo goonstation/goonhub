@@ -15,15 +15,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\Player $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave whereData($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerSave whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereData($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerSave whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

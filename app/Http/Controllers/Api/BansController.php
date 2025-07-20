@@ -15,7 +15,6 @@ use App\Models\Player;
 use App\Models\PlayerNote;
 use App\Rules\DateRange;
 use App\Rules\Range;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesBans;
 use Carbon\Carbon;
 use Exception;
@@ -26,7 +25,7 @@ use Illuminate\Support\Facades\DB;
 
 class BansController extends Controller
 {
-    use IndexableQuery, ManagesBans;
+    use ManagesBans;
 
     /**
      * List
@@ -81,8 +80,9 @@ class BansController extends Controller
         ]);
 
         return BanResource::collection(
-            $this->indexQuery(Ban::withTrashed()
-                ->with(['gameAdmin', 'gameRound', 'details', 'originalBanDetail']))
+            Ban::withTrashed()
+                ->with(['gameAdmin', 'gameRound', 'details', 'originalBanDetail'])
+                ->indexFilterPaginate()
         );
     }
 

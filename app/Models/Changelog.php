@@ -12,13 +12,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Changelog newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Changelog newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Changelog query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Changelog whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Changelog whereEntries($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Changelog whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Changelog whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog whereEntries($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Changelog whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

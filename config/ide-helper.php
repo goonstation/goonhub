@@ -45,7 +45,7 @@ return [
     |
     */
 
-    'include_fluent' => false,
+    'include_fluent' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -139,7 +139,7 @@ return [
     */
 
     'model_locations' => [
-        'app',
+        'app/Models',
     ],
 
     /*
@@ -167,7 +167,7 @@ return [
     */
 
     'model_hooks' => [
-        // App\Support\IdeHelper\MyModelHook::class
+        App\Support\IdeHelper\EloquentFilterHook::class,
     ],
 
     /*
@@ -260,7 +260,7 @@ return [
     | or there is an import (use className) of the class.
     |
     */
-    'force_fqn' => false,
+    'force_fqn' => true,
 
     /*
     |--------------------------------------------------------------------------

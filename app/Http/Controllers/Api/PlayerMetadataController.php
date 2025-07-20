@@ -7,7 +7,6 @@ use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\PlayerMetadataResource;
 use App\Models\PlayerMetadata;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,8 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class PlayerMetadataController extends Controller
 {
-    use IndexableQuery;
-
     /**
      * List
      *
@@ -47,7 +44,8 @@ class PlayerMetadataController extends Controller
         ]);
 
         return PlayerMetadataResource::collection(
-            $this->indexQuery(PlayerMetadata::with('player'))
+            PlayerMetadata::with('player')
+                ->indexFilterPaginate()
         );
     }
 

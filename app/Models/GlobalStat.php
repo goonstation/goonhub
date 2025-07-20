@@ -13,14 +13,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat whereStats($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GlobalStat whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereKey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereStats($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GlobalStat whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

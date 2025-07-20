@@ -18,17 +18,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\GameRound|null $gameRound
  * @property-read \App\Models\Player $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag whereAntagRole($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag whereLateJoin($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerAntag whereWeightExempt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereAntagRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereLateJoin($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAntag whereWeightExempt($value)
  *
  * @mixin \Eloquent
  */

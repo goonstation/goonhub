@@ -8,7 +8,6 @@ use App\Http\Resources\GameServerResource;
 use App\Models\GameServer;
 use App\Rules\DateRange;
 use App\Rules\Range;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -17,8 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class GameServersController extends Controller
 {
-    use IndexableQuery;
-
     /**
      * List
      *
@@ -65,11 +62,11 @@ class GameServersController extends Controller
         ]);
 
         return GameServerResource::collection(
-            $this->indexQuery(GameServer::with([
+            GameServer::with([
                 'currentPlayersOnline',
                 'currentRound.mapRecord',
                 'gameBuildSetting.map',
-            ]))
+            ])->indexFilterPaginate()
         );
     }
 }

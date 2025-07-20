@@ -6,7 +6,6 @@ use App\Models\GameRound;
 use App\Models\Player;
 use App\Traits\HasOpenGraphData;
 use App\Traits\Voteable;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -28,45 +27,47 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read GameRound $gameRound
+ * @property-read \App\Models\GameRound $gameRound
  * @property-read mixed $total_votes
- * @property-read Player|null $player
+ * @property-read \App\Models\Player|null $player
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $userVotes
  * @property-read int|null $user_votes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Vote> $votes
  * @property-read int|null $votes_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereBruteloss($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereFireloss($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereGibbed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereLastWords($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereMobJob($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereMobName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereOxyloss($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereToxloss($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereX($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereY($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventDeath whereZ($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereBruteloss($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereFireloss($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereGibbed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereLastWords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereMobJob($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereMobName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereOxyloss($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereToxloss($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereX($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereY($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventDeath whereZ($value)
  *
  * @mixin \Eloquent
  */
 class EventDeath extends BaseEventModel
 {
-    use Filterable, HasFactory, HasOpenGraphData, Voteable;
+    use HasFactory, HasOpenGraphData, Voteable;
 
     protected $table = 'events_deaths';
 

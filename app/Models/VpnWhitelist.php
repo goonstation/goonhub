@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -15,26 +14,28 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\GameAdmin $gameAdmin
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereCkey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereGameAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|VpnWhitelist whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereCkey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereGameAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class VpnWhitelist extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $table = 'vpn_whitelist';
 

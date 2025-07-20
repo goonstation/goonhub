@@ -4,7 +4,6 @@ namespace App\Models\Events;
 
 use App\Models\GameRound;
 use App\Models\Player;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -21,35 +20,37 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read GameRound $gameRound
- * @property-read Player|null $player
+ * @property-read \App\Models\GameRound $gameRound
+ * @property-read \App\Models\Player|null $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereAiName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereLawNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereLawText($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereUploaderCkey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereUploaderJob($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|EventAiLaw whereUploaderName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereAiName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereLawNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereLawText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereUploaderCkey($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereUploaderJob($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventAiLaw whereUploaderName($value)
  *
  * @mixin \Eloquent
  */
 class EventAiLaw extends BaseEventModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     protected $table = 'events_ai_laws';
 

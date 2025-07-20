@@ -7,7 +7,6 @@ use App\Http\Requests\Medals\PlayersIndexRequest;
 use App\Models\Medal;
 use App\Models\Player;
 use App\Models\PlayerMedal;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request as FacadesRequest;
@@ -15,8 +14,6 @@ use Inertia\Inertia;
 
 class MedalsController extends Controller
 {
-    use IndexableQuery;
-
     public function index(Request $request)
     {
         // Avoiding withCount as this is considerably faster
@@ -92,22 +89,17 @@ class MedalsController extends Controller
             FacadesRequest::merge(['sort_by' => 'ckey']);
         }
 
-        $players = $this->indexQuery(
-            Player::select([
-                'id',
-                'ckey',
-                'key',
-                DB::raw('pm.created_at as earned_at'),
-            ])
-                ->joinSub(
-                    "SELECT player_id, created_at FROM player_medals WHERE medal_id = {$medal->id}",
-                    'pm', 'players.id', '=', 'pm.player_id', 'left'
-                )
-                ->whereRaw('pm.created_at IS NOT NULL'),
-            perPage: 30,
-            sortBy: 'earned_at'
-        );
-
-        return $players;
+        return Player::select([
+            'id',
+            'ckey',
+            'key',
+            DB::raw('pm.created_at as earned_at'),
+        ])
+            ->joinSub(
+                "SELECT player_id, created_at FROM player_medals WHERE medal_id = {$medal->id}",
+                'pm', 'players.id', '=', 'pm.player_id', 'left'
+            )
+            ->whereRaw('pm.created_at IS NOT NULL')
+            ->indexFilterPaginate(perPage: 30, sortBy: 'earned_at');
     }
 }

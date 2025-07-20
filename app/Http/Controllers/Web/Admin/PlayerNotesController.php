@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\PlayerNote;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesPlayerNotes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -12,17 +11,15 @@ use Inertia\Inertia;
 
 class PlayerNotesController extends Controller
 {
-    use IndexableQuery, ManagesPlayerNotes;
+    use ManagesPlayerNotes;
 
     public function index(Request $request)
     {
-        $playerNotes = $this->indexQuery(
-            PlayerNote::with([
-                'player:id,ckey',
-                'gameAdmin:id,name,ckey',
-                'gameServer:id,server_id,short_name',
-            ]),
-            perPage: 30);
+        $playerNotes = PlayerNote::with([
+            'player:id,ckey',
+            'gameAdmin:id,name,ckey',
+            'gameServer:id,server_id,short_name',
+        ])->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/PlayerNotes/Index', [

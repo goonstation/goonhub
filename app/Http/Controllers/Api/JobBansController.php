@@ -8,7 +8,6 @@ use App\Http\Resources\JobBanResource;
 use App\Models\GameAdmin;
 use App\Models\JobBan;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesJobBans;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -21,7 +20,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class JobBansController extends Controller
 {
-    use IndexableQuery, ManagesJobBans;
+    use ManagesJobBans;
 
     /**
      * List
@@ -61,7 +60,8 @@ class JobBansController extends Controller
         ]);
 
         return JobBanResource::collection(
-            $this->indexQuery(JobBan::with(['gameAdmin:id,ckey,name']))
+            JobBan::with(['gameAdmin:id,ckey,name'])
+                ->indexFilterPaginate()
         );
     }
 

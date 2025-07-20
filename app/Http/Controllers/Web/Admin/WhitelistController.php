@@ -5,22 +5,17 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Whitelist\StoreWhitelistRequest;
 use App\Models\PlayerWhitelist;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class WhitelistController extends Controller
 {
-    use IndexableQuery;
-
     public function index(Request $request)
     {
-        $whitelistedPlayers = $this->indexQuery(
-            PlayerWhitelist::with([
-                'player:id,ckey,key',
-                'servers',
-            ]),
-            perPage: 30);
+        $whitelistedPlayers = PlayerWhitelist::with([
+            'player:id,ckey,key',
+            'servers',
+        ])->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Whitelist/Index', [

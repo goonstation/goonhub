@@ -14,14 +14,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $audits_count
  * @property-read \App\Models\Player $player
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime wherePlayerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime whereSecondsPlayed($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|PlayerPlaytime whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime wherePlayerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime whereSecondsPlayed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerPlaytime whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

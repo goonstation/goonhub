@@ -18,17 +18,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \App\Models\GameAdmin|null $gameAdmin
  * @property-read \App\Models\GameRound|null $gameRound
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereGameAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereMap($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|MapSwitch whereVotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereGameAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereMap($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch whereVotes($value)
  *
  * @mixin \Eloquent
  */

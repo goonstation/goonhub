@@ -10,7 +10,6 @@ use App\Http\Resources\GameBuildResource;
 use App\Http\Resources\GameBuildStatusResource;
 use App\Models\GameBuild;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use App\Traits\ManagesGameBuilds;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -20,7 +19,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class GameBuildsController extends Controller
 {
-    use IndexableQuery, ManagesGameBuilds;
+    use ManagesGameBuilds;
 
     /**
      * List
@@ -64,7 +63,7 @@ class GameBuildsController extends Controller
         ]);
 
         return GameBuildResource::collection(
-            $this->indexQuery(GameBuild::class)
+            GameBuild::indexFilterPaginate()
         );
     }
 

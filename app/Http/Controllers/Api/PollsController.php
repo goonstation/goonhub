@@ -12,15 +12,12 @@ use App\Models\Poll;
 use App\Models\PollAnswer;
 use App\Models\PollOption;
 use App\Rules\DateRange;
-use App\Traits\IndexableQuery;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class PollsController extends Controller
 {
-    use IndexableQuery;
-
     private function populatePollResults($poll)
     {
         // The ordering of options is important ok
@@ -86,17 +83,15 @@ class PollsController extends Controller
             'filters.updated_at' => new DateRange,
         ]);
 
-        $pollsPaged = $this->indexQuery(
-            Poll::with([
-                'gameAdmin',
-                'options' => function ($query) {
-                    $query->withCount('answers')
-                        ->with(['answers' => function ($q) {
-                            $q->select('poll_option_id', 'player_id');
-                        }]);
-                },
-            ])
-        );
+        $pollsPaged = Poll::with([
+            'gameAdmin',
+            'options' => function ($query) {
+                $query->withCount('answers')
+                    ->with(['answers' => function ($q) {
+                        $q->select('poll_option_id', 'player_id');
+                    }]);
+            },
+        ])->indexFilterPaginate();
 
         $polls = PollResource::collection($pollsPaged);
         foreach ($polls as $poll) {

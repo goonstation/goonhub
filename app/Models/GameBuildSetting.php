@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -22,31 +21,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Models\GameServer $gameServer
  * @property-read \App\Models\Map|null $map
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereBranch($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereByondMajor($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereByondMinor($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereMapId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereRpMode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereRustgVersion($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereServerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GameBuildSetting whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereBranch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereByondMajor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereByondMinor($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereMapId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereRpMode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereRustgVersion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildSetting whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 class GameBuildSetting extends BaseModel
 {
-    use Filterable, HasFactory;
+    use HasFactory;
 
     public function gameServer(): BelongsTo
     {

@@ -14,15 +14,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay whereGameAdminId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay whereRoundId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay whereTitle($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|RemoteMusicPlay whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereGameAdminId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\RemoteMusicPlay whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

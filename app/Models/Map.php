@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Observers\MapObserver;
 use App\Traits\HasOpenGraphData;
-use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -29,39 +28,41 @@ use Illuminate\Notifications\Notifiable;
  * @property-read int|null $audits_count
  * @property-read \App\Models\GameAdmin|null $gameAdmin
  * @property-read \App\Models\GameRound|null $latestGameRound
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Map> $layers
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Map> $layers
  * @property-read int|null $layers_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  *
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map paginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map simplePaginateFilter($perPage = null, $columns = [], $pageName = 'page', $page = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereAdminOnly($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereIsLayer($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereLastBuiltAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereLastBuiltBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereMapId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereTileHeight($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereTileWidth($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Map whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map newQuery()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map query()
+ * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereAdminOnly($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereBeginsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereEndsWith($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereIsLayer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereLastBuiltAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereLastBuiltBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereLike($column, $value, $boolean = 'and')
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereMapId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereTileHeight($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereTileWidth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Map whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */
 #[ObservedBy([MapObserver::class])]
 class Map extends BaseModel
 {
-    use Filterable, HasFactory, HasOpenGraphData, Notifiable;
+    use HasFactory, HasOpenGraphData, Notifiable;
 
     const PUBLIC_ROOT = 'app/public/maps';
 

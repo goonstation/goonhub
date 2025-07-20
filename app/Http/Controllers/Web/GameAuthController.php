@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -175,10 +174,6 @@ class GameAuthController extends Controller
 
     public function discordCallback(Request $request)
     {
-        Log::channel('gameauth')->info('GameAuthController::discordCallback', [
-            'request' => $request->all(),
-        ]);
-
         $user = null;
         try {
             $user = $this->handleDiscordCallback(route('game-auth.discord-callback'));
