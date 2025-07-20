@@ -208,6 +208,7 @@ return [
 
         App\Providers\OpenGraphImageProvider::class,
         App\Providers\GameBridgeServiceProvider::class,
+        App\Providers\DiscordApiServiceProvider::class,
     ],
 
     /*
@@ -226,6 +227,7 @@ return [
         'OpenGraphImage' => App\Facades\OpenGraphImage::class,
         'GameBridge' => App\Facades\GameBridge::class,
         'GitHub' => GrahamCampbell\GitHub\Facades\GitHub::class,
+        'DiscordApi' => App\Facades\DiscordApi::class,
     ])->toArray(),
 
 ];

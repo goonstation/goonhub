@@ -3,7 +3,6 @@
 use App\Http\Controllers\Web\AntagsController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ChangelogController;
-use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\DeathsController;
 use App\Http\Controllers\Web\ErrorsController;
 use App\Http\Controllers\Web\EventsController;
@@ -26,21 +25,6 @@ use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
-if (! config('goonhub.include_frontend')) {
-    return;
-}
 
 Route::domain('play.'.preg_replace('(^https?://)', '', config('app.url')))->group(function () {
     Route::controller(PlayController::class)->prefix('/')->group(function () {
@@ -188,16 +172,6 @@ Route::controller(MedalsController::class)->prefix('/medals')->group(function ()
         Route::get('/{uuid}', 'show')->whereUuid('uuid')->name('medals.show')
             ->breadcrumbs(fn (Trail $trail, $uuid) => $trail->parent('medals.index')->push('Show', route('medals.show', $uuid)));
         Route::get('/players/{uuid}', 'players')->whereUuid('uuid')->name('medals.players');
-    });
-});
-
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'nometa',
-])->group(function () {
-    Route::controller(DashboardController::class)->prefix('dashboard')->group(function () {
-        Route::get('/', 'index')->name('dashboard');
     });
 });
 

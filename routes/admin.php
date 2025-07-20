@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Admin\AuditController;
 use App\Http\Controllers\Web\Admin\BansController;
+use App\Http\Controllers\Web\Admin\DiscordSettingsController;
 use App\Http\Controllers\Web\Admin\ErrorsController;
 use App\Http\Controllers\Web\Admin\EventsController;
 use App\Http\Controllers\Web\Admin\GameAdminRanksController;
@@ -295,4 +296,13 @@ Route::controller(AuditController::class)->prefix('audit')->group(function () {
     Route::get('/types', 'getTypes')->name('admin.audit.types');
     Route::get('/{audit}', 'show')->whereNumber('audit')->name('admin.audit.show')
         ->breadcrumbs(fn (Trail $trail, $audit) => $trail->parent('admin.audit.index')->push('Show', route('admin.audit.show', $audit)));
+});
+
+Route::controller(DiscordSettingsController::class)->prefix('discord-settings')->group(function () {
+    Route::get('/', 'index')->name('admin.discord-settings.index')
+        ->breadcrumbs(fn (Trail $trail) => $trail->push('Discord Settings', 'admin.discord-settings.index'));
+    Route::post('/', 'store')->name('admin.discord-settings.store');
+    Route::put('/', 'update')->name('admin.discord-settings.update');
+
+    Route::get('/roles', 'roles')->name('admin.discord-settings.roles');
 });

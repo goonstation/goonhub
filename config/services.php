@@ -39,5 +39,22 @@ return [
         // optional
         'allow_gif_avatars' => (bool) env('DISCORD_AVATAR_GIF', true),
         'avatar_default_extension' => env('DISCORD_EXTENSION_DEFAULT', 'png'), // only pick from jpg, png, webp
+
+        // Discord API configuration
+        'api' => [
+            'base_url' => env('DISCORD_API_BASE_URL', 'https://discord.com/api/v10'),
+            'bot_token' => env('DISCORD_BOT_TOKEN'),
+            'guild_id' => env('DISCORD_GUILD_ID'), // Optional global guild ID
+            'timeout' => env('DISCORD_API_TIMEOUT', 30), // seconds
+            'retry_attempts' => env('DISCORD_API_RETRY_ATTEMPTS', 3),
+            'retry_delay' => env('DISCORD_API_RETRY_DELAY', 1000), // milliseconds
+        ],
+    ],
+
+    'bab' => [
+        'base_url' => env('BAB_BASE_URL'),
+        'client_id' => env('BAB_CLIENT_ID'),
+        'client_secret' => env('BAB_CLIENT_SECRET'),
+        'redirect' => env('BAB_REDIRECT_URI'),
     ],
 ];

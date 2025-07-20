@@ -12,6 +12,7 @@
     "dedoc/scramble": "^0.12.9",
     "doctrine/dbal": "^4.2",
     "geoip2/geoip2": "^3.1",
+    "goonstation/laravel-socialite-bab": "dev-master",
     "graham-campbell/github": "^13.0",
     "guzzlehttp/guzzle": "^7.2",
     "inertiajs/inertia-laravel": "2.x-dev",
@@ -54,6 +55,7 @@
     "laravel/sail": "^1.0.1",
     "mockery/mockery": "^1.4.4",
     "nunomaduro/collision": "^8.1",
+    "phpstan/phpstan": "2.1.17",
     "phpunit/phpunit": "^12.0",
     "spatie/laravel-ignition": "^2.0"
   },
@@ -76,7 +78,8 @@
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
     ],
     "post-update-cmd": [
-      "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+      "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+      "@php artisan ide-helper:generate"
     ],
     "post-root-package-install": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
@@ -89,7 +92,7 @@
       "@php artisan ide-helper:models -W -R",
       "./vendor/bin/pint ./app/Models"
     ],
-    "pint": "./vendor/bin/pint"
+    "pint": "./vendor/bin/pint --parallel"
   },
   "extra": {
     "laravel": {
@@ -108,5 +111,11 @@
     }
   },
   "minimum-stability": "stable",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "repositories": {
+    "laravel-socialite-bab": {
+      "type": "vcs",
+      "url": "https://github.com/goonstation/laravel-socialite-bab.git"
+    }
+  }
 }

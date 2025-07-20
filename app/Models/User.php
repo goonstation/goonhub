@@ -33,6 +33,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property int|null $player_id
  * @property-read \App\Models\Team|null $currentTeam
  * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\LinkedByondUser|null $linkedByond
+ * @property-read \App\Models\LinkedDiscordUser|null $linkedDiscord
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Team> $ownedTeams
@@ -147,6 +149,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function player()
     {
         return $this->hasOne(Player::class, 'id', 'player_id');
+    }
+
+    public function linkedByond()
+    {
+        return $this->hasOne(LinkedByondUser::class);
+    }
+
+    public function linkedDiscord()
+    {
+        return $this->hasOne(LinkedDiscordUser::class);
     }
 
     public function isAdmin()

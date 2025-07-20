@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        if ($this->app->environment(['local'])) {
+        if (app()->environment(['local'])) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
         }
@@ -64,6 +64,7 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(function (\SocialiteProviders\Manager\SocialiteWasCalled $event) {
             $event->extendSocialite('discord', \SocialiteProviders\Discord\Provider::class);
+            $event->extendSocialite('bab', \SocialiteProviders\BAB\Provider::class);
         });
 
         Blade::directive('base64img', function (string $expression) {

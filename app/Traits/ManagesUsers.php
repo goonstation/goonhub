@@ -56,6 +56,7 @@ trait ManagesUsers
                 // Discord user is linked to a player via Medass
                 // And that player is not yet claimed by a user
                 $player = $linkedDiscordPlayer;
+                $this->linkToByond($user, $linkedDiscordCkey);
             } else {
                 // Discord user is not linked to a player, create a new one
                 // (We have no other way of associating an existing player with a discord user)
@@ -74,5 +75,12 @@ trait ManagesUsers
         }
 
         return $user;
+    }
+
+    private function linkToByond(User $user, string $ckey)
+    {
+        return $user->linkedByond()->create([
+            'ckey' => $ckey,
+        ]);
     }
 }

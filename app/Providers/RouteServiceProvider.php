@@ -40,19 +40,30 @@ class RouteServiceProvider extends ServiceProvider
                 ->domain(config('app.api_url'))
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware(['sentry:web', 'web'])
-                ->group(base_path('routes/web.php'));
+            if (config('goonhub.include_frontend')) {
+                Route::middleware(['sentry:web', 'web'])
+                    ->group(base_path('routes/web.php'));
 
-            Route::middleware([
-                'sentry:web',
-                'web',
-                'auth:sanctum',
-                config('jetstream.auth_session'),
-                'nometa',
-                CanAccessAdminRoutes::class,
-            ])
-                ->prefix('/admin')
-                ->group(base_path('routes/admin.php'));
+                Route::middleware([
+                    'sentry:web',
+                    'web',
+                    'auth:sanctum',
+                    config('jetstream.auth_session'),
+                    'nometa',
+                ])
+                    ->group(base_path('routes/user.php'));
+
+                Route::middleware([
+                    'sentry:web',
+                    'web',
+                    'auth:sanctum',
+                    config('jetstream.auth_session'),
+                    'nometa',
+                    CanAccessAdminRoutes::class,
+                ])
+                    ->prefix('/admin')
+                    ->group(base_path('routes/admin.php'));
+            }
         });
     }
 }
