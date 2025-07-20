@@ -25,12 +25,12 @@
         "open-southeners.laravel-pint",
         "eamodio.gitlens",
         "oven.bun-vscode",
-        "SanderRonde.phpstan-vscode",
         "mrmlnc.vscode-scss",
         "Zignd.html-css-class-completion",
         "GitHub.vscode-github-actions",
         "shufo.vscode-blade-formatter",
-        "Gruntfuggly.todo-tree"
+        "Gruntfuggly.todo-tree",
+        "${containerWorkspaceFolder}/.devcontainer/phpstan-4.0.5.vsix"
       ],
       "settings": {
         "extensions.verifySignature": false
@@ -38,8 +38,6 @@
     }
   },
   "remoteUser": "sail",
-  "initializeCommand": "sh .devcontainer/init.sh"
-  // "forwardPorts": [],
-  // "runServices": [],
-  // "shutdownAction": "none",
+  "initializeCommand": "sh .devcontainer/init.sh",
+  "shutdownAction": "stopCompose"
 }
