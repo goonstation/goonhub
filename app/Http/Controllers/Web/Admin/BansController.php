@@ -97,6 +97,7 @@ class BansController extends Controller
                     'duration' => $ban->duration,
                     'requires_appeal' => $ban->requires_appeal ? 1 : 0,
                 ])
+                ->force(true)
                 ->sendAndForget();
         });
 

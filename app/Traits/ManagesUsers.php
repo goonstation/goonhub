@@ -2,9 +2,8 @@
 
 namespace App\Traits;
 
-use App\Facades\DiscordApi;
+use App\Jobs\GrantDiscordRole;
 use App\Libraries\DiscordBot;
-use App\Models\DiscordSetting;
 use App\Models\Player;
 use App\Models\PlayerHos;
 use App\Models\PlayerMentor;
@@ -109,16 +108,6 @@ trait ManagesUsers
             //
         }
 
-        $grantDiscordRole = DiscordSetting::where('key', DiscordSetting::GRANT_ROLE_WHEN_LINKED)
-            ->whereNotNull('value')
-            ->first();
-
-        if ($grantDiscordRole) {
-            DiscordApi::guild()->addMemberRole(
-                $discordId,
-                $grantDiscordRole->value,
-                'Linked Goonhub account'
-            );
-        }
+        GrantDiscordRole::dispatch($discordId);
     }
 }
