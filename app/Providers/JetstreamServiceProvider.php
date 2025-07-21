@@ -57,6 +57,7 @@ class JetstreamServiceProvider extends ServiceProvider
                 return array_merge($data, [
                     'linked_byond' => $request->user()->linkedByond,
                     'linked_discord' => $request->user()->linkedDiscord,
+                    'sent_verification_email' => (bool) $request->session()->get('sent_verification_email'),
                 ]);
             }
         );

@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\LinkedByondUser;
+use App\Traits\ManagesUsers;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class LinkByondController extends Controller
 {
+    use ManagesUsers;
+
     public function redirect()
     {
         $user = Auth::user();
@@ -44,7 +47,7 @@ class LinkByondController extends Controller
                 ->with('error', 'This BYOND account is already linked to another user.');
         }
 
-        $user->linkedByond()->create(['ckey' => $byondUser['ckey']]);
+        $this->linkToByond($user, $byondUser['ckey']);
 
         return redirect()->route('profile.show')
             ->with('success', 'Successfully linked BYOND account.');

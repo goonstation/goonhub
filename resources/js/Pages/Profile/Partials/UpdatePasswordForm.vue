@@ -1,6 +1,7 @@
 <template>
   <q-form @submit="updatePassword">
     <q-input
+      v-if="!$page.props.auth.user.passwordless"
       v-model="form.current_password"
       ref="currentPasswordInput"
       class="q-mb-sm"
@@ -73,7 +74,13 @@ export default {
       this.form.put(route('user-password.update'), {
         errorBag: 'updatePassword',
         preserveScroll: true,
-        onSuccess: () => this.form.reset(),
+        onSuccess: () => {
+          this.$q.notify({
+            message: 'Password updated',
+            color: 'positive',
+          })
+          this.form.reset()
+        },
         onError: () => {
           if (this.form.errors.password) {
             this.form.reset('password', 'password_confirmation')

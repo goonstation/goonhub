@@ -65,28 +65,34 @@
             type="email"
             label="Email"
             filled
-            required
             hide-bottom-space
             :error="!!form.errors.email"
             :error-message="form.errors.email"
           />
 
-          <Alert
-            v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null"
-            type="warning"
-          >
-            <div class="flex items-center justify-between gap-xs-sm">
-              <span>Your email address is unverified.</span>
-              <q-btn
-                @click="sendEmailVerification"
-                label="Send verification email"
-                color="warning"
-                class="text-sm q-px-md q-py-xs"
-                type="button"
-                outline
-              />
-            </div>
-          </Alert>
+          <template v-if="$page.props.jetstream.hasEmailVerification">
+            <Alert
+              v-if="$page.props.sent_verification_email || verificationLinkSent"
+              type="positive"
+            >
+              <span class="text-weight-medium">
+                A new verification link has been sent to your email address.
+              </span>
+            </Alert>
+            <Alert v-else-if="user.email_verified_at === null && !user.emailless" type="warning">
+              <div class="flex items-center justify-between gap-xs-sm">
+                <span>Your email address is unverified.</span>
+                <q-btn
+                  @click="sendEmailVerification"
+                  label="Send verification email"
+                  color="warning"
+                  class="text-sm q-px-md q-py-xs"
+                  type="button"
+                  outline
+                />
+              </div>
+            </Alert>
+          </template>
         </div>
       </div>
 
@@ -101,9 +107,6 @@
     </div>
 
     <div class="flex items-center gap-xs-sm q-mt-sm">
-      <div v-if="verificationLinkSent" class="text-center text-weight-medium text-sm text-positive">
-        A new verification link has been sent to your email address.
-      </div>
       <q-space />
       <div class="flex items-center gap-xs-sm q-ml-auto">
         <ActionMessage :on="form.recentlySuccessful">Saved</ActionMessage>
@@ -143,7 +146,7 @@ export default {
       form: useForm({
         _method: 'PUT',
         name: this.user.name,
-        email: this.user.email,
+        email: this.user.emailless ? null : this.user.email,
         photo: null,
       }),
       verificationLinkSent: null,

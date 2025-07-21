@@ -6,6 +6,7 @@ use App\Models\Traits\IndexFilterScope;
 use EloquentFilter\Filterable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -28,7 +29,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $two_factor_recovery_codes
  * @property string|null $two_factor_confirmed_at
  * @property bool $is_admin
- * @property string|null $discord_id
  * @property int|null $game_admin_id
  * @property int|null $player_id
  * @property-read \App\Models\Team|null $currentTeam
@@ -59,7 +59,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereBeginsWith($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereCurrentTeamId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereDiscordId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEndsWith($column, $value, $boolean = 'and')
@@ -96,7 +95,14 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var list<string>
      */
     protected $fillable = [
-        'name', 'email', 'password', 'is_admin', 'discord_id', 'game_admin_id', 'player_id',
+        'name',
+        'email',
+        'password',
+        'is_admin',
+        'game_admin_id',
+        'player_id',
+        'passwordless',
+        'emailless',
     ];
 
     /**
@@ -135,28 +141,22 @@ class User extends Authenticatable implements MustVerifyEmail
         return '';
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function gameAdmin()
+    public function gameAdmin(): HasOne
     {
         return $this->hasOne(GameAdmin::class, 'id', 'game_admin_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function player()
+    public function player(): HasOne
     {
         return $this->hasOne(Player::class, 'id', 'player_id');
     }
 
-    public function linkedByond()
+    public function linkedByond(): HasOne
     {
         return $this->hasOne(LinkedByondUser::class);
     }
 
-    public function linkedDiscord()
+    public function linkedDiscord(): HasOne
     {
         return $this->hasOne(LinkedDiscordUser::class);
     }

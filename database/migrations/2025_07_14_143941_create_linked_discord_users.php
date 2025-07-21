@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('linked_discord_users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->bigInteger('discord_id')->unique();
-            $table->string('name')->nullable();
-            $table->string('email')->nullable();
+            $table->text('discord_id')->unique();
+            $table->text('name')->nullable();
+            $table->text('email')->nullable();
             $table->timestamps();
         });
 

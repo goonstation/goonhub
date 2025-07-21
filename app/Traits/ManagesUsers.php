@@ -2,14 +2,16 @@
 
 namespace App\Traits;
 
+use App\Facades\DiscordApi;
 use App\Libraries\DiscordBot;
+use App\Models\DiscordSetting;
 use App\Models\Player;
 use App\Models\PlayerHos;
 use App\Models\PlayerMentor;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
-use Str;
 
 trait ManagesUsers
 {
@@ -28,21 +30,28 @@ trait ManagesUsers
         $discordName = $discordUser->getName();
         $discordEmail = $discordUser->getEmail();
 
-        $user = User::where('discord_id', $discordId)->first();
+        $user = User::whereHas('linkedDiscord', function ($query) use ($discordId) {
+            $query->where('discord_id', $discordId);
+        })->first();
 
         if (! $user) {
             // Registering
 
+            $emailLess = false;
+            $userEmail = $discordEmail;
             if (! $discordEmail || User::where('email', $discordEmail)->exists()) {
-                $discordEmail = Str::random(20).'@null.local';
+                $userEmail = Str::random(20).'@null.local';
+                $emailLess = true;
             }
 
             $user = User::create([
                 'name' => $discordName,
-                'email' => strtolower($discordEmail),
+                'email' => strtolower($userEmail),
                 'password' => Hash::make(Str::password()),
-                'discord_id' => $discordId,
+                'passwordless' => true,
+                'emailless' => $emailLess,
             ]);
+            $this->linkToDiscord($user, $discordId, $discordName, $discordEmail);
         }
 
         if (! $user->player) {
@@ -79,8 +88,37 @@ trait ManagesUsers
 
     private function linkToByond(User $user, string $ckey)
     {
-        return $user->linkedByond()->create([
-            'ckey' => $ckey,
-        ]);
+        try {
+            $user->linkedByond()->create([
+                'ckey' => $ckey,
+            ]);
+        } catch (\Throwable $e) {
+            //
+        }
+    }
+
+    private function linkToDiscord(User $user, string $discordId, ?string $discordName = null, ?string $discordEmail = null)
+    {
+        try {
+            $user->linkedDiscord()->create([
+                'discord_id' => $discordId,
+                'name' => $discordName,
+                'email' => $discordEmail,
+            ]);
+        } catch (\Throwable $e) {
+            //
+        }
+
+        $grantDiscordRole = DiscordSetting::where('key', DiscordSetting::GRANT_ROLE_WHEN_LINKED)
+            ->whereNotNull('value')
+            ->first();
+
+        if ($grantDiscordRole) {
+            DiscordApi::guild()->addMemberRole(
+                $discordId,
+                $grantDiscordRole->value,
+                'Linked Goonhub account'
+            );
+        }
     }
 }

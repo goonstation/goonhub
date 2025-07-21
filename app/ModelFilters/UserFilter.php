@@ -31,4 +31,14 @@ class UserFilter extends ModelFilter
     {
         return $this->where('email', 'ILIKE', '%'.$val.'%');
     }
+
+    public function passwordless($val)
+    {
+        return $this->where('passwordless', $val);
+    }
+
+    public function emailless($val)
+    {
+        return $this->where('emailless', $val);
+    }
 }

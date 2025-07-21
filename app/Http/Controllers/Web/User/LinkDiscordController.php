@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Web\User;
 
-use App\Facades\DiscordApi;
 use App\Http\Controllers\Controller;
-use App\Models\DiscordSetting;
 use App\Models\LinkedDiscordUser;
+use App\Traits\ManagesUsers;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
 class LinkDiscordController extends Controller
 {
+    use ManagesUsers;
+
     public function redirect()
     {
         $user = Auth::user();
@@ -45,23 +46,7 @@ class LinkDiscordController extends Controller
                 ->with('error', 'This Discord account is already linked to another user.');
         }
 
-        $user->linkedDiscord()->create([
-            'discord_id' => $discordUser->getId(),
-            'name' => $discordUser->getName(),
-            'email' => $discordUser->getEmail(),
-        ]);
-
-        $grantDiscordRole = DiscordSetting::where('key', DiscordSetting::GRANT_ROLE_WHEN_LINKED)
-            ->whereNotNull('value')
-            ->first();
-
-        if ($grantDiscordRole) {
-            DiscordApi::guild()->addMemberRole(
-                $discordUser->getId(),
-                $grantDiscordRole->value,
-                'Linked Goonhub account'
-            );
-        }
+        $this->linkToDiscord($user, $discordUser->getId(), $discordUser->getName(), $discordUser->getEmail());
 
         return redirect()->route('profile.show')
             ->with('success', 'Successfully linked Discord account.');

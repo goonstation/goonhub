@@ -35,7 +35,6 @@ class UsersController extends Controller
             'email' => 'required|email',
             'password' => 'required',
             'confirm_password' => 'required|same:password',
-            'discord_id' => 'nullable',
             'game_admin_id' => 'nullable',
             'is_admin' => 'boolean',
         ]);
@@ -43,7 +42,6 @@ class UsersController extends Controller
         $user = new User;
         $user->name = $data['name'];
         $user->email = $data['email'];
-        $user->discord_id = isset($data['discord_id']) ? $data['discord_id'] : null;
         $user->game_admin_id = isset($data['game_admin_id']) ? $data['game_admin_id'] : null;
         $user->password = Hash::make($data['password']);
 
@@ -66,7 +64,6 @@ class UsersController extends Controller
                 'email',
                 'profile_photo_url',
                 'is_admin',
-                'discord_id',
                 'game_admin_id',
             ]),
         ]);
@@ -79,14 +76,12 @@ class UsersController extends Controller
             'email' => 'required|email',
             'password' => 'nullable',
             'confirm_password' => 'required_with:password|same:password',
-            'discord_id' => 'nullable',
             'game_admin_id' => 'nullable',
             'is_admin' => 'boolean',
         ]);
 
         $user->name = $data['name'];
         $user->email = $data['email'];
-        $user->discord_id = isset($data['discord_id']) ? $data['discord_id'] : null;
         $user->game_admin_id = isset($data['game_admin_id']) ? $data['game_admin_id'] : null;
 
         if (! empty($data['password'])) {
