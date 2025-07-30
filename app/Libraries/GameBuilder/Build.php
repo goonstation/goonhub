@@ -532,11 +532,6 @@ class Build
             File::makeDirectory($this->buildCdnDir);
         }
 
-        $yarnCache = "{$this->serverDir}/.yarn";
-        if (File::missing($yarnCache)) {
-            File::makeDirectory($yarnCache);
-        }
-
         $this->log('Preparing build directory');
 
         // Backup node modules
@@ -567,8 +562,6 @@ class Build
         );
 
         $yarnEnv = [
-            'YARN_GLOBAL_FOLDER' => $yarnCache,
-            'YARN_ENABLE_GLOBAL_CACHE' => true,
             'YARN_ENABLE_COLORS' => false,
             'YARN_ENABLE_PROGRESS_BARS' => false,
             'YARN_ENABLE_TELEMETRY' => false,
