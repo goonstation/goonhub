@@ -62,7 +62,7 @@ jobs:
         run: composer install
 
       - name: Run Pint
-        run: ./vendor/bin/pint --test
+        run: ./vendor/bin/pint --test --parallel
 
       - name: Restore PHPStan result cache
         uses: actions/cache/restore@v4
