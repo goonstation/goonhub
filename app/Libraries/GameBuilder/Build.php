@@ -532,7 +532,7 @@ class Build
             File::makeDirectory($this->buildCdnDir);
         }
 
-        $yarnCache = "{$this->rootDir}/.yarn";
+        $yarnCache = "{$this->serverDir}/.yarn";
         if (File::missing($yarnCache)) {
             File::makeDirectory($yarnCache);
         }
