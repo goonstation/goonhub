@@ -28,6 +28,12 @@ return new class extends Migration
                 'user_id' => $user->id,
                 'discord_id' => $user->discord_id,
             ]);
+
+            if (str_ends_with($user->email, '@goonhub.com')) {
+                $user->emailless = true;
+                $user->passwordless = true;
+                $user->save();
+            }
         }
 
         Schema::table('users', function (Blueprint $table) {
