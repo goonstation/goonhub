@@ -39,6 +39,7 @@ RUN dpkg --add-architecture i386; \
     apt-get install -yqq --no-install-recommends --show-progress \
     apt-utils \
     curl \
+    libcurl4:i386 \
     wget \
     vim \
     git \
