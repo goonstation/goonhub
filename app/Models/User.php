@@ -31,6 +31,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property bool $is_admin
  * @property int|null $game_admin_id
  * @property int|null $player_id
+ * @property bool $passwordless
+ * @property bool $emailless
  * @property-read \App\Models\Team|null $currentTeam
  * @property-read \App\Models\GameAdmin|null $gameAdmin
  * @property-read \App\Models\LinkedByondUser|null $linkedByond
@@ -61,6 +63,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereCurrentTeamId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEmailless($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEndsWith($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereGameAdminId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereId($value)
@@ -68,6 +71,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereLike($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User wherePasswordless($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User wherePlayerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereProfilePhotoPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereRememberToken($value)

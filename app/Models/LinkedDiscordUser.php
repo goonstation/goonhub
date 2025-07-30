@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $user_id
- * @property int $discord_id
+ * @property string $discord_id
  * @property string|null $name
  * @property string|null $email
  * @property \Illuminate\Support\Carbon|null $created_at
