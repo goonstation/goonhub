@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec68b0b074631baece455c418c1dbedf",
+    "content-hash": "bed9ef1495198c7f1b5814a5c06a3213",
     "packages": [
         {
             "name": "ahtinurme/octane-health-check",
@@ -3842,16 +3842,16 @@
         },
         {
             "name": "laravel/octane",
-            "version": "v2.12.0",
+            "version": "v2.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/octane.git",
-                "reference": "d606f3dffc785032f11c23a017334c99800f2e40"
+                "reference": "00e4d40047a24c267c9d3d0abfb47a6e27a7dc7f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/octane/zipball/d606f3dffc785032f11c23a017334c99800f2e40",
-                "reference": "d606f3dffc785032f11c23a017334c99800f2e40",
+                "url": "https://api.github.com/repos/laravel/octane/zipball/00e4d40047a24c267c9d3d0abfb47a6e27a7dc7f",
+                "reference": "00e4d40047a24c267c9d3d0abfb47a6e27a7dc7f",
                 "shasum": ""
             },
             "require": {
@@ -3928,7 +3928,7 @@
                 "issues": "https://github.com/laravel/octane/issues",
                 "source": "https://github.com/laravel/octane"
             },
-            "time": "2025-07-18T15:50:14+00:00"
+            "time": "2025-06-28T17:28:13+00:00"
         },
         {
             "name": "laravel/prompts",
