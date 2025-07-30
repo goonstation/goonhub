@@ -102,7 +102,7 @@ RUN cd /usr/local/src && \
 # Packages for compiling the game with Byond
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
-    apt-get install -y rsync gcc-multilib lib32stdc++6 zlib1g-dev:i386 libssl-dev:i386 pkg-config:i386 libstdc++6 libstdc++6:i386
+    apt-get install -y rsync gcc-multilib lib32stdc++6 zlib1g-dev:i386 libssl-dev:i386 pkg-config:i386 libstdc++6 libstdc++6:i386 libcurl4:i386
 
 # Clean up apt cache
 RUN apt-get -y autoremove && \
