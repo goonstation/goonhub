@@ -19,12 +19,12 @@ class DatabaseSeeder extends SeederOnce
             DiscordSettingSeeder::class,
             GameServerSeeder::class,
             MapSeeder::class,
-            GameRoundSeeder::class,
             GameAdminRankSeeder::class,
         ];
 
         $development = [
             ...$production,
+            GameRoundSeeder::class,
             PlayerSeeder::class,
         ];
 
