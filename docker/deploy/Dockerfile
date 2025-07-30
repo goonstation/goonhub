@@ -54,7 +54,7 @@ RUN dpkg --add-architecture i386; \
     ffmpeg automake build-essential libasound2-dev libpulse-dev lame \
     jpegoptim optipng pngquant gifsicle webp libavif-bin \
     # Stuff for building with Byond
-    gcc-multilib lib32stdc++6 zlib1g-dev:i386 libssl-dev:i386 pkg-config:i386 libstdc++6 libstdc++6:i386 \
+    gcc-multilib lib32stdc++6 zlib1g-dev:i386 libssl-dev:i386 pkg-config:i386 libstdc++6 libstdc++6:i386 libcurl4:i386 \
     # Install PHP extensions
     && install-php-extensions \
     bz2 \
