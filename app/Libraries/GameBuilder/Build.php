@@ -566,17 +566,25 @@ class Build
             "{$this->buildCdnDir}/tgui/packages/tgui/goonstation/cdn-manifest.json"
         );
 
+        $yarnEnv = [
+            'YARN_GLOBAL_FOLDER' => $yarnCache,
+            'YARN_ENABLE_GLOBAL_CACHE' => true,
+            'YARN_ENABLE_COLORS' => false,
+            'YARN_ENABLE_PROGRESS_BARS' => false,
+            'YARN_ENABLE_TELEMETRY' => false,
+        ];
+
+        $process = Process::fromShellCommandline(
+            'bin/tgui --clean',
+            cwd: "{$this->buildCdnDir}/tgui",
+            env: $yarnEnv
+        );
+        $this->runProcess($process);
+
         $process = Process::fromShellCommandline(
             'bin/tgui --build',
             cwd: "{$this->buildCdnDir}/tgui",
-            env: [
-                'YARN_GLOBAL_FOLDER' => $yarnCache,
-                'YARN_ENABLE_GLOBAL_CACHE' => true,
-                'YARN_ENABLE_COLORS' => false,
-                'YARN_ENABLE_PROGRESS_BARS' => false,
-                'YARN_ENABLE_TELEMETRY' => false,
-                'YARN_PREFER_INTERACTIVE' => false,
-            ]
+            env: $yarnEnv
         );
         $this->runProcess($process);
 
