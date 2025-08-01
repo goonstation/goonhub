@@ -167,7 +167,7 @@
               color="primary"
               text-color="primary"
               class="text-weight-bold"
-              label="Unban"
+              label="Clear Evasion Data"
               size="11px"
               outline
             />
