@@ -549,11 +549,16 @@ class Build
 
         $process = Process::fromShellCommandline(
             'npm install --no-progress --quiet',
-            "{$this->buildCdnDir}/browserassets", timeout: 120
+            cwd: "{$this->buildCdnDir}/browserassets",
+            timeout: 120
         );
         $this->runProcess($process);
 
-        $process = Process::fromShellCommandline('npm run tgui:manifest', "{$this->buildCdnDir}/browserassets");
+        $process = Process::fromShellCommandline(
+            'npm run tgui:manifest',
+            cwd: "{$this->buildCdnDir}/browserassets",
+            env: ['NODE_ENV' => 'production']
+        );
         $this->runProcess($process);
 
         File::move(
@@ -585,8 +590,11 @@ class Build
             'npm run build',
             cwd: "{$this->buildCdnDir}/browserassets",
             env: [
-                'SERVER_TARGET' => $this->server->server_id,
+                'NODE_ENV' => 'production',
                 'CDN_VERSION' => $this->cdnVersion,
+                'CDN_BASE_URL' => "https://cdn-{$this->server->server_id}.goonhub.com",
+                // TODO: remove when game repo gulpfile is updated everywhere
+                'SERVER_TARGET' => $this->server->server_id,
             ]
         );
         $this->runProcess($process);
