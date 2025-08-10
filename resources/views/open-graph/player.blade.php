@@ -1,6 +1,6 @@
 <x-open-graph-layout>
   <style>
-    .stats > div:not(:last-child) {
+    .stats>div:not(:last-child) {
       margin-bottom: 20px;
     }
   </style>
@@ -30,12 +30,14 @@
           <span class="dimmed">Deaths</span>
         </div>
       </div>
-      <div class="footer">
-        <div>
-          {!! File::get(resource_path('img/icons/calendar-outline.svg')) !!}
-          Started playing {{ $data->firstConnection->created_at->ago() }}
+      @if ($data->firstConnection && $data->firstConnection->created_at)
+        <div class="footer">
+          <div>
+            {!! File::get(resource_path('img/icons/calendar-outline.svg')) !!}
+            Started playing {{ $data->firstConnection->created_at->ago() }}
+          </div>
         </div>
-      </div>
+      @endif
     </div>
     <div class="logo">
       <img src="@base64img(resource_path('img/logo.png'))" width="200" height="200" />
