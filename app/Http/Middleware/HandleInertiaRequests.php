@@ -11,13 +11,18 @@ use Tabuna\Breadcrumbs\Crumb;
 class HandleInertiaRequests extends Middleware
 {
     /**
-     * The root template that's loaded on the first page visit.
+     * Defines the root template that's loaded on the first page visit.
      *
-     * @see https://inertiajs.com/server-side-setup#root-template
-     *
-     * @var string
+     * @return string
      */
-    protected $rootView = 'app';
+    public function rootView(Request $request)
+    {
+        if ($request->route()->getPrefix() === 'game-auth') {
+            return 'game-auth/app';
+        }
+
+        return 'app';
+    }
 
     /**
      * Determines the current asset version.

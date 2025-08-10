@@ -1,8 +1,11 @@
+@use 'quasar/src/css/variables' as q;
+@use 'quasar-variables' as *;
+
 // Override default menu styles to force a clear border rather than a white shadow
 .q-menu {
   &--dark {
     box-shadow: none;
-    border: 1px solid $grey-8;
+    border: 1px solid q.$grey-8;
   }
 }
 
@@ -41,7 +44,7 @@
   .q-chip {
     &--dense {
       height: 2em;
-      background-color: $grey-9;
+      background-color: q.$grey-9;
       border-radius: 3px;
       font-size: 13px;
 
@@ -56,7 +59,7 @@
   }
 }
 
-@media (max-width: $breakpoint-sm-max) {
+@media (max-width: q.$breakpoint-sm-max) {
   .q-dialog__inner--minimized {
     padding: 12px;
   }

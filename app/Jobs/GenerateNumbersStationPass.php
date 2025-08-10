@@ -133,6 +133,7 @@ class GenerateNumbersStationPass implements ShouldQueue
             GameBridge::create()
                 ->target('active')
                 ->message(['type' => 'numbersStation', 'numbers' => $numbers])
+                ->force(true)
                 ->sendAndForget();
         }
     }

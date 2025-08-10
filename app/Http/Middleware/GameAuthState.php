@@ -18,7 +18,7 @@ class GameAuthState
      */
     public function handle(Request $request, Closure $next)
     {
-        $token = preg_replace('/[^a-zA-Z0-9]/', '', $request->input('token'));
+        $token = preg_replace('/[^a-zA-Z0-9]/', '', $request->input('token', ''));
 
         $sessionToken = null;
         if (! $token) {

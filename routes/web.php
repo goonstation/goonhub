@@ -21,7 +21,6 @@ use App\Http\Controllers\Web\TerminalController;
 use App\Http\Controllers\Web\TicketsController;
 use App\Http\Controllers\Web\VotesController;
 use App\Http\Middleware\EnsureUserIsAdmin;
-use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
@@ -48,18 +47,20 @@ Route::controller(AuthController::class)->prefix('/auth')->group(function () {
 });
 
 Route::controller(GameAuthController::class)->prefix('/game-auth')
-    ->withoutMiddleware([HandleInertiaRequests::class, AddLinkHeadersForPreloadedAssets::class])
+    ->withoutMiddleware([AddLinkHeadersForPreloadedAssets::class])
     ->group(function () {
         Route::middleware('gameauth.state')->group(function () {
             Route::middleware('gameauth.redirect')->group(function () {
-                Route::get('/login', 'showLogin')->name('game-auth.show-login');
+                Route::get('/login', 'showLogin')->name('game-auth.show-login')
+                    ->breadcrumbs(fn (Trail $trail) => $trail->push('Login', route('game-auth.show-login')));
                 Route::post('/login', 'login')->name('game-auth.login');
-                Route::get('/register', 'showRegister')->name('game-auth.show-register');
+                Route::get('/register', 'showRegister')->name('game-auth.show-register')
+                    ->breadcrumbs(fn (Trail $trail) => $trail->parent('game-auth.show-login')->push('Register', route('game-auth.show-register')));
                 Route::post('/register', 'register')->name('game-auth.register');
-                Route::get('/forgot', 'showForgot')->name('game-auth.show-forgot');
+                Route::get('/forgot', 'showForgot')->name('game-auth.show-forgot')
+                    ->breadcrumbs(fn (Trail $trail) => $trail->parent('game-auth.show-login')->push('Forgot Password', route('game-auth.show-forgot')));
             });
             Route::get('/authed', 'authed')->name('game-auth.authed');
-            Route::get('/authed-discord', 'authedDiscord')->name('game-auth.authed-discord');
             Route::get('/discord-redirect', 'discordRedirect')->name('game-auth.discord-redirect');
             Route::get('/discord-callback', 'discordCallback')->name('game-auth.discord-callback');
         });

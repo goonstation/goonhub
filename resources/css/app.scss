@@ -1,5 +1,4 @@
-@import 'functions';
-@import 'quasar-overrides';
-@import 'globals';
-@import 'helpers';
-@import 'apexcharts';
+@use 'functions';
+@use 'globals';
+@use 'helpers';
+@use 'apexcharts';

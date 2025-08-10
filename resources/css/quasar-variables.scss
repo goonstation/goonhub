@@ -12,8 +12,7 @@ $negative: #e33434;
 $info: #5490ff;
 $warning: #e87a00;
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
-$typography-font-family: 'Open Sans', sans-serif !default;
+$typography-font-family: 'Open Sans', sans-serif;
 $text-weights: (
   thin: 300,
   light: 300,
@@ -21,7 +20,7 @@ $text-weights: (
   medium: 500,
   bold: 600,
   bolder: 700,
-) !default;
+);
 
 // $button-font-weight: 600; // or 400 if you prefer thinner
 $button-padding: 4px 12px;

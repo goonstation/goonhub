@@ -915,6 +915,7 @@ class Build
                 'type' => 'mapSwitchDone',
                 'map' => $this->error ? 'FAILED' : $this->settings->map_id,
             ])
+            ->force(true)
             ->sendAndForget();
     }
 }

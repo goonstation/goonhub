@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\BeginAuthResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 /**
@@ -21,6 +20,7 @@ class GameAuthController extends Controller
     public function begin(Request $request)
     {
         $data = $request->validate([
+            'timeout' => 'required|integer', // seconds
             'server_id' => 'required|string',
             'ckey' => 'required|string',
             'ip' => 'nullable|ipv4',
@@ -31,15 +31,18 @@ class GameAuthController extends Controller
         ]);
 
         $token = Str::random(32);
-        $expiresAt = now()->addMinutes(5);
-        $data['legacy'] = array_key_exists('byond_major', $data) && (int) $data['byond_major'] <= 515;
+
+        // Ensure the timeout is 24 hours or less
+        $timeout = max($data['timeout'], 86400);
+        if ($timeout <= 0) {
+            // Someone turned "off" timeouts on the game code side
+            // Set it to 24 hours so cache items don't stay forever
+            $timeout = 86400;
+        }
+
+        $expiresAt = now()->addSeconds($timeout);
         Cache::put(self::CACHE_PREFIX.$token, $data, $expiresAt);
         Cache::put(self::CACHE_PREFIX_EXPIRES.$token, $expiresAt, $expiresAt);
-
-        Log::channel('gameauth')->info('GameAuthController::begin', [
-            'token' => $token,
-            'data' => $data,
-        ]);
 
         return new BeginAuthResource([
             'token' => $token,

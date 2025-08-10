@@ -1,3 +1,7 @@
+@use 'sass:map';
+@use 'quasar/src/css/variables' as q;
+@use 'quasar-variables' as *;
+
 .gh-input--denser.q-input {
   .q-field__control {
     height: 30px;
@@ -76,10 +80,10 @@
   position: relative;
   z-index: 1;
   display: block;
-  padding: map-get($space-md, 'y') map-get($space-md, 'x');
+  padding: map.get(q.$space-md, 'y') map.get(q.$space-md, 'x');
   background: $dark;
   color: white;
-  border-radius: $generic-border-radius;
+  border-radius: q.$generic-border-radius;
   transition: all 200ms ease-in-out;
   overflow: hidden;
 
@@ -92,8 +96,8 @@
     right: 0;
     height: 0;
     background: $primary;
-    border-bottom-left-radius: $generic-border-radius;
-    border-bottom-right-radius: $generic-border-radius;
+    border-bottom-left-radius: q.$generic-border-radius;
+    border-bottom-right-radius: q.$generic-border-radius;
     transition: all 200ms ease-in-out;
     overflow: hidden;
   }
@@ -129,7 +133,7 @@
       top: 0;
       left: 0;
       right: unset;
-      border-top-left-radius: $generic-border-radius;
+      border-top-left-radius: q.$generic-border-radius;
       border-bottom-right-radius: 0;
     }
 
@@ -150,7 +154,7 @@
   }
 
   &--dense {
-    padding: map-get($space-sm, 'y') map-get($space-md, 'x');
+    padding: map.get(q.$space-sm, 'y') map.get(q.$space-md, 'x');
   }
 }
 
@@ -199,7 +203,7 @@
     @include expanded-gh-details-list;
   }
 
-  @media (min-width: $breakpoint-sm-min) {
+  @media (min-width: q.$breakpoint-sm-min) {
     @include expanded-gh-details-list;
   }
 }

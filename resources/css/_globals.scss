@@ -1,4 +1,9 @@
 @use 'sass:color';
+@use 'sass:map';
+@use 'quasar/src/css/variables' as q;
+@use 'quasar-variables' as *;
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 a {
   text-decoration: none;
@@ -17,11 +22,11 @@ a {
 
 // gap-{breakpoint}-{size}
 // E.g. gap-sm-md
-@each $sizeName, $width in $sizes {
-  @each $spaceName, $space in $spaces {
+@each $sizeName, $width in q.$sizes {
+  @each $spaceName, $space in q.$spaces {
     @media (min-width: $width) {
       .gap-#{$sizeName}-#{$spaceName} {
-        gap: map-get($space, 'x');
+        gap: map.get($space, 'x');
       }
     }
   }

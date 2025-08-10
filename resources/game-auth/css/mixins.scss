@@ -1,0 +1,12 @@
+@mixin slant($corner: 10px) {
+  clip-path: polygon(
+    /* top edge */ 0% 0%,
+    /* left top */ calc(100% - $corner) 0%,
+    /* right top */ /* right edge */ 100% $corner,
+    /* right top */ 100% calc(100% - $corner),
+    /* right bottom */ /* bottom edge*/ 100% 100%,
+    /* right bottom */ $corner 100%,
+    /* left bottom*/ /* left edge */ 0% calc(100% - $corner),
+    /* left bottom */ 0% $corner /* left top */
+  );
+}

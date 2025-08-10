@@ -137,6 +137,7 @@ class RemoteMusic implements ShouldQueue
             GameBridge::create()
                 ->target($this->round->server_id)
                 ->message("type=youtube&error={$exception->getMessage()}")
+                ->force(true)
                 ->sendAndForget();
         }
     }

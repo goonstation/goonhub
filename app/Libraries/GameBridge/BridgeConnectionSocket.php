@@ -122,6 +122,10 @@ class BridgeConnectionSocket
 
     private function readPacket(string $packet): string|float
     {
+        if (strlen($packet) < 4) {
+            return '';
+        }
+
         $types = [
             'float' => pack('c', 0x2A),
             'text' => pack('c', 0x06),
@@ -182,14 +186,21 @@ class BridgeConnectionSocket
         }
 
         $out = '';
+        $elapsed = 0;
         while ($out = socket_read($this->socket, 5120)) {
             if ($out = trim($out)) {
                 break;
             }
+            usleep(10000); // 10 milliseconds
+            $elapsed += 10000;
+            if ($elapsed >= $this->timeout * 1000000) {
+                throw new RuntimeException('Timeout while reading');
+            }
         }
 
-        if ($out === false) {
-            $response = socket_strerror(socket_last_error());
+        $errorCode = socket_last_error();
+        if ($out === false && $errorCode !== SOCKET_EAGAIN) {
+            $response = socket_strerror($errorCode);
             Cache::set($this->cacheKey, ['response' => $response, 'error' => true], $this->cacheFor);
 
             return $this->error();
