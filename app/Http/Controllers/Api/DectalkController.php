@@ -34,19 +34,33 @@ class DectalkController extends Controller
         }
 
         $dectalkFilePath = "$filePathPrefix/$fileName.wav";
-        $result = Process::input($data['text'])->timeout(5)
-            ->run('/usr/local/bin/dectalk -pre "[:phoneme on]" -fo "'.$dectalkFilePath.'"');
+        $mp3FilePath = "$filePathPrefix/$fileName.mp3";
+        $result = null;
 
-        if ($result->failed()) {
-            return response()->json(['message' => 'Failed to run dectalk'], 500);
+        try {
+            $result = Process::input($data['text'])->timeout(5)
+                ->run('/usr/local/bin/dectalk -pre "[:phoneme on]" -fo "'.$dectalkFilePath.'"');
+        } catch (\Throwable $e) {
+            return response()->json(['message' => 'Failed to run dectalk: '.$e->getMessage()], 500);
         }
 
-        $mp3FilePath = "$filePathPrefix/$fileName.mp3";
-        $result = Process::run(['/usr/bin/lame', '-V2', $dectalkFilePath, $mp3FilePath]);
+        if ($result->failed()) {
+            return response()->json(['message' => 'Failed to run dectalk: '.$result->errorOutput()], 500);
+        }
+
+        try {
+            $result = Process::timeout(5)
+                ->run(['/usr/bin/lame', '-V2', $dectalkFilePath, $mp3FilePath]);
+        } catch (\Throwable $e) {
+            File::delete($dectalkFilePath);
+
+            return response()->json(['message' => 'Failed to run lame: '.$e->getMessage()], 500);
+        }
+
         File::delete($dectalkFilePath);
 
         if ($result->failed()) {
-            return response()->json(['message' => 'Failed to run dectalk'], 500);
+            return response()->json(['message' => 'Failed to run lame: '.$result->errorOutput()], 500);
         }
 
         $dectalkPhrase = new DectalkPhrase;
