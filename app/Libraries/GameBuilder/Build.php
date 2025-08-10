@@ -110,6 +110,13 @@ class Build
 
         $byondVersion = "{$this->settings->byond_major}.{$this->settings->byond_minor}";
         $this->byondDir = "{$this->rootByondDir}/$byondVersion";
+
+        if (app()->environment('local')) {
+            $this->cdnTargetRoot = "{$this->rootDir}/cdn";
+            if (File::missing($this->cdnTargetRoot)) {
+                File::makeDirectory($this->cdnTargetRoot);
+            }
+        }
         $this->cdnTarget = "{$this->cdnTargetRoot}/{$server->server_id}";
 
         $this->procCacheKey = "GameBuild-{$this->server->server_id}-proc";
@@ -132,10 +139,28 @@ class Build
             return;
         }
         $this->lastLogFlush = time();
-        $logs = $this->logs;
-        $this->logs = [];
+
+        $logCount = count($this->logs);
+        $logs = [];
+        $limit = (int) config('reverb.servers.reverb.max_request_size');
+        foreach ($this->logs as $log) {
+            $newLogs = $logs;
+            $newLogs[] = $log;
+            if (strlen(json_encode($newLogs)) > $limit) {
+                break;
+            }
+            $logs = $newLogs;
+        }
+
+        $dispatchCount = count($logs);
+        array_splice($this->logs, 0, $dispatchCount);
+
         GameBuildLog::insert($logs);
         EventsGameBuildLog::dispatch($this->model->id, $logs);
+
+        if ($dispatchCount < $logCount) {
+            $this->flushLogs();
+        }
     }
 
     public function log($msg, $type = 'out', ?string $group = null, bool $flush = false)
@@ -143,14 +168,41 @@ class Build
         if (str_ends_with($msg, "\n")) {
             $msg = substr($msg, 0, -1);
         }
+        $msg = trim($msg);
+
+        if (empty($msg)) {
+            return;
+        }
+
         if (isset($this->model)) {
-            $this->logs[] = [
+            $log = [
                 'build_id' => $this->model->id,
-                'log' => trim($msg),
+                'log' => '',
                 'type' => $type,
                 'group' => $group,
-                'created_at' => now(),
+                'created_at' => now()->toIso8601String(),
             ];
+
+            $preLogSize = strlen(json_encode($log));
+            $limit = (int) config('reverb.servers.reverb.max_request_size') - 1000;
+            $msgLimit = $limit - $preLogSize;
+
+            if (strlen($msg) <= $msgLimit) {
+                // Message fits within limit
+                $log['log'] = $msg;
+                $this->logs[] = $log;
+            } else {
+                // Message is too long, split it
+                $trimmedMsg = mb_strcut($msg, 0, $msgLimit - 3, 'UTF-8').'...';
+                $log['log'] = $trimmedMsg;
+                $this->logs[] = $log;
+
+                // Get remaining text and create new log entry
+                $remaining = '...'.mb_strcut($msg, $msgLimit - 3, strlen($msg), 'UTF-8');
+                if (! empty(trim($remaining))) {
+                    $this->log($remaining, $type, $group, $flush);
+                }
+            }
         }
 
         if ($flush || time() - $this->lastLogFlush > $this->logFlushBatchTime) {
