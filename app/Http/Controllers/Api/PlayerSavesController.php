@@ -10,6 +10,7 @@ use App\Models\PlayerData;
 use App\Models\PlayerSave;
 use App\Rules\PlayerIdWithCkey;
 use Illuminate\Http\Request;
+use Sentry\EventHint;
 
 use function Sentry\captureMessage;
 
@@ -140,8 +141,8 @@ class PlayerSavesController extends Controller
         $bulkData = json_decode($data['data']);
         $dataToUpset = [];
         foreach ($bulkData as $item) {
-            if ((! $item->player_id && ! $item->ckey) || ! $item->key) {
-                captureMessage('Invalid data during player saves storeDataBulk', null, $item);
+            if ((! isset($item->player_id) && ! isset($item->ckey)) || ! isset($item->key)) {
+                captureMessage('Invalid data during player saves storeDataBulk', null, EventHint::fromArray((array) $item));
 
                 continue;
             }
@@ -150,7 +151,7 @@ class PlayerSavesController extends Controller
             if (! $playerId && $item->ckey) {
                 $player = Player::where('ckey', $item->ckey)->first();
                 if (! $player) {
-                    captureMessage('Invalid ckey during player saves storeDataBulk', null, $item);
+                    captureMessage('Invalid ckey during player saves storeDataBulk', null, EventHint::fromArray((array) $item));
 
                     continue;
                 }
