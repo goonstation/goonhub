@@ -1,30 +1,14 @@
 #!/usr/bin/env bash
+set -e
 
-if [ "$SUPERVISOR_PHP_USER" != "root" ] && [ "$SUPERVISOR_PHP_USER" != "sail" ]; then
-    echo "You should set SUPERVISOR_PHP_USER to either 'sail' or 'root'."
-    exit 1
-fi
+# chown -R $USER:$USER /var/www/html
 
-if [ ! -z "$WWWUSER" ]; then
-    usermod -u "$WWWUSER" sail
-fi
+composer install
+bun install
 
-if [ ! -d /.composer ]; then
-    mkdir /.composer
-fi
-
-chmod -R ugo+rw /.composer
-chown -R sail:sail /var/www/html
-
-su - sail -c 'cd /var/www/html && composer install'
-su - sail -c '. ~/.nvm/nvm.sh && cd /var/www/html && nvm use default && bun install'
-
-if [ $# -gt 0 ]; then
-    if [ "$SUPERVISOR_PHP_USER" = "root" ]; then
-        exec "$@"
-    else
-        exec gosu "$WWWUSER" "$@"
-    fi
+if [ "$1" != "" ]; then
+    exec "$@"
 else
+    php artisan optimize
     exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
 fi
