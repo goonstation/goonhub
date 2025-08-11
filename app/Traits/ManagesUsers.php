@@ -3,11 +3,11 @@
 namespace App\Traits;
 
 use App\Jobs\GrantDiscordRole;
-use App\Libraries\DiscordBot;
+use App\Models\LinkedByondUser;
+use App\Models\LinkedDiscordUser;
 use App\Models\Player;
-use App\Models\PlayerHos;
-use App\Models\PlayerMentor;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
@@ -23,9 +23,6 @@ trait ManagesUsers
         $driver = Socialite::driver('discord');
         $discordUser = $driver->redirectUrl($redirectUrl)->user();
         $discordId = $discordUser->getId();
-        $discordDetails = DiscordBot::export('goonhub/auth', 'GET', [
-            'discord_id' => $discordId,
-        ]);
         $discordName = $discordUser->getName();
         $discordEmail = $discordUser->getEmail();
 
@@ -54,32 +51,11 @@ trait ManagesUsers
         }
 
         if (! $user->player) {
-            // Not associated with a player yet
-
-            $linkedDiscordCkey = isset($discordDetails['ckey']) ? ckey($discordDetails['ckey']) : null;
-            $linkedDiscordPlayer = $linkedDiscordCkey ? Player::whereCkey($linkedDiscordCkey)->first() : null;
-
-            $player = null;
-            if ($linkedDiscordPlayer && ! $linkedDiscordPlayer->user) {
-                // Discord user is linked to a player via Medass
-                // And that player is not yet claimed by a user
-                $player = $linkedDiscordPlayer;
-                $this->linkToByond($user, $linkedDiscordCkey);
-            } else {
-                // Discord user is not linked to a player, create a new one
-                // (We have no other way of associating an existing player with a discord user)
-                $player = $this->createPlayer($discordName, 'discord');
-            }
+            // Discord user is not linked to a player, create a new one
+            // (We have no other way of associating an existing player with a discord user)
+            $player = $this->createPlayer($discordName, 'discord');
             $user->player_id = $player->id;
             $user->save();
-        }
-
-        // Assign special abilities based on Discord roles
-        if (array_key_exists('is_mentor', $discordDetails) && $discordDetails['is_mentor']) {
-            PlayerMentor::createOrFirst(['player_id' => $user->player_id]);
-        }
-        if (array_key_exists('is_hos', $discordDetails) && $discordDetails['is_hos']) {
-            PlayerHos::createOrFirst(['player_id' => $user->player_id]);
         }
 
         return $user;
@@ -88,18 +64,22 @@ trait ManagesUsers
     private function linkToByond(User $user, string $ckey)
     {
         try {
-            $user->linkedByond()->create([
+            return $user->linkedByond()->create([
                 'ckey' => $ckey,
             ]);
         } catch (\Throwable $e) {
             //
         }
+
+        return null;
     }
 
     private function linkToDiscord(User $user, string $discordId, ?string $discordName = null, ?string $discordEmail = null)
     {
+        $linkedDiscord = null;
+
         try {
-            $user->linkedDiscord()->create([
+            $linkedDiscord = $user->linkedDiscord()->create([
                 'discord_id' => $discordId,
                 'name' => $discordName,
                 'email' => $discordEmail,
@@ -109,5 +89,94 @@ trait ManagesUsers
         }
 
         GrantDiscordRole::dispatch($discordId);
+
+        return $linkedDiscord;
+    }
+
+    private function legacyDiscordLink(string $discordId, string $ckey)
+    {
+        $notes = [];
+
+        $linkedDiscord = LinkedDiscordUser::where('discord_id', $discordId)->first();
+        $linkedByond = LinkedByondUser::where('ckey', $ckey)->first();
+
+        $player = Player::where('ckey', $ckey)->first();
+        $user = $linkedDiscord ? $linkedDiscord->user : ($linkedByond ? $linkedByond->user : null);
+
+        if ($user && $user->linkedDiscord && $user->linkedDiscord->discord_id !== $discordId) {
+            $notes[] = 'User '.$user->name.' is already linked to discord '.$user->linkedDiscord->discord_id.' but trying to link to '.$discordId;
+        }
+
+        if ($user && $user->linkedByond && $user->linkedByond->ckey !== $ckey) {
+            $notes[] = 'User '.$user->name.' is already linked to byond '.$user->linkedByond->ckey.' but trying to link to '.$ckey;
+        }
+
+        DB::beginTransaction();
+
+        $totals = [
+            'users' => 0,
+            'players' => 0,
+            'player_claims' => 0,
+            'discord_links' => 0,
+            'byond_links' => 0,
+        ];
+
+        try {
+            if (! $user) {
+                // No user with the linked ckey or discord id exists
+                $user = User::create([
+                    'name' => $ckey,
+                    'email' => Str::random(20).'@null.local',
+                    'password' => Hash::make(Str::password()),
+                    'passwordless' => true,
+                    'emailless' => true,
+                ]);
+                $totals['users']++;
+            }
+
+            if (! $user->linkedDiscord) {
+                // Link the user to the discord id
+                $linkedDiscord = $this->linkToDiscord($user, $discordId);
+                $totals['discord_links']++;
+            }
+
+            if (! $user->linkedByond) {
+                // Link the user to the byond ckey
+                $linkedByond = $this->linkToByond($user, $ckey);
+                $totals['byond_links']++;
+            }
+
+            if (! $user->player) {
+                if ($player && ! $player->user) {
+                    // A player with the linked ckey exists but is not linked to a user
+                    // Which means we can claim it
+                    $totals['player_claims']++;
+                } else {
+                    $player = $this->createPlayer($ckey);
+                    $totals['players']++;
+                }
+
+                $user->player_id = $player->id;
+                $user->save();
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+        return [
+            'report' => [
+                $ckey,
+                $discordId,
+                $user->name,
+                $player->ckey,
+                $linkedDiscord->discord_id,
+                $linkedByond->ckey,
+                implode('. ', $notes),
+            ],
+            'totals' => $totals,
+        ];
     }
 }

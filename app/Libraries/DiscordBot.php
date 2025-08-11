@@ -21,13 +21,16 @@ class DiscordBot
      *
      * @throws \Illuminate\Http\Client\RequestException
      */
-    public static function export(string $route, string $method, array $data)
+    public static function export(string $route, string $method, ?array $data = [])
     {
         $config = DiscordBot::getConfig();
         if (! $config['url']) {
             return;
         }
         $url = $config['url'];
+        if (! is_array($data)) {
+            $data = [];
+        }
         $data['api_key'] = $config['key'];
 
         if (empty($data['server_name'])) {

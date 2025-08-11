@@ -35,7 +35,7 @@ trait ManagesPlayers
         $key = Player::AUTH_SUFFIXES[$suffixKey] ? $key.'-'.Player::AUTH_SUFFIXES[$suffixKey] : $key;
         $keyToCreate = null;
         while (! $canCreatePlayer && $attempts < 10) {
-            $keyToCreate = $key.rand(100, 999);
+            $keyToCreate = is_null($keyToCreate) ? $key : $key.rand(100, 999);
             $canCreatePlayer = Player::where('ckey', ckey($keyToCreate))->doesntExist();
             $attempts++;
         }

@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\RedirectsController;
 use App\Http\Controllers\Api\RemoteMusicController;
 use App\Http\Controllers\Api\ServerPerformanceController;
 use App\Http\Controllers\Api\TestController;
+use App\Http\Controllers\Api\UsersController;
 use App\Http\Controllers\Api\VpnChecksController;
 use App\Http\Controllers\Api\VpnWhitelistController;
 use Illuminate\Support\Facades\Route;
@@ -47,6 +48,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('test', [TestController::class, 'index'])->can('view-test');
 
 Route::middleware(['isadmin'])->group(function () {
+    Route::controller(UsersController::class)->prefix('users')->group(function () {
+        Route::post('/discord-link', 'discordLink');
+        Route::post('/discord-unlink', 'discordUnlink');
+    });
     Route::controller(GameAuthController::class)->prefix('game-auth')->group(function () {
         Route::post('/begin', 'begin');
     });
