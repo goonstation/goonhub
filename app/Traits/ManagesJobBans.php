@@ -26,7 +26,7 @@ trait ManagesJobBans
         $serverId = isset($data['server_id']) ? $data['server_id'] : null;
 
         // Check a ban doesn't already exist for the provided ckey and job
-        $existingJobBan = JobBan::getValidJobBans($data['ckey'], $data['job'], $serverId)->first();
+        $existingJobBan = JobBan::getValidJobBans(ckey($data['ckey']), $data['job'], $serverId)->first();
         if (! empty($existingJobBan)) {
             throw new Exception('The player is already banned from that job on this server.');
         }
@@ -36,13 +36,13 @@ trait ManagesJobBans
             $expiresAt = Carbon::now()->addSeconds($data['duration']);
         }
 
-        $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
+        $gameAdmin = GameAdmin::where('ckey', ckey($data['game_admin_ckey']))->first();
 
         $jobBan = new JobBan;
         $jobBan->game_admin_id = $gameAdmin->id;
         $jobBan->round_id = isset($data['round_id']) ? $data['round_id'] : null;
         $jobBan->server_id = $serverId;
-        $jobBan->ckey = $data['ckey'];
+        $jobBan->ckey = ckey($data['ckey']);
         $jobBan->banned_from_job = $data['job'];
         $jobBan->reason = $data['reason'];
         $jobBan->expires_at = $expiresAt;

@@ -33,18 +33,13 @@ class JobBansController extends Controller
     {
         $request->validate([
             'filters.id' => 'int',
+            'filters.round' => 'int',
+            'filters.game_admin' => 'string',
             /** @example main1 */
             'filters.server' => 'string',
-            'filters.map' => 'string',
-            'filters.game_type' => 'string',
-            'filters.rp_mode' => 'boolean',
-            'filters.crashed' => 'boolean',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.ended_at' => new DateRange,
+            'filters.ckey' => 'string',
+            'filters.banned_from_job' => 'string',
+            'filters.reason' => 'string',
             /**
              * A date or date range
              *
@@ -79,7 +74,7 @@ class JobBansController extends Controller
         ]);
 
         $serverId = isset($data['server_id']) ? $data['server_id'] : null;
-        $jobBan = JobBan::getValidJobBans($data['ckey'], $data['job'], $serverId)->first();
+        $jobBan = JobBan::getValidJobBans(ckey($data['ckey']), $data['job'], $serverId)->first();
 
         return new JobBanResource($jobBan);
     }
@@ -98,7 +93,7 @@ class JobBansController extends Controller
 
         $serverId = isset($data['server_id']) ? $data['server_id'] : null;
         $jobBans = JobBan::select('banned_from_job')
-            ->where('ckey', $data['ckey'])
+            ->where('ckey', ckey($data['ckey']))
             ->where(function (Builder $builder) use ($serverId) {
                 // Check if the ban applies to all servers, or the server id we were provided
                 $builder->whereNull('server_id')
@@ -165,7 +160,7 @@ class JobBansController extends Controller
 
         $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
 
-        $jobBans = JobBan::where('ckey', $data['ckey'])
+        $jobBans = JobBan::where('ckey', ckey($data['ckey']))
             ->where('banned_from_job', $data['job']);
 
         if (isset($data['server_id'])) {
