@@ -24,9 +24,9 @@
         removable
         dense
       >
-        {{ opt[fieldLabel || optionLabel] }}
+        {{ getSelectedLabel(opt) }}
       </q-chip>
-      <template v-else>{{ opt[fieldLabel || optionLabel] }}</template>
+      <template v-else>{{ getSelectedLabel(opt) }}</template>
     </template>
   </q-select>
 </template>
@@ -40,8 +40,8 @@ export default {
   props: {
     modelValue: null,
     loadRoute: String,
-    optionValue: String,
-    optionLabel: String,
+    optionValue: [String, Function],
+    optionLabel: [String, Function],
     fieldLabel: String,
     filters: Object,
     defaultItems: Array,
@@ -219,6 +219,18 @@ export default {
     optionDisable(option) {
       return option.disable || this.disabledItems.includes(option[this.optionValue])
     },
+
+    getSelectedLabel(option) {
+      if (this.fieldLabel) {
+        return option[this.fieldLabel]
+      }
+
+      if (typeof this.optionLabel === 'function') {
+        return this.optionLabel(option)
+      }
+
+      return option[this.optionLabel]
+    }
   },
 
   watch: {
