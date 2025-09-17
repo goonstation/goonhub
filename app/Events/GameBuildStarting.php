@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use App\Models\PlayerAdmin;
 use App\Models\GameServer;
+use App\Models\PlayerAdmin;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
