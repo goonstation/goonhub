@@ -97,6 +97,10 @@ class GameAuthController extends Controller
             $user->setRelation('player', $player);
         }
 
+        if ($user->linkedDiscord) {
+            $this->handleTomatoSubscriber($user);
+        }
+
         $data = [
             'player_id' => $user->player->id,
             'ckey' => $user->player->ckey,

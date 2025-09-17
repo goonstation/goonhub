@@ -2,12 +2,16 @@
 
 namespace App\Traits;
 
-use App\Jobs\AddTomatoSubscriberToWhitelist;
+use App\Enums\DiscordSettings;
+use App\Facades\DiscordApi;
 use App\Jobs\GrantDiscordRole;
+use App\Models\DiscordSetting;
+use App\Models\GameServerGroup;
 use App\Models\LinkedByondUser;
 use App\Models\LinkedDiscordUser;
 use App\Models\Player;
 use App\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -17,6 +21,27 @@ trait ManagesUsers
 {
     use ManagesPlayers;
     use ManagesWhitelist;
+
+    private function handleTomatoSubscriber(User $user)
+    {
+        Cache::remember('tomato_subscriber_'.$user->linkedDiscord->discord_id, now()->addMinutes(30), function () use ($user) {
+            $serverGroup = GameServerGroup::where('name', 'Streamer')->first();
+
+            $guildId = DiscordSetting::where('key', DiscordSettings::TOMATO_GUILD_ID->value)->first()?->value;
+            $subscriberRoleId = DiscordSetting::where('key', DiscordSettings::TOMATO_SUBSCRIBER_ROLE_ID->value)->first()?->value;
+
+            $guild = DiscordApi::guild($guildId);
+            $member = $guild->member($user->linkedDiscord->discord_id);
+            $roles = $member->json('roles', []);
+
+            if (in_array($subscriberRoleId, $roles)) {
+                $whitelist = $this->addPlayerToWhitelist($user->player);
+                $whitelist->addServerGroup($serverGroup);
+            }
+
+            return true;
+        });
+    }
 
     private function handleDiscordCallback(string $redirectUrl)
     {
@@ -32,7 +57,6 @@ trait ManagesUsers
             $query->where('discord_id', $discordId);
         })->first();
 
-        $registered = false;
         if (! $user) {
             // Registering
 
@@ -51,19 +75,13 @@ trait ManagesUsers
                 'emailless' => $emailLess,
             ]);
             $this->linkToDiscord($user, $discordId, $discordName, $discordEmail);
-            $registered = true;
         }
 
         if (! $user->player) {
             // Discord user is not linked to a player, create a new one
             // (We have no other way of associating an existing player with a discord user)
             $player = $this->createPlayer($discordName, 'discord');
-            $user->player_id = $player->id;
-            $user->save();
-        }
-
-        if ($registered) {
-            AddTomatoSubscriberToWhitelist::dispatchSync($discordId, $user->player);
+            $user->player()->save($player);
         }
 
         return $user;
