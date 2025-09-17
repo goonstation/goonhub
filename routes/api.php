@@ -163,9 +163,9 @@ Route::middleware(['isadmin'])->group(function () {
     });
     Route::controller(GameAdminsController::class)->prefix('game-admins')->group(function () {
         Route::get('/', 'index');
-        Route::post('/', 'store');
-        Route::put('/{gameAdmin}', 'update');
-        Route::delete('/{gameAdmin}', 'destroy');
+        // Route::post('/', 'store');
+        // Route::put('/{gameAdmin}', 'update');
+        // Route::delete('/{gameAdmin}', 'destroy');
     });
     Route::controller(RedirectsController::class)->prefix('redirects')->group(function () {
         Route::get('/', 'index');

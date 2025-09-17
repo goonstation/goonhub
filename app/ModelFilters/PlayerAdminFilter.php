@@ -5,7 +5,7 @@ namespace App\ModelFilters;
 use App\ModelFilters\Common\HasTimestampFilters;
 use EloquentFilter\ModelFilter;
 
-class GameAdminFilter extends ModelFilter
+class PlayerAdminFilter extends ModelFilter
 {
     use HasTimestampFilters;
 
@@ -24,12 +24,21 @@ class GameAdminFilter extends ModelFilter
 
     public function ckey($val)
     {
-        return $this->where('ckey', 'ILIKE', '%'.$val.'%');
+        return $this->related('player', function ($query) use ($val) {
+            return $query->where('ckey', 'ILIKE', '%'.$val.'%');
+        });
     }
 
-    public function name($val)
+    public function key($val)
     {
-        return $this->where('name', 'ILIKE', '%'.$val.'%');
+        return $this->related('player', function ($query) use ($val) {
+            return $query->where('key', 'ILIKE', '%'.$val.'%');
+        });
+    }
+
+    public function alias($val)
+    {
+        return $this->where('alias', 'ILIKE', '%'.$val.'%');
     }
 
     public function rank($val)

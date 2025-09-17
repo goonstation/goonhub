@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameAdminResource;
+use App\Http\Resources\PlayerAdminResource;
 use App\Models\PlayerAdmin;
 use App\Rules\DateRange;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ class GameAdminsController extends Controller
      *
      * List paginated and filtered game admins
      *
-     * @return AnonymousResourceCollection<LengthAwarePaginator<GameAdminResource>>
+     * @return AnonymousResourceCollection<LengthAwarePaginator<PlayerAdminResource>>
      */
     public function index(IndexQueryRequest $request)
     {
@@ -29,6 +30,7 @@ class GameAdminsController extends Controller
             'filters.id' => 'int',
             'filters.ckey' => 'string',
             'filters.key' => 'string',
+            'filters.alias' => 'string',
             'filters.rank' => 'string',
             /**
              * A date or date range
@@ -44,7 +46,7 @@ class GameAdminsController extends Controller
             'filters.updated_at' => new DateRange,
         ]);
 
-        return GameAdminResource::collection(
+        return PlayerAdminResource::collection(
             PlayerAdmin::indexFilterPaginate()
         );
     }
@@ -54,59 +56,59 @@ class GameAdminsController extends Controller
      *
      * Add a new game admin
      */
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'ckey' => 'required|string|unique:game_admins,ckey',
-            'name' => 'nullable|string',
-            'rank' => 'required|exists:game_admin_ranks,id',
-        ]);
+    // public function store(Request $request)
+    // {
+    //     $data = $request->validate([
+    //         'ckey' => 'required|string|unique:game_admins,ckey',
+    //         'name' => 'nullable|string',
+    //         'rank' => 'required|exists:game_admin_ranks,id',
+    //     ]);
 
-        $gameAdmin = new PlayerAdmin;
-        $gameAdmin->ckey = $data['ckey'];
-        $gameAdmin->name = isset($data['name']) ? $data['name'] : null;
-        $gameAdmin->rank_id = $data['rank'];
-        $gameAdmin->save();
+    //     $gameAdmin = new PlayerAdmin;
+    //     $gameAdmin->ckey = $data['ckey'];
+    //     $gameAdmin->name = isset($data['name']) ? $data['name'] : null;
+    //     $gameAdmin->rank_id = $data['rank'];
+    //     $gameAdmin->save();
 
-        return new GameAdminResource($gameAdmin);
-    }
+    //     return new GameAdminResource($gameAdmin);
+    // }
 
     /**
      * Update
      *
      * Update an existing game admin
      */
-    public function update(Request $request, PlayerAdmin $gameAdmin)
-    {
-        $data = $request->validate([
-            'ckey' => 'nullable|string|unique:game_admins,ckey',
-            'name' => 'nullable|string',
-            'rank' => 'nullable|exists:game_admin_ranks',
-        ]);
+    // public function update(Request $request, PlayerAdmin $gameAdmin)
+    // {
+    //     $data = $request->validate([
+    //         'ckey' => 'nullable|string|unique:game_admins,ckey',
+    //         'name' => 'nullable|string',
+    //         'rank' => 'nullable|exists:game_admin_ranks',
+    //     ]);
 
-        if (! empty($data['ckey'])) {
-            $gameAdmin->ckey = $data['ckey'];
-        }
-        if (! empty($data['name'])) {
-            $gameAdmin->name = $data['name'];
-        }
-        if (! empty($data['rank'])) {
-            $gameAdmin->rank_id = $data['rank'];
-        }
-        $gameAdmin->save();
+    //     if (! empty($data['ckey'])) {
+    //         $gameAdmin->ckey = $data['ckey'];
+    //     }
+    //     if (! empty($data['name'])) {
+    //         $gameAdmin->name = $data['name'];
+    //     }
+    //     if (! empty($data['rank'])) {
+    //         $gameAdmin->rank_id = $data['rank'];
+    //     }
+    //     $gameAdmin->save();
 
-        return new GameAdminResource($gameAdmin);
-    }
+    //     return new GameAdminResource($gameAdmin);
+    // }
 
     /**
      * Delete
      *
      * Delete an existing game admin
      */
-    public function destroy(PlayerAdmin $gameAdmin)
-    {
-        $gameAdmin->delete();
+    // public function destroy(PlayerAdmin $gameAdmin)
+    // {
+    //     $gameAdmin->delete();
 
-        return ['message' => 'Game admin deleted'];
-    }
+    //     return ['message' => 'Game admin deleted'];
+    // }
 }
