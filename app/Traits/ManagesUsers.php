@@ -81,7 +81,8 @@ trait ManagesUsers
             // Discord user is not linked to a player, create a new one
             // (We have no other way of associating an existing player with a discord user)
             $player = $this->createPlayer($discordName, 'discord');
-            $user->player()->save($player);
+            $user->player_id = $player->id;
+            $user->save();
         }
 
         return $user;
