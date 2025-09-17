@@ -44,7 +44,7 @@
       <tbody>
         <tr>
           <td><strong>Banning Admin</strong></td>
-          <td>{{ ban.plan.item.game_admin.name || ban.plan.item.game_admin.ckey }}</td>
+          <td>{{ ban.plan.item.game_admin.alias || ban.plan.item.game_admin.player?.ckey }}</td>
         </tr>
         <tr>
           <td><strong>Server/s</strong></td>
@@ -96,9 +96,9 @@
 </template>
 
 <script>
+import { ionWarningOutline } from '@quasar/extras/ionicons-v6'
 import dayjs from 'dayjs'
 import { date } from 'quasar'
-import { ionWarningOutline } from '@quasar/extras/ionicons-v6'
 
 export default {
   props: {

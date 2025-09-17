@@ -24,8 +24,7 @@ class PollResource extends JsonResource
         return [
             'id' => $this->id,
             'game_admin_id' => $this->game_admin_id,
-            /** @var GameAdminResource */
-            'game_admin' => $this->gameAdmin,
+            'game_admin' => new PlayerAdminResource($this->whenLoaded('gameAdmin')),
             'question' => $this->question,
             'options' => PollOptionResource::collection($this->options),
             /** @var array */

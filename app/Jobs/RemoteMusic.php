@@ -4,8 +4,8 @@ namespace App\Jobs;
 
 use App\Facades\GameBridge;
 use App\Helpers\HumanReadable;
-use App\Models\GameAdmin;
 use App\Models\GameRound;
+use App\Models\PlayerAdmin;
 use App\Models\RemoteMusicPlay;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,7 +27,7 @@ class RemoteMusic implements ShouldQueue
 
     private $roundId;
 
-    private $gameAdminCkey;
+    private $playerAdmin;
 
     private $round;
 
@@ -42,11 +42,11 @@ class RemoteMusic implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(string $video, int $roundId, string $gameAdminCkey)
+    public function __construct(string $video, int $roundId, PlayerAdmin $playerAdmin)
     {
         $this->video = $video;
         $this->roundId = $roundId;
-        $this->gameAdminCkey = $gameAdminCkey;
+        $this->playerAdmin = $playerAdmin;
     }
 
     /**
@@ -106,18 +106,13 @@ class RemoteMusic implements ShouldQueue
             'duration' => $audio->getDuration(),
             'duration_human' => gmdate('H:i:s', (int) $audio->getDuration()),
             'filesize' => HumanReadable::bytesToHuman($fileSize),
-            'admin_ckey' => $this->gameAdminCkey,
+            'admin_ckey' => $this->playerAdmin?->ckey,
         ]);
-
-        $gameAdmin = null;
-        if ($this->gameAdminCkey) {
-            $gameAdmin = GameAdmin::where('ckey', $this->gameAdminCkey)->first();
-        }
 
         $remoteMusicPlay = new RemoteMusicPlay;
         $remoteMusicPlay->title = $audio->getTitle();
         $remoteMusicPlay->round_id = $this->round->id;
-        $remoteMusicPlay->game_admin_id = $gameAdmin ? $gameAdmin->id : null;
+        $remoteMusicPlay->game_admin_id = $this->playerAdmin?->id;
         $remoteMusicPlay->save();
 
         GameBridge::create()

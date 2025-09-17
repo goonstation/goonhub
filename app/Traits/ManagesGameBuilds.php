@@ -8,9 +8,7 @@ use App\Http\Resources\GameBuildStatusCurrentResource;
 use App\Http\Resources\GameBuildStatusQueuedResource;
 use App\Jobs\GameBuild as GameBuildJob;
 use App\Libraries\GameBuilder\Build as GameBuildBuild;
-use App\Models\GameAdmin;
 use App\Models\GameBuild;
-use App\Models\GameBuildSetting;
 use App\Models\GameServer;
 use App\Models\MapSwitch;
 use Illuminate\Support\Carbon;
@@ -64,9 +62,9 @@ trait ManagesGameBuilds
 
     private function addBuild(GameBuildCreateRequest $request)
     {
-        $admin = GameAdmin::where('ckey', $request['game_admin_ckey'])->firstOrFail();
-        $server = GameServer::where('server_id', $request['server_id'])->firstOrFail();
-        $setting = GameBuildSetting::where('server_id', $request['server_id'])->firstOrFail();
+        $admin = $request->getGameAdmin();
+        $server = $request->getGameServer();
+        $setting = $server->gameBuildSetting;
 
         $switchMap = false;
         if (! empty($request['map'])) {
@@ -95,7 +93,7 @@ trait ManagesGameBuilds
     private function cancelBuild(GameBuildCancelRequest $request)
     {
         $type = $request->input('type', 'current');
-        $admin = GameAdmin::where('ckey', $request['game_admin_ckey'])->firstOrFail();
+        $admin = $request->getGameAdmin();
 
         if ($type === 'current') {
             if (! GameBuildJob::isBuilding($request['server_id'])) {

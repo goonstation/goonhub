@@ -2,30 +2,51 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasGameAdminCkeyBody;
+use App\Attributes\HasGameAdminCkeyQuery;
+use App\Attributes\HasGameAdminIdBody;
+use App\Attributes\HasGameAdminIdQuery;
+use App\Attributes\HasServerIdBody;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BanRequest;
+use App\Http\Requests\Bans\AddDetailsRequest;
+use App\Http\Requests\Bans\CheckRequest;
+use App\Http\Requests\Bans\DestroyRequest;
+use App\Http\Requests\Bans\StoreRequest;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\BanDetailResource;
 use App\Http\Resources\BanResource;
-use App\Http\Resources\Bans\CheckBanResource;
 use App\Models\Ban;
 use App\Models\BanDetail;
-use App\Models\GameAdmin;
 use App\Models\Player;
 use App\Models\PlayerNote;
 use App\Rules\DateRange;
 use App\Rules\Range;
+use App\Services\CommonRequest;
 use App\Traits\ManagesBans;
 use Carbon\Carbon;
-use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 
-class BansController extends Controller
+class BansController extends Controller implements HasMiddleware
 {
     use ManagesBans;
+
+    public function __construct(
+        private readonly CommonRequest $commonRequest,
+    ) {}
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('ability:view bans', only: ['index', 'check']),
+            new Middleware('ability:add bans', only: ['store', 'addDetails']),
+            new Middleware('ability:update bans', only: ['update']),
+            new Middleware('ability:delete bans', only: ['destroy', 'destroyDetail']),
+        ];
+    }
 
     /**
      * List
@@ -80,7 +101,8 @@ class BansController extends Controller
         ]);
 
         return BanResource::collection(
-            Ban::withTrashed()
+            Ban::forApi()
+                ->withTrashed()
                 ->with(['gameAdmin', 'gameRound', 'details', 'originalBanDetail'])
                 ->indexFilterPaginate()
         );
@@ -91,22 +113,8 @@ class BansController extends Controller
      *
      * Check if a ban exists for given player data
      */
-    public function check(Request $request)
+    public function check(CheckRequest $request)
     {
-        $request->validate([
-            'ckey' => 'required_without_all:comp_id,ip,player_id|string|nullable',
-            'comp_id' => 'required_without_all:ckey,ip,player_id|string|nullable',
-            'ip' => 'required_without_all:ckey,comp_id,player_id|ip|nullable',
-            'player_id' => 'required_without_all:ckey,comp_id,ip|integer|nullable',
-            'server_id' => 'nullable|string',
-        ]);
-
-        $ckey = $request->input('ckey', '');
-        $compId = $request->input('comp_id', '');
-        $ip = $request->input('ip', '');
-        $serverId = $request->input('server_id');
-        $playerId = $request->input('player_id');
-
         /*
         * Criteria:
         * Get any existing regular ban that matches any of ckey, compId, ip
@@ -116,34 +124,24 @@ class BansController extends Controller
 
         $detailsExist = BanDetail::select(DB::raw(1))
             ->whereColumn('bans.id', 'ban_details.ban_id')
-            ->where(function ($q) use ($ckey, $compId, $ip, $playerId) {
+            ->where(function ($q) use ($request) {
                 // Check any of the ban details match the provided player details
-                if ($ckey) {
-                    $q->orWhere('ckey', $ckey);
+                if ($request->filled('ckey')) {
+                    $q->orWhere('ckey', $request->validated('ckey'));
                 }
-                if ($compId) {
-                    $q->orWhere('comp_id', $compId);
+                if ($request->filled('comp_id')) {
+                    $q->orWhere('comp_id', $request->validated('comp_id'));
                 }
-                if ($ip) {
-                    $q->orWhere('ip', $ip);
+                if ($request->filled('ip')) {
+                    $q->orWhere('ip', $request->validated('ip'));
                 }
-                if ($playerId) {
-                    $q->orWhere('player_id', $playerId);
+                if ($request->filled('player_id')) {
+                    $q->orWhere('player_id', $request->validated('player_id'));
                 }
             });
 
-        $ban = Ban::select(['*'])
-            ->with([
-                'gameAdmin:id,ckey,name',
-                'details:id,ban_id,ckey,comp_id,ip,player_id,created_at',
-            ])
-            ->where(function ($query) use ($serverId) {
-                // Check if the ban applies to all servers, or the server id we were provided
-                $query->whereNull('server_id');
-                if ($serverId) {
-                    $query->orWhere('server_id', $serverId);
-                }
-            })
+        $ban = Ban::forApi()
+            ->with(['gameAdmin.player', 'details'])
             ->where(function ($query) {
                 // Check the ban is permanent, or has yet to expire
                 $query->whereNull('expires_at')->orWhere('expires_at', '>', Carbon::now()->toDateTimeString());
@@ -152,7 +150,7 @@ class BansController extends Controller
             ->orderBy('id', 'desc')
             ->firstOrFail();
 
-        return new CheckBanResource($ban);
+        return new BanResource($ban);
     }
 
     /**
@@ -160,7 +158,8 @@ class BansController extends Controller
      *
      * Add a ban for given player data
      */
-    public function store(BanRequest $request)
+    #[HasServerIdBody, HasGameAdminIdBody, HasGameAdminCkeyBody]
+    public function store(StoreRequest $request)
     {
         return $this->addBan($request);
     }
@@ -170,11 +169,12 @@ class BansController extends Controller
      *
      * Update an existing ban
      */
-    public function update(BanRequest $request, Ban $ban)
+    #[HasServerIdBody, HasGameAdminIdBody, HasGameAdminCkeyBody]
+    public function update(StoreRequest $request, Ban $ban)
     {
         try {
             return $this->updateBan($request, $ban);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
@@ -184,13 +184,10 @@ class BansController extends Controller
      *
      * Delete an existing ban
      */
-    public function destroy(Request $request, Ban $ban)
+    #[HasGameAdminIdQuery, HasGameAdminCkeyQuery]
+    public function destroy(DestroyRequest $request, Ban $ban)
     {
-        $data = $this->validate($request, [
-            'game_admin_ckey' => 'required|exists:game_admins,ckey',
-        ]);
-
-        $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
+        $gameAdmin = $this->commonRequest->targetGameAdmin();
 
         $ban->deleted_by = $gameAdmin->id;
         $ban->save();
@@ -204,23 +201,16 @@ class BansController extends Controller
      *
      * Add new player details to an existing ban. This should be used when an evasion attempt is detected.
      */
-    public function addDetails(Request $request, Ban $ban)
+    #[HasGameAdminIdBody, HasGameAdminCkeyBody]
+    public function addDetails(AddDetailsRequest $request, Ban $ban)
     {
-        $data = $this->validate($request, [
-            'game_admin_ckey' => 'nullable|exists:game_admins,ckey',
-            'round_id' => 'nullable|integer|exists:game_rounds,id',
-            'ckey' => 'required_without_all:comp_id,ip,player_id|nullable',
-            'comp_id' => 'required_without_all:ckey,ip,player_id|nullable',
-            'ip' => 'required_without_all:ckey,comp_id,player_id|ip|nullable',
-            'player_id' => 'required_without_all:ckey,comp_id,ip|integer|nullable',
-            'evasion' => 'nullable|boolean',
-        ]);
+        $data = collect($request->validated());
 
         $banDetail = new BanDetail;
-        $banDetail->ckey = isset($data['ckey']) ? $data['ckey'] : null;
-        $banDetail->comp_id = isset($data['comp_id']) ? $data['comp_id'] : null;
-        $banDetail->ip = isset($data['ip']) ? $data['ip'] : null;
-        $banDetail->player_id = isset($data['player_id']) ? $data['player_id'] : null;
+        $banDetail->ckey = $data->has('ckey') ? $data['ckey'] : null;
+        $banDetail->comp_id = $data->has('comp_id') ? $data['comp_id'] : null;
+        $banDetail->ip = $data->has('ip') ? $data['ip'] : null;
+        $banDetail->player_id = $data->has('player_id') ? $data['player_id'] : null;
         $ban->details()->save($banDetail);
 
         $banDetail->setAttribute(
@@ -231,11 +221,11 @@ class BansController extends Controller
                 ->first()
         );
 
-        if (isset($data['evasion']) && $data['evasion']) {
-            $gameAdmin = GameAdmin::where('ckey', ckey($data['game_admin_ckey']))->first();
+        if ($data->has('evasion') && $data['evasion']) {
+            $gameAdmin = $this->commonRequest->targetGameAdmin();
             $player = null;
-            $ckey = isset($data['ckey']) ? ckey($data['ckey']) : null;
-            if (isset($data['player_id']) && $data['player_id']) {
+            $ckey = $data->has('ckey') ? ckey($data['ckey']) : null;
+            if ($data->has('player_id') && $data['player_id']) {
                 $player = Player::find($data['player_id']);
             } elseif ($ckey) {
                 $player = Player::where('ckey', $ckey)->first();
@@ -247,9 +237,8 @@ class BansController extends Controller
             } else {
                 $note->ckey = $ckey;
             }
-            $note->game_admin_id = $gameAdmin->id;
             $note->server_id = $ban->server_id;
-            $note->round_id = isset($data['round_id']) ? $data['round_id'] : null;
+            $note->round_id = $data->has('round_id') ? $data['round_id'] : null;
             $note->note = sprintf(
                 'Ban evasion attempt detected, added connection details (IP: %s, CompID: %s) to ban. Original ban ckey: %s. Reason: %s',
                 $banDetail->ip,
@@ -258,6 +247,12 @@ class BansController extends Controller
                 $banDetail->originalBanDetail->ckey,
                 $ban->reason
             );
+            $note->gameAdmin()->associate($gameAdmin);
+            if ($ban->gameServer) {
+                $note->gameServer()->associate($ban->gameServer);
+            } elseif ($ban->gameServerGroup) {
+                $note->gameServerGroup()->associate($ban->gameServerGroup);
+            }
             $note->save();
         }
 

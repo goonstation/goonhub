@@ -2,29 +2,17 @@
 
 namespace App\Traits;
 
+use App\Http\Requests\PlayerNotes\StoreRequest;
 use App\Http\Resources\PlayerNoteResource;
-use App\Models\GameAdmin;
 use App\Models\Player;
 use App\Models\PlayerNote;
-use Illuminate\Http\Request;
 
 trait ManagesPlayerNotes
 {
-    private function addNote(Request $request)
+    private function addNote(StoreRequest $request)
     {
-        $data = $request->validate([
-            'game_admin_ckey' => 'exists:game_admins,ckey',
-            'round_id' => 'nullable|integer|exists:game_rounds,id',
-            'server_id' => 'nullable|string|exists:game_servers,server_id',
-            'ckey' => 'required',
-            'note' => 'required',
-        ]);
-
-        $gameAdmin = null;
-        if (isset($data['game_admin_ckey'])) {
-            $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
-        }
-
+        $data = $request->validated();
+        $gameAdmin = $request->getGameAdmin();
         $player = Player::where('ckey', $data['ckey'])->first();
 
         $note = new PlayerNote;
@@ -42,21 +30,14 @@ trait ManagesPlayerNotes
         return new PlayerNoteResource($note);
     }
 
-    private function updateNote(Request $request, PlayerNote $note)
+    private function updateNote(StoreRequest $request, PlayerNote $note)
     {
-        $data = $request->validate([
-            'game_admin_ckey' => 'exists:game_admins,ckey',
-            'server_id' => 'nullable|string|exists:game_servers,server_id',
-            'ckey' => 'required',
-            'note' => 'required',
-        ]);
+        $data = $request->validated();
 
         $updateData = [];
-        if (isset($data['game_admin_ckey'])) {
-            $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
-            if ($gameAdmin) {
-                $updateData['game_admin_id'] = $gameAdmin->id;
-            }
+        $gameAdmin = $request->getGameAdmin();
+        if ($gameAdmin) {
+            $updateData['game_admin_id'] = $gameAdmin->id;
         }
 
         $player = Player::where('ckey', $data['ckey'])->first();

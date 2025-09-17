@@ -3,9 +3,9 @@
 namespace App\Jobs;
 
 use App\Jobs\GameBuild as GameBuildJob;
-use App\Models\GameAdmin;
 use App\Models\GameBuild;
 use App\Models\GameBuildSetting;
+use App\Models\PlayerAdmin;
 use GrahamCampbell\GitHub\Facades\GitHub;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -50,7 +50,7 @@ class GameBuildOnRepoUpdate implements ShouldQueue
             }
         }
 
-        $botAdmin = GameAdmin::whereRelation('rank', 'rank', 'Bot')->first();
+        $botAdmin = PlayerAdmin::whereRelation('rank', 'rank', 'Bot')->first();
         foreach ($settings as $setting) {
             if (! array_key_exists($setting->branch, $latestRemoteCommits)) {
                 continue;

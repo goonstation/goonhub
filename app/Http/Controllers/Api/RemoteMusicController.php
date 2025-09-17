@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\RemoteMusic;
+use App\Services\CommonRequest;
 use Illuminate\Http\Request;
 
 /**
@@ -29,8 +30,8 @@ class RemoteMusicController extends Controller
             'game_admin_ckey' => 'nullable|alpha_num',
         ]);
 
-        $gameAdminCkey = isset($data['game_admin_ckey']) ? $data['game_admin_ckey'] : '';
-        RemoteMusic::dispatch($data['video'], $data['round_id'], $gameAdminCkey);
+        $playerAdmin = app(CommonRequest::class)->targetGameAdmin();
+        RemoteMusic::dispatch($data['video'], $data['round_id'], $playerAdmin);
 
         return ['message' => 'Success'];
     }

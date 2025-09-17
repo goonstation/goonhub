@@ -79,8 +79,8 @@
           <tr v-for="testMerge in group" :key="`merge-${testMerge.id}`">
             <td>{{ testMerge.build_settings.game_server.short_name }}</td>
             <td><commit v-model="testMerge.commit" :test-merge-id="testMerge.id" /></td>
-            <td>{{ testMerge.added_by.name }}</td>
-            <td>{{ testMerge.updated_by?.name }}</td>
+            <td>{{ testMerge.added_by.alias || testMerge.added_by.player.ckey }}</td>
+            <td>{{ testMerge.updated_by?.alias || testMerge.updated_by?.player.ckey }}</td>
             <td>{{ $formats.date(testMerge.created_at) }}</td>
             <td>{{ $formats.date(testMerge.updated_at) }}</td>
             <td>

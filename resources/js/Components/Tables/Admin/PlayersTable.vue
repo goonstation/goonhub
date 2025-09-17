@@ -60,6 +60,21 @@
         <q-icon :name="ionRemove" class="q-mr-xs" />
         Remove HOS
       </q-btn>
+      <q-btn
+        @click="toggleWhitelistedDialog = true"
+        class="q-px-sm text-weight-bold"
+        color="orange"
+        text-color="dark"
+        size="sm"
+      >
+        <q-icon :name="ionToggle" class="q-mr-xs" />
+        Toggle Whitelisted
+      </q-btn>
+      <player-whitelist-dialog
+        v-model="toggleWhitelistedDialog"
+        :players="selected"
+        @success="$refs.table.updateTable()"
+      />
     </template>
 
     <template v-slot:header-bottom>
@@ -229,16 +244,21 @@
 </style>
 
 <script>
-import { ionAdd, ionRemove } from '@quasar/extras/ionicons-v6'
+import PlayerWhitelistDialog from '@/Components/Dialogs/PlayerWhitelist.vue'
+import { ionAdd, ionRemove, ionToggle } from '@quasar/extras/ionicons-v6'
 import BaseTable from '../BaseTable.vue'
 
 export default {
-  components: { BaseTable },
+  components: {
+    BaseTable,
+    PlayerWhitelistDialog
+  },
 
   setup() {
     return {
       ionAdd,
       ionRemove,
+      ionToggle,
     }
   },
 
@@ -246,6 +266,7 @@ export default {
     return {
       toggleMentorLoading: false,
       toggleHosLoading: false,
+      toggleWhitelistedDialog: false,
       routes: {
         fetch: '/admin/players',
         view: '/admin/players/_id',
@@ -354,6 +375,14 @@ export default {
     showRemoveHos() {
       return this.selected.some((row) => row.hos)
     },
+
+    showMakeBypassCap() {
+      return this.selected.some((row) => !row.can_bypass_cap)
+    },
+
+    showRemoveBypassCap() {
+      return this.selected.some((row) => row.can_bypass_cap)
+    },
   },
 
   methods: {
@@ -380,6 +409,18 @@ export default {
       this.toggleHosLoading = false
       this.$refs.table.updateTable()
     },
+
+    // async toggleBypassCap(makeBypassCap, selected) {
+    //   this.toggleBypassCapLoading = true
+    //   const { data } = await axios.post(this.$route('admin.bypass-cap.bulk-toggle'), {
+    //     player_ids: selected.map((row) => row.id),
+    //     make_bypass_cap: makeBypassCap,
+    //   })
+
+    //   this.$q.notify({ message: data.message, color: 'positive' })
+    //   this.toggleBypassCapLoading = false
+    //   this.$refs.table.updateTable()
+    // },
   },
 }
 </script>

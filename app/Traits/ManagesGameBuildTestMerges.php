@@ -6,7 +6,6 @@ use App\Http\Requests\GameBuildTestMergeCreateRequest;
 use App\Http\Requests\GameBuildTestMergeUpdateRequest;
 use App\Http\Resources\GameBuildTestMergeResource;
 use App\Libraries\DiscordBot;
-use App\Models\GameAdmin;
 use App\Models\GameBuildSetting;
 use App\Models\GameBuildTestMerge;
 use App\Models\GameServer;
@@ -83,7 +82,7 @@ trait ManagesGameBuildTestMerges
 
     private function addTestMerge(GameBuildTestMergeCreateRequest $request)
     {
-        $gameAdmin = GameAdmin::where('ckey', ckey($request['game_admin_ckey']))->first();
+        $gameAdmin = $request->getGameAdmin();
         $servers = $request->input('server_ids', [$request->input('server_id')]);
         $buildSettings = GameBuildSetting::whereIn('server_id', $servers)->get();
         if ($buildSettings->isEmpty()) {
@@ -160,8 +159,7 @@ trait ManagesGameBuildTestMerges
             $testMerge[$key] = $val;
         }
 
-        $gameAdmin = GameAdmin::where('ckey', ckey($request['game_admin_ckey']))->first();
-
+        $gameAdmin = $request->getGameAdmin();
         if ($request->missing('commit')) {
             $testMerge->commit = null;
         }

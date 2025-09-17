@@ -5,12 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
- * @property int $id
- * @property string $ckey
- * @property string|null $name
- * @property int|null $rank_id
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ban> $bans
@@ -28,14 +22,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin query()
  * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereBeginsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereCkey($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereLike($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereRankId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameAdmin whereUpdatedAt($value)
  *
  * @mixin \Eloquent
  */

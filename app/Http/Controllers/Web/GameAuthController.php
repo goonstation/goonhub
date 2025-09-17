@@ -105,8 +105,8 @@ class GameAuthController extends Controller
             'admin_rank' => $user->isGameAdmin() ? $user->gameAdmin->rank->rank : null,
             'is_mentor' => $user->player->isMentor,
             'is_hos' => $user->player->isHos,
-            'is_whitelisted' => $user->player->isWhitelisted($cache['server_id']),
-            'can_bypass_cap' => $user->player->canBypassCap($cache['server_id']),
+            'is_whitelisted' => $user->player->isWhitelistedOnServer($cache['server_id']),
+            'can_bypass_cap' => $user->player->canBypassCapOnServer($cache['server_id']),
         ];
 
         VerifyGameAuth::dispatch($cache['server_id'], [

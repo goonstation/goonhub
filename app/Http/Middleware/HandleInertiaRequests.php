@@ -106,6 +106,10 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        if ($request->user()) {
+            $request->user()->load('gameAdmin.player');
+        }
+
         return array_merge(parent::share($request), [
             'csrf_token' => csrf_token(),
             'breadcrumbs' => fn () => Breadcrumbs::current(),

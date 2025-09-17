@@ -26,13 +26,13 @@ use Illuminate\Support\Carbon;
  * @property string|null $cancelled_reason
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin|null $cancelledBy
+ * @property-read \App\Models\PlayerAdmin|null $cancelledBy
  * @property-read mixed $duration
  * @property-read \App\Models\GameServer $gameServer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameBuildLog> $logs
  * @property-read int|null $logs_count
  * @property-read \App\Models\Map|null $map
- * @property-read \App\Models\GameAdmin|null $startedBy
+ * @property-read \App\Models\PlayerAdmin|null $startedBy
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
@@ -100,7 +100,7 @@ class GameBuild extends BaseModel
 
     public function startedBy(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'started_by');
+        return $this->belongsTo(PlayerAdmin::class, 'started_by');
     }
 
     public function map(): BelongsTo
@@ -110,7 +110,7 @@ class GameBuild extends BaseModel
 
     public function cancelledBy(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'cancelled_by');
+        return $this->belongsTo(PlayerAdmin::class, 'cancelled_by');
     }
 
     public function logs(): HasMany

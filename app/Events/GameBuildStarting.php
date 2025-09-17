@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\GameAdmin;
+use App\Models\PlayerAdmin;
 use App\Models\GameServer;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -21,7 +21,7 @@ class GameBuildStarting implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public GameAdmin $admin,
+        public PlayerAdmin $admin,
         public GameServer $server,
         public bool $mapSwitch,
         public Carbon $startedAt

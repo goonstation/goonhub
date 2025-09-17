@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\DiscordSettings;
 use App\Facades\DiscordApi;
 use App\Models\DiscordSetting;
 use Illuminate\Bus\Queueable;
@@ -34,7 +35,7 @@ class GrantDiscordRole implements ShouldQueue
      */
     public function handle()
     {
-        $grantDiscordRole = DiscordSetting::where('key', DiscordSetting::GRANT_ROLE_WHEN_LINKED)
+        $grantDiscordRole = DiscordSetting::where('key', DiscordSettings::GRANT_ROLE_WHEN_LINKED->value)
             ->whereNotNull('value')
             ->first();
 

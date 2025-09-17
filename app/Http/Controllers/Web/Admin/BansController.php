@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Facades\GameBridge;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BanRequest;
+use App\Http\Requests\Bans\StoreRequest;
 use App\Libraries\DiscordBot;
 use App\Models\Ban;
 use App\Models\BanDetail;
 use App\Traits\ManagesBans;
 use Carbon\Carbon;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -22,7 +21,7 @@ class BansController extends Controller
     public function index(Request $request)
     {
         $bans = Ban::withCount(['details'])
-            ->with(['originalBanDetail', 'gameAdmin', 'gameServer'])
+            ->with(['originalBanDetail', 'gameAdmin.player', 'gameServer'])
             ->where('expires_at', '>', Carbon::now())
             ->orWhere('expires_at', null)
             ->indexFilterPaginate(perPage: 30);
@@ -42,7 +41,7 @@ class BansController extends Controller
             ->withCount(['details'])
             ->with([
                 'originalBanDetail',
-                'gameAdmin',
+                'gameAdmin.player',
                 'gameServer',
             ])
             ->where('deleted_at', '!=', null)
@@ -63,10 +62,10 @@ class BansController extends Controller
         return Inertia::render('Admin/Bans/Create');
     }
 
-    public function store(BanRequest $request)
+    public function store(StoreRequest $request)
     {
         $request->merge([
-            'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+            'game_admin_id' => $request->user()->gameAdmin->id,
         ]);
         $ban = $this->addBan($request);
 
@@ -74,7 +73,7 @@ class BansController extends Controller
             try {
                 $byondEpochStart = Carbon::parse('2000-01-01 00:00:00'); // byond epoch start
                 DiscordBot::export('ban', 'GET', [
-                    'key' => $ban->gameAdmin->ckey,
+                    'key' => $ban->gameAdmin->player->ckey,
                     'key2' => "{$ban->originalBanDetail->ckey} (IP: {$ban->originalBanDetail->ip}, CompID: {$ban->originalBanDetail->comp_id})",
                     'msg' => $ban->reason,
                     'time' => $ban->expires_at ? $ban->duration_human : 'permanent',
@@ -88,7 +87,7 @@ class BansController extends Controller
                 ->target($ban->server_id ?: 'active')
                 ->message([
                     'type' => 'ban_added',
-                    'admin_ckey' => $ban->gameAdmin->ckey,
+                    'admin_ckey' => $ban->gameAdmin->player->ckey,
                     'server_id' => $ban->server_id,
                     'ckey' => $ban->originalBanDetail->ckey,
                     'comp_id' => $ban->originalBanDetail->comp_id,
@@ -113,14 +112,14 @@ class BansController extends Controller
         ]);
     }
 
-    public function update(BanRequest $request, Ban $ban)
+    public function update(StoreRequest $request, Ban $ban)
     {
         try {
             $request = $request->merge([
-                'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+                'game_admin_id' => $request->user()->gameAdmin->id,
             ]);
             $this->updateBan($request, $ban);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return Redirect::back()->withErrors(['error' => $e->getMessage()]);
         }
 
@@ -132,8 +131,8 @@ class BansController extends Controller
         $ban = Ban::withTrashed()
             ->with([
                 'originalBanDetail',
-                'gameAdmin',
-                'deletedByGameAdmin',
+                'gameAdmin.player',
+                'deletedByGameAdmin.player',
                 'gameServer',
                 'details' => function ($q) {
                     $q->where('deleted_at', null)

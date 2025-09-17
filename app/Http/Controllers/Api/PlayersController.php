@@ -64,13 +64,9 @@ class PlayersController extends Controller
             ImportByondMedalsForPlayer::dispatch($player->ckey);
         }
 
-        $resource = new PlayerResource($player);
+        $player->append(['is_admin', 'is_mentor', 'is_hos', 'is_whitelisted', 'can_bypass_cap']);
 
-        if (array_key_exists('server_id', $data)) {
-            $resource->serverId = $data['server_id'];
-        }
-
-        return $resource;
+        return new PlayerResource($player);
     }
 
     /**

@@ -40,7 +40,7 @@ class DiscordSetting extends BaseModel
 {
     use HasFactory;
 
-    public const GRANT_ROLE_WHEN_LINKED = 'grant_role_when_linked';
+    // public const GRANT_ROLE_WHEN_LINKED = 'grant_role_when_linked';
 
     protected $fillable = [
         'key',

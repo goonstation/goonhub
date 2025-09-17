@@ -21,6 +21,7 @@ class GameServerSeeder extends SeederOnce
                 'port' => 26100,
                 'active' => true,
                 'invisible' => false,
+                'group_id' => 1,
             ],
             [
                 'server_id' => 'main2',
@@ -30,6 +31,7 @@ class GameServerSeeder extends SeederOnce
                 'port' => 26200,
                 'active' => false,
                 'invisible' => false,
+                'group_id' => 1,
             ],
             [
                 'server_id' => 'main3',
@@ -39,6 +41,7 @@ class GameServerSeeder extends SeederOnce
                 'port' => 26300,
                 'active' => true,
                 'invisible' => false,
+                'group_id' => 1,
             ],
             [
                 'server_id' => 'main4',
@@ -48,6 +51,7 @@ class GameServerSeeder extends SeederOnce
                 'port' => 26400,
                 'active' => true,
                 'invisible' => false,
+                'group_id' => 1,
             ],
             [
                 'server_id' => 'main5',
@@ -57,6 +61,7 @@ class GameServerSeeder extends SeederOnce
                 'port' => 26500,
                 'active' => true,
                 'invisible' => false,
+                'group_id' => 1,
             ],
             [
                 'server_id' => 'dev',
@@ -66,6 +71,7 @@ class GameServerSeeder extends SeederOnce
                 'port' => 26900,
                 'active' => true,
                 'invisible' => true,
+                'group_id' => 1,
             ],
             [
                 'server_id' => 'local',
@@ -75,6 +81,7 @@ class GameServerSeeder extends SeederOnce
                 'port' => 4999,
                 'active' => false,
                 'invisible' => true,
+                'group_id' => 1,
             ],
         ]);
     }

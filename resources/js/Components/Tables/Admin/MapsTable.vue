@@ -32,9 +32,9 @@
 </template>
 
 <script>
+import MapThumbnail from '@/Components/MapThumbnail.vue'
 import { router } from '@inertiajs/vue3'
 import BaseTable from '../BaseTable.vue'
-import MapThumbnail from '@/Components/MapThumbnail.vue'
 
 export default {
   components: {
@@ -82,7 +82,7 @@ export default {
           field: 'last_built_by',
           format: (val, row) => {
             if (!val) return
-            return row.game_admin.name || row.game_admin.ckey
+            return row.game_admin.alias || row.game_admin.player?.ckey
           },
         },
         {

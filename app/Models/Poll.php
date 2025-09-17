@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * @property int $id
@@ -17,7 +20,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read int|null $answers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PollOption> $options
  * @property-read int|null $options_count
  *
@@ -51,23 +54,17 @@ class Poll extends BaseModel
         'expires_at' => 'datetime',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameAdmin()
+    public function gameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'game_admin_id');
+        return $this->belongsTo(PlayerAdmin::class, 'game_admin_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function options()
+    public function options(): HasMany
     {
         return $this->hasMany(PollOption::class, 'poll_id');
     }
 
-    public function answers()
+    public function answers(): HasManyThrough
     {
         return $this->hasManyThrough(PollAnswer::class, PollOption::class);
     }

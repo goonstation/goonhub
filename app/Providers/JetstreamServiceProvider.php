@@ -70,6 +70,8 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         Jetstream::permissions([
             'general',
+            'server-group:default',
+            'server-group:streamer',
         ]);
 
         Jetstream::defaultApiTokenPermissions(['general']);

@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       fields: {
-        game_admin_id: this.$page.props.auth.user.game_admin_id,
+        game_admin_id: this.$page.props.auth.user.game_admin.id,
         server_id: null,
         map: null,
       },

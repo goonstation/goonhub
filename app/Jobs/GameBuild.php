@@ -8,8 +8,8 @@ use App\Events\GameBuildQueued;
 use App\Events\GameBuildQueuedStarting;
 use App\Events\GameBuildStarting;
 use App\Libraries\GameBuilder\Build;
-use App\Models\GameAdmin;
 use App\Models\GameServer;
+use App\Models\PlayerAdmin;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -28,7 +28,7 @@ class GameBuild implements ShouldBeUnique, ShouldQueue
 
     public $uniqueFor = 600;
 
-    public GameAdmin $admin;
+    public PlayerAdmin $admin;
 
     public GameServer $server;
 
@@ -41,7 +41,7 @@ class GameBuild implements ShouldBeUnique, ShouldQueue
      *
      * @return void
      */
-    public function __construct(GameAdmin $admin, GameServer $server, ?bool $mapSwitch = false)
+    public function __construct(PlayerAdmin $admin, GameServer $server, ?bool $mapSwitch = false)
     {
         $this->admin = $admin;
         $this->server = $server;

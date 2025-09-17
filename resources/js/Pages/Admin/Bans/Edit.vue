@@ -31,7 +31,7 @@ export default {
 
   created() {
     this.fields = {
-      game_admin_id: this.$page.props.auth.user.game_admin_id,
+      game_admin_id: this.$page.props.auth.user.game_admin.id,
       ckey: this.ban.original_ban_detail.ckey,
       comp_id: this.ban.original_ban_detail.comp_id,
       ip: this.ban.original_ban_detail.ip,

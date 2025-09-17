@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasApiScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -22,14 +24,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $deleted_by
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin|null $deletedByGameAdmin
- * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $deletedByGameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read \App\Models\GameRound|null $gameRound
  * @property-read \App\Models\GameServer|null $gameServer
+ * @property-read \App\Models\GameServerGroup|null $gameServerGroup
  * @property-read mixed $duration
  * @property-read mixed $duration_human
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan forApi()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan newModelQuery()
@@ -60,7 +64,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class JobBan extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    use HasApiScope, HasFactory, SoftDeletes;
 
     protected $casts = [
         'expires_at' => 'datetime',
@@ -68,6 +72,7 @@ class JobBan extends BaseModel
 
     protected $fillable = [
         'server_id',
+        'server_group',
         'reason',
         'banned_from_job',
         'expires_at',
@@ -94,49 +99,46 @@ class JobBan extends BaseModel
         return $this->expires_at->longAbsoluteDiffForHumans(parts: 99);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameRound()
+    public function gameRound(): BelongsTo
     {
         return $this->belongsTo(GameRound::class, 'round_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameAdmin()
+    public function gameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'game_admin_id');
+        return $this->belongsTo(PlayerAdmin::class, 'game_admin_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameServer()
+    public function gameServer(): BelongsTo
     {
         return $this->belongsTo(GameServer::class, 'server_id', 'server_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function deletedByGameAdmin()
+    public function gameServerGroup(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'deleted_by');
+        return $this->belongsTo(GameServerGroup::class, 'server_group', 'id');
     }
 
-    /**
-     * @return Builder
-     */
-    public static function getValidJobBans(string $ckey, ?string $job = null, ?string $serverId = null)
+    public function deletedByGameAdmin(): BelongsTo
     {
-        $query = JobBan::with(['gameAdmin:id,ckey,name'])
+        return $this->belongsTo(PlayerAdmin::class, 'deleted_by');
+    }
+
+    public static function getValidJobBans(string $ckey, ?string $job = null, ?string $serverId = null, ?int $serverGroupId = null): Builder
+    {
+        $query = JobBan::query()
             ->where('ckey', $ckey)
-            ->where(function (Builder $builder) use ($serverId) {
+            ->where(function (Builder $query) use ($serverId, $serverGroupId) {
                 // Check if the ban applies to all servers, or the server id we were provided
-                $builder->whereNull('server_id')
-                    ->orWhere('server_id', $serverId);
+                $query->whereNull(['server_id', 'server_group']);
+
+                if ($serverId) {
+                    $query->orWhere('server_id', $serverId);
+                }
+
+                if ($serverGroupId) {
+                    $query->orWhere('server_group', $serverGroupId);
+                }
             })
             ->where(function (Builder $builder) {
                 // Check the ban is permanent, or has yet to expire

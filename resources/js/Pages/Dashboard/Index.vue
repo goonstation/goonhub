@@ -57,7 +57,7 @@ export default {
 
   computed: {
     isGameAdmin() {
-      return !!this.$page.props.auth.user.game_admin_id || !!this.$page.props.auth.user.is_admin
+      return !!this.$page.props.auth.user.game_admin.id || !!this.$page.props.auth.user.is_admin
     },
   },
 }

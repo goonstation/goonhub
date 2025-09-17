@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Jobs\GameBuild as GameBuildJob;
 use App\Libraries\GameBuilder\Build as GameBuildBuild;
-use App\Models\GameAdmin;
+use App\Models\PlayerAdmin;
 use App\Traits\ManagesGameBuilds;
 use Illuminate\Console\Command;
 
@@ -32,7 +32,7 @@ class CancelAllGameBuilds extends Command
     public function handle()
     {
         $buildStatus = $this->getStatus();
-        $botAdmin = GameAdmin::whereRelation('rank', 'rank', 'Bot')->first();
+        $botAdmin = PlayerAdmin::whereRelation('rank', 'rank', 'Bot')->first();
 
         foreach ($buildStatus['current'] as $build) {
             GameBuildBuild::cancel($build->offsetGet('server')->server_id, $botAdmin->id, 'Server shutting down');

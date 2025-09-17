@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import BaseTable from '../BaseTable.vue'
+import BaseTable from '../BaseTable.vue';
 
 export default {
   components: { BaseTable },
@@ -49,14 +49,14 @@ export default {
         {
           name: 'created_by',
           label: 'Created By',
-          field: (row) => row.created_by_user?.game_admin.name || row.created_by_user?.game_admin.ckey,
+          field: (row) => row.created_by_user?.game_admin.alias || row.created_by_user?.game_admin.player?.ckey,
           sortable: false,
           filterable: false,
         },
         {
           name: 'updated_by',
           label: 'Updated By',
-          field: (row) => row.updated_by_user?.game_admin.name || row.updated_by_user?.game_admin.ckey,
+          field: (row) => row.updated_by_user?.game_admin.alias || row.updated_by_user?.game_admin.player?.ckey,
           sortable: false,
           filterable: false,
         },

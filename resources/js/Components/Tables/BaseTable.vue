@@ -1008,6 +1008,7 @@ export default {
 
     updateTable() {
       if (!this.$refs.tableRef) return
+      console.warn('updateTable')
       this.$refs.tableRef.requestServerInteraction()
     },
 
@@ -1075,7 +1076,8 @@ export default {
 
     extraParams: {
       deep: true,
-      handler() {
+      handler(newVal, oldVal) {
+        if (isEqual(newVal, oldVal)) return
         this.updateTable()
       },
     },

@@ -235,7 +235,7 @@ export default {
 
   computed: {
     isGameAdmin() {
-      return this.$page.props.auth?.user?.game_admin_id
+      return this.$page.props.auth?.user?.game_admin?.id
     },
   },
 

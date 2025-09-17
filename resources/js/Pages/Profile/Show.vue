@@ -94,6 +94,6 @@ defineProps({
 const page = usePage()
 
 const isGameAdmin = computed(() => {
-  return !!page.props.auth.user.game_admin_id || !!page.props.auth.user.is_admin
+  return !!page.props.auth.user.game_admin.id || !!page.props.auth.user.is_admin
 })
 </script>

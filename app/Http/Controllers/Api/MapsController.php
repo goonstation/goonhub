@@ -45,7 +45,7 @@ class MapsController extends Controller
             return response()->json(['message' => 'Unable to locate configuration for that map.'], 400);
         }
 
-        $gameAdminId = $request->user()->game_admin_id;
+        $gameAdminId = $request->user()->gameAdmin->id;
 
         $file = $request->file('images');
         $mapZipPath = BuildMap::moveUploadedFile($file);

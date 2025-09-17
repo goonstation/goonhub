@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin $gameAdmin
+ * @property-read \App\Models\PlayerAdmin $gameAdmin
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\VpnWhitelist indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
@@ -44,11 +45,8 @@ class VpnWhitelist extends BaseModel
         'game_admin_id',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameAdmin()
+    public function gameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class);
+        return $this->belongsTo(PlayerAdmin::class);
     }
 }

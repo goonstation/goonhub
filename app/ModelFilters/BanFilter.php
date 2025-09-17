@@ -28,6 +28,11 @@ class BanFilter extends ModelFilter
         return $this->where('server_id', $val);
     }
 
+    public function serverGroup($val)
+    {
+        return $this->where('server_group', $val);
+    }
+
     public function adminCkey($val)
     {
         return $this->related('gameAdmin', function ($query) use ($val) {

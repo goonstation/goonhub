@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
 /**
  * @property int $id
  * @property int $player_id
@@ -10,8 +13,12 @@ namespace App\Models;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\Player $player
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameServerGroup> $serverGroups
+ * @property-read int|null $server_groups_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameServer> $servers
  * @property-read int|null $servers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameServer> $serversViaGroups
+ * @property-read int|null $servers_via_groups_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerBypassCap filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerBypassCap indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
@@ -44,8 +51,39 @@ class PlayerBypassCap extends BaseModel
         return $this->belongsTo(Player::class, 'player_id');
     }
 
-    public function servers()
+    public function servers(): BelongsToMany
     {
-        return $this->belongsToMany(GameServer::class, 'player_bypass_cap_servers', 'player_bypass_cap_id', 'server_id')->withTimestamps();
+        return $this->belongsToMany(GameServer::class, PlayerBypassCapServer::class, 'player_bypass_cap_id', 'server_id')->withTimestamps();
+    }
+
+    public function serverGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(GameServerGroup::class, PlayerBypassCapServer::class, 'player_bypass_cap_id', 'server_group_id')->withTimestamps();
+    }
+
+    public function serversViaGroups(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            GameServer::class,
+            PlayerBypassCapServer::class,
+            'player_bypass_cap_id', // Foreign key on PlayerBypassCapServer referencing PlayerBypassCap
+            'group_id',        // Foreign key on GameServer referencing GameServerGroup
+            'id',              // Local key on PlayerBypassCap
+            'server_group_id'  // Local key on PlayerBypassCapServer referencing group id
+        )->whereNotNull('server_group_id');
+    }
+
+    public function allServers()
+    {
+        return GameServer::query()
+            ->where(function ($query) {
+                $query->whereIn('id', $this->servers()->select('game_servers.id'))
+                    ->orWhereIn('group_id', $this->serverGroups()->select('game_server_groups.id'));
+            });
+    }
+
+    public function canBypassCap(string $serverId): bool
+    {
+        return $this->allServers()->where('server_id', $serverId)->exists();
     }
 }

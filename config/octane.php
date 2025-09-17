@@ -1,5 +1,6 @@
 <?php
 
+use App\Listeners\ResetArrayCache;
 use Laravel\Octane\Contracts\OperationTerminated;
 use Laravel\Octane\Events\RequestHandled;
 use Laravel\Octane\Events\RequestReceived;
@@ -71,7 +72,7 @@ return [
         RequestReceived::class => [
             ...Octane::prepareApplicationForNextOperation(),
             ...Octane::prepareApplicationForNextRequest(),
-            //
+            ResetArrayCache::class,
         ],
 
         RequestHandled::class => [

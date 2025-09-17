@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Traits\HasGameAdmin;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GameBuildTestMergeCreateRequest extends FormRequest
 {
+    use HasGameAdmin;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,10 +27,6 @@ class GameBuildTestMergeCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            /** Required without game_admin_ckey */
-            'game_admin_id' => 'required_without:game_admin_ckey|exists:game_admins,id',
-            /** Required without game_admin_id */
-            'game_admin_ckey' => 'required_without:game_admin_id|exists:game_admins,ckey',
             'pr_id' => 'required|integer',
             /** Required without server_ids */
             'server_id' => 'required_without:server_ids|string|exists:game_servers,server_id',

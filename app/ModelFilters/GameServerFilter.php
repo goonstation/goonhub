@@ -67,7 +67,7 @@ class GameServerFilter extends ModelFilter
 
     public function invisible($val)
     {
-        if (Auth::user()?->game_admin_id) {
+        if (Auth::user()?->isGameAdmin()) {
             return $this->where('invisible', $val);
         }
 
@@ -76,7 +76,7 @@ class GameServerFilter extends ModelFilter
 
     public function withInvisible($val)
     {
-        if (Auth::user()?->game_admin_id) {
+        if (Auth::user()?->isGameAdmin()) {
             return $this->where('invisible', true)->orWhere('invisible', false);
         }
 

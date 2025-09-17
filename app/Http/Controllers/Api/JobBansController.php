@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\JobBans\DestroyRequest;
+use App\Http\Requests\JobBans\StoreRequest;
+use App\Http\Requests\JobBans\UpdateRequest;
 use App\Http\Resources\JobBanResource;
-use App\Models\GameAdmin;
 use App\Models\JobBan;
 use App\Rules\DateRange;
+use App\Services\CommonRequest;
 use App\Traits\ManagesJobBans;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -55,7 +58,7 @@ class JobBansController extends Controller
         ]);
 
         return JobBanResource::collection(
-            JobBan::with(['gameAdmin:id,ckey,name'])
+            JobBan::forApi()->with(['gameAdmin.player'])
                 ->indexFilterPaginate()
         );
     }
@@ -70,11 +73,14 @@ class JobBansController extends Controller
         $data = $this->validate($request, [
             'ckey' => 'required',
             'job' => 'required',
-            'server_id' => 'nullable|string',
         ]);
 
-        $serverId = isset($data['server_id']) ? $data['server_id'] : null;
-        $jobBan = JobBan::getValidJobBans(ckey($data['ckey']), $data['job'], $serverId)->first();
+        $commonRequest = app(CommonRequest::class);
+        $fromServerId = $commonRequest->fromServerId();
+        $fromServerGroup = $commonRequest->fromServerGroup();
+
+        $jobBan = JobBan::getValidJobBans(ckey($data['ckey']), $data['job'], $fromServerId, $fromServerGroup->id)->first();
+        $jobBan->load('gameAdmin');
 
         return new JobBanResource($jobBan);
     }
@@ -88,16 +94,25 @@ class JobBansController extends Controller
     {
         $data = $this->validate($request, [
             'ckey' => 'required',
-            'server_id' => 'nullable|string',
         ]);
 
-        $serverId = isset($data['server_id']) ? $data['server_id'] : null;
+        $commonRequest = app(CommonRequest::class);
+        $fromServerId = $commonRequest->fromServerId();
+        $fromServerGroup = $commonRequest->fromServerGroup();
+
         $jobBans = JobBan::select('banned_from_job')
             ->where('ckey', ckey($data['ckey']))
-            ->where(function (Builder $builder) use ($serverId) {
+            ->where(function (Builder $query) use ($fromServerId, $fromServerGroup) {
                 // Check if the ban applies to all servers, or the server id we were provided
-                $builder->whereNull('server_id')
-                    ->orWhere('server_id', $serverId);
+                $query->whereNull(['server_id', 'server_group']);
+
+                if ($fromServerId) {
+                    $query->orWhere('server_id', $fromServerId);
+                }
+
+                if ($fromServerGroup) {
+                    $query->orWhere('server_group', $fromServerGroup->id);
+                }
             })
             ->where(function (Builder $builder) {
                 // Check the ban is permanent, or has yet to expire
@@ -121,7 +136,7 @@ class JobBansController extends Controller
      *
      * Add a new job ban
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         try {
             return $this->addJobBan($request);
@@ -135,7 +150,7 @@ class JobBansController extends Controller
      *
      * Update an existing job ban
      */
-    public function update(Request $request, JobBan $jobBan)
+    public function update(UpdateRequest $request, JobBan $jobBan)
     {
         try {
             return $this->updateJobBan($request, $jobBan);
@@ -149,16 +164,10 @@ class JobBansController extends Controller
      *
      * Delete an existing job ban
      */
-    public function destroy(Request $request)
+    public function destroy(DestroyRequest $request)
     {
-        $data = $this->validate($request, [
-            'game_admin_ckey' => 'required|exists:game_admins,ckey',
-            'server_id' => 'nullable|string',
-            'ckey' => 'required',
-            'job' => 'required',
-        ]);
-
-        $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
+        $data = $request->validated();
+        $gameAdmin = $request->getGameAdmin();
 
         $jobBans = JobBan::where('ckey', ckey($data['ckey']))
             ->where('banned_from_job', $data['job']);

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -13,11 +14,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string|null $commit
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\GameAdmin|null $addedBy
+ * @property-read \App\Models\PlayerAdmin|null $addedBy
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\GameBuildSetting $buildSettings
- * @property-read \App\Models\GameAdmin|null $updatedBy
+ * @property-read \App\Models\PlayerAdmin|null $updatedBy
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuildTestMerge indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
@@ -47,27 +48,18 @@ class GameBuildTestMerge extends BaseModel
 
     protected $table = 'game_build_test_merges';
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function buildSettings()
+    public function buildSettings(): BelongsTo
     {
         return $this->belongsTo(GameBuildSetting::class, 'setting_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function addedBy()
+    public function addedBy(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'added_by');
+        return $this->belongsTo(PlayerAdmin::class, 'added_by');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function updatedBy()
+    public function updatedBy(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'updated_by');
+        return $this->belongsTo(PlayerAdmin::class, 'updated_by');
     }
 }

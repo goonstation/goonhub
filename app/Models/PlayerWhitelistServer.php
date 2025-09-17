@@ -5,13 +5,15 @@ namespace App\Models;
 /**
  * @property int $id
  * @property int $player_whitelist_id
- * @property int $server_id
+ * @property int|null $server_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $server_group_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\PlayerWhitelist $playerWhitelist
- * @property-read \App\Models\GameServer $server
+ * @property-read \App\Models\GameServer|null $server
+ * @property-read \App\Models\GameServerGroup|null $serverGroup
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
@@ -27,6 +29,7 @@ namespace App\Models;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer whereLike($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer wherePlayerWhitelistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer whereServerGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer whereServerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerWhitelistServer whereUpdatedAt($value)
  *
@@ -36,6 +39,7 @@ class PlayerWhitelistServer extends BaseModel
 {
     protected $fillable = [
         'server_id',
+        'server_group_id',
     ];
 
     public function playerWhitelist()
@@ -46,5 +50,10 @@ class PlayerWhitelistServer extends BaseModel
     public function server()
     {
         return $this->belongsTo(GameServer::class, 'server_id');
+    }
+
+    public function serverGroup()
+    {
+        return $this->belongsTo(GameServerGroup::class, 'server_group_id');
     }
 }

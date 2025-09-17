@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\Polls\StoreRequest;
 use App\Http\Resources\PollAnswerResource;
 use App\Http\Resources\PollOptionResource;
 use App\Http\Resources\PollResource;
-use App\Models\GameAdmin;
 use App\Models\Poll;
 use App\Models\PollAnswer;
 use App\Models\PollOption;
@@ -84,7 +84,7 @@ class PollsController extends Controller
         ]);
 
         $pollsPaged = Poll::with([
-            'gameAdmin',
+            'gameAdmin.player',
             'options' => function ($query) {
                 $query->withCount('answers')
                     ->with(['answers' => function ($q) {
@@ -129,23 +129,10 @@ class PollsController extends Controller
      *
      * Add a new poll
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $data = $request->validate([
-            'game_admin_ckey' => 'nullable|string|exists:game_admins,ckey',
-            'question' => 'required',
-            'multiple_choice' => 'nullable|boolean',
-            'expires_at' => 'nullable|date',
-            'options' => 'required|array',
-            'options.*' => 'sometimes|required',
-            'servers' => 'nullable|array',
-            'servers.*' => 'sometimes|required|string',
-        ]);
-
-        $gameAdmin = null;
-        if (isset($data['game_admin_ckey'])) {
-            $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
-        }
+        $data = $request->validated();
+        $gameAdmin = $request->getGameAdmin();
 
         $poll = new Poll;
         $poll->game_admin_id = $gameAdmin ? $gameAdmin->id : null;

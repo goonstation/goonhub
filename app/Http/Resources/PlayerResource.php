@@ -8,8 +8,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin Player */
 class PlayerResource extends JsonResource
 {
-    public $serverId = '';
-
     /**
      * Transform the resource into an array.
      *
@@ -25,17 +23,19 @@ class PlayerResource extends JsonResource
             'byond_join_date' => $this->byond_join_date,
             'byond_major' => $this->byond_major,
             'byond_minor' => $this->byond_minor,
-            /** @var bool */
-            'is_admin' => $this->isAdmin,
+            /** @var bool|null */
+            'is_admin' => $this->whenAppended('is_admin'),
             'admin_rank' => $this->whenLoaded('user', function () {
                 return $this->user?->gameAdmin?->rank?->rank;
             }),
-            /** @var bool */
-            'is_mentor' => $this->isMentor,
-            /** @var bool */
-            'is_hos' => $this->isHos,
-            'is_whitelisted' => $this->isWhitelisted($this->serverId),
-            'can_bypass_cap' => $this->canBypassCap($this->serverId),
+            /** @var bool|null */
+            'is_mentor' => $this->whenAppended('is_mentor'),
+            /** @var bool|null */
+            'is_hos' => $this->whenAppended('is_hos'),
+            /** @var bool|null */
+            'is_whitelisted' => $this->whenAppended('is_whitelisted'),
+            /** @var bool|null */
+            'can_bypass_cap' => $this->whenAppended('can_bypass_cap'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

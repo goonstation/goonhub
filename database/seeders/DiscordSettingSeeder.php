@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\DiscordSettings;
 use App\Models\DiscordSetting;
 use Kdabrow\SeederOnce\SeederOnce;
 
@@ -14,7 +15,7 @@ class DiscordSettingSeeder extends SeederOnce
     {
         DiscordSetting::insertOrIgnore([
             [
-                'key' => DiscordSetting::GRANT_ROLE_WHEN_LINKED,
+                'key' => DiscordSettings::GRANT_ROLE_WHEN_LINKED->value,
                 'name' => 'Grant Role When Linked',
                 'description' => 'Grant a role to a user when they link their Discord account.',
             ],

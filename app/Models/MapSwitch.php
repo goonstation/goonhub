@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read \App\Models\GameRound|null $gameRound
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\MapSwitch filter(array $input = [], $filter = null)
@@ -44,19 +45,13 @@ class MapSwitch extends BaseModel
 {
     use HasFactory;
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameRound()
+    public function gameRound(): BelongsTo
     {
         return $this->belongsTo(GameRound::class, 'round_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameAdmin()
+    public function gameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'game_admin_id');
+        return $this->belongsTo(PlayerAdmin::class, 'game_admin_id');
     }
 }

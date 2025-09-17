@@ -3,8 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Actions\Fortify\CreateNewUser;
-use App\Models\GameAdmin;
 use App\Models\GameAdminRank;
+use App\Models\Player;
+use App\Models\PlayerAdmin;
 use Illuminate\Console\Command;
 
 class InitialSetup extends Command
@@ -54,9 +55,13 @@ class InitialSetup extends Command
             return Command::FAILURE;
         }
 
+        $player = new Player;
+        $player->ckey = ckey($byondCkey);
+        $player->save();
+
         $hostRank = GameAdminRank::where('rank', 'Host')->first();
-        $gameAdmin = new GameAdmin;
-        $gameAdmin->ckey = ckey($byondCkey);
+        $gameAdmin = new PlayerAdmin;
+        $gameAdmin->player_id = $player->id;
         $gameAdmin->rank_id = $hostRank->id;
         $gameAdmin->save();
 
@@ -68,7 +73,7 @@ class InitialSetup extends Command
             'password_confirmation' => $userPass,
         ]);
         $user->is_admin = true;
-        $user->game_admin_id = $gameAdmin->id;
+        $user->player_id = $player->id;
         $user->email_verified_at = now();
         $user->save();
 

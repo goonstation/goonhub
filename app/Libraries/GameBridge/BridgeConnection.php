@@ -3,6 +3,7 @@
 namespace App\Libraries\GameBridge;
 
 use App\Models\GameServer;
+use App\Models\Scopes\GameServerGroupScope;
 use Illuminate\Database\Eloquent\Collection as ModelCollection;
 use Illuminate\Support\Collection;
 use RuntimeException;
@@ -33,7 +34,8 @@ class BridgeConnection
         } elseif ($target instanceof ModelCollection) {
             $servers = $target;
         } else {
-            $query = GameServer::select(['server_id', 'address', 'port']);
+            $query = GameServer::withoutGlobalScope(GameServerGroupScope::class)
+                ->select(['server_id', 'address', 'port']);
 
             if (is_string($target)) {
                 if ($target === 'active') {

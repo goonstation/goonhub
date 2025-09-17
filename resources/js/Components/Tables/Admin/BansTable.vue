@@ -102,7 +102,7 @@ export default {
         {
           name: 'admin_ckey',
           label: 'Admin',
-          field: (row) => row.game_admin.name || row.game_admin.ckey,
+          field: (row) => row.game_admin.alias || row.game_admin.player?.ckey,
           sortable: true,
         },
         {

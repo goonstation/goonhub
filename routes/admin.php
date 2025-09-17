@@ -196,6 +196,7 @@ Route::controller(WhitelistController::class)->prefix('whitelist')->group(functi
     Route::get('/edit/{whitelistedPlayer}', 'edit')->whereNumber('whitelistedPlayer')->name('admin.whitelist.edit')
         ->breadcrumbs(fn (Trail $trail, $whitelistedPlayer) => $trail->parent('admin.whitelist.index')->push('Edit', route('admin.whitelist.edit', $whitelistedPlayer)));
     Route::put('/{whitelistedPlayer}', 'update')->whereNumber('whitelistedPlayer')->name('admin.whitelist.update');
+    Route::post('/bulk-toggle', 'bulkToggle')->name('admin.whitelist.bulk-toggle');
 
     Route::delete('/{whitelistedPlayer}', 'destroy')->whereNumber('whitelistedPlayer')->name('admin.whitelist.delete');
     Route::delete('/', 'destroyMulti')->name('admin.whitelist.delete-multi');

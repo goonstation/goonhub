@@ -29,8 +29,7 @@
         "Zignd.html-css-class-completion",
         "GitHub.vscode-github-actions",
         "shufo.vscode-blade-formatter",
-        "Gruntfuggly.todo-tree",
-        "${containerWorkspaceFolder}/.devcontainer/phpstan-4.0.5.vsix"
+        "Gruntfuggly.todo-tree"
       ],
       "settings": {
         "extensions.verifySignature": false

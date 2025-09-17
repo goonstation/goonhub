@@ -23,7 +23,7 @@
     </q-item-section>
     <q-item-section side>
       <q-item-label caption>Added {{ $formats.fromNow(testMerge.created_at) }}</q-item-label>
-      <q-item-label v-if="authors.added_by" caption>By {{ authors.added_by.name }}</q-item-label>
+      <q-item-label v-if="authors.added_by" caption>By {{ authors.added_by.alias || authors.added_by.player.ckey }}</q-item-label>
     </q-item-section>
   </q-item>
   <q-item class="q-py-md">

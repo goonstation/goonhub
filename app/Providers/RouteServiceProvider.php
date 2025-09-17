@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Middleware\CanAccessAdminRoutes;
+use App\Http\Middleware\ValidateTargetGameAdmin;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +37,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->domain(config('app.api_url'))
                 ->group(base_path('routes/api-open.php'));
 
-            Route::middleware(['sentry:api', 'auth:api', 'api'])
+            Route::middleware([
+                'sentry:api',
+                'auth:api',
+                'api',
+                ValidateTargetGameAdmin::class,
+            ])
                 ->domain(config('app.api_url'))
                 ->group(base_path('routes/api.php'));
 

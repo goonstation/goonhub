@@ -30,6 +30,11 @@ class ClearOldAudio implements ShouldQueue
     public function handle()
     {
         $filePathPrefix = storage_path('app/public/audio');
+
+        if (! is_dir($filePathPrefix)) {
+            return;
+        }
+
         $files = scandir($filePathPrefix);
         foreach ($files as $file) {
             $filePath = $filePathPrefix.'/'.$file;

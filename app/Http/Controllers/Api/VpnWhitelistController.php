@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\VpnWhitelist\StoreRequest;
 use App\Http\Resources\VpnWhitelistResource;
-use App\Models\GameAdmin;
 use App\Models\VpnWhitelist;
 use App\Rules\DateRange;
 use Illuminate\Http\Request;
@@ -44,7 +44,7 @@ class VpnWhitelistController extends Controller
         ]);
 
         return VpnWhitelistResource::collection(
-            VpnWhitelist::with(['gameAdmin:id,ckey,name'])
+            VpnWhitelist::with(['gameAdmin.player'])
                 ->indexFilterPaginate()
         );
     }
@@ -73,17 +73,10 @@ class VpnWhitelistController extends Controller
      *
      * Add a player into the whitelist. This will allow them to skip VPN checks.
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $data = $this->validate($request, [
-            'game_admin_ckey' => 'exists:game_admins,ckey',
-            'ckey' => 'required',
-        ]);
-
-        $gameAdmin = null;
-        if (isset($data['game_admin_ckey'])) {
-            $gameAdmin = GameAdmin::where('ckey', $data['game_admin_ckey'])->first();
-        }
+        $data = $request->validated();
+        $gameAdmin = $request->getGameAdmin();
 
         $entry = VpnWhitelist::firstOrCreate(
             ['ckey' => $data['ckey']],

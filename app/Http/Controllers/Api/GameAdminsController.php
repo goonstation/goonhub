@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameAdminResource;
-use App\Models\GameAdmin;
+use App\Models\PlayerAdmin;
 use App\Rules\DateRange;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -45,7 +45,7 @@ class GameAdminsController extends Controller
         ]);
 
         return GameAdminResource::collection(
-            GameAdmin::indexFilterPaginate()
+            PlayerAdmin::indexFilterPaginate()
         );
     }
 
@@ -62,7 +62,7 @@ class GameAdminsController extends Controller
             'rank' => 'required|exists:game_admin_ranks,id',
         ]);
 
-        $gameAdmin = new GameAdmin;
+        $gameAdmin = new PlayerAdmin;
         $gameAdmin->ckey = $data['ckey'];
         $gameAdmin->name = isset($data['name']) ? $data['name'] : null;
         $gameAdmin->rank_id = $data['rank'];
@@ -76,7 +76,7 @@ class GameAdminsController extends Controller
      *
      * Update an existing game admin
      */
-    public function update(Request $request, GameAdmin $gameAdmin)
+    public function update(Request $request, PlayerAdmin $gameAdmin)
     {
         $data = $request->validate([
             'ckey' => 'nullable|string|unique:game_admins,ckey',
@@ -103,7 +103,7 @@ class GameAdminsController extends Controller
      *
      * Delete an existing game admin
      */
-    public function destroy(GameAdmin $gameAdmin)
+    public function destroy(PlayerAdmin $gameAdmin)
     {
         $gameAdmin->delete();
 

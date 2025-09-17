@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
  * @property string $rank
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameAdmin> $admins
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerAdmin> $admins
  * @property-read int|null $admins_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
@@ -40,11 +41,8 @@ class GameAdminRank extends BaseModel
         'rank',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function admins()
+    public function admins(): HasMany
     {
-        return $this->hasMany(GameAdmin::class, 'rank_id');
+        return $this->hasMany(PlayerAdmin::class, 'rank_id');
     }
 }

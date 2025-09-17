@@ -43,7 +43,8 @@ class PlayerNoteFilter extends ModelFilter
     public function gameAdmin($val)
     {
         return $this->related('gameAdmin', function ($query) use ($val) {
-            return $query->where('ckey', 'ILIKE', '%'.$val.'%');
+            return $query->where('alias', 'ILIKE', '%'.$val.'%')
+                ->orWhere('player.ckey', 'ILIKE', '%'.$val.'%');
         });
     }
 

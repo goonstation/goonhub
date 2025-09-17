@@ -49,7 +49,7 @@
             <tbody>
               <tr>
                 <td><strong>Banning Admin</strong></td>
-                <td>{{ jobBan.game_admin.name || jobBan.game_admin.ckey }}</td>
+                <td>{{ jobBan.game_admin.alias || jobBan.game_admin.player?.ckey }}</td>
               </tr>
               <tr>
                 <td><strong>Server/s</strong></td>
@@ -82,7 +82,7 @@
                   <td><strong>Removed By</strong></td>
                   <td>
                     <template v-if="jobBan.deleted_by_game_admin">
-                      {{ jobBan.deleted_by_game_admin.name || jobBan.deleted_by_game_admin.ckey }}
+                      {{ jobBan.deleted_by_game_admin.alias || jobBan.deleted_by_game_admin.player?.ckey }}
                     </template>
                     <template v-else>Unknown</template>
                   </td>

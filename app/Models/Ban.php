@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasApiScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -18,17 +22,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property bool $requires_appeal
  * @property int|null $deleted_by
+ * @property int|null $server_group
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin|null $deletedByGameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $deletedByGameAdmin
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BanDetail> $details
  * @property-read int|null $details_count
- * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read \App\Models\GameRound|null $gameRound
  * @property-read \App\Models\GameServer|null $gameServer
- * @property-read mixed $active
- * @property-read mixed $duration
- * @property-read mixed $duration_human
+ * @property-read \App\Models\GameServerGroup|null $gameServerGroup
+ * @property-read bool $active
+ * @property-read int $duration
+ * @property-read string|null $duration_human
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\BanDetail> $inactiveDetails
  * @property-read int|null $inactive_details_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerNote> $notes
@@ -37,6 +43,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @method static \Database\Factories\BanFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban forApi()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban newModelQuery()
@@ -57,6 +64,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereRequiresAppeal($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereServerGroup($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereServerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Ban withTrashed(bool $withTrashed = true)
@@ -66,7 +74,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Ban extends BaseModel
 {
-    use HasFactory, SoftDeletes;
+    use HasApiScope;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $casts = [
         'expires_at' => 'datetime',
@@ -76,23 +86,25 @@ class Ban extends BaseModel
         'round_id',
         'game_admin_id',
         'server_id',
+        'server_group',
         'reason',
+        'requires_appeal',
         'expires_at',
     ];
 
     protected $appends = ['duration', 'duration_human', 'active'];
 
-    public function getDurationAttribute()
+    public function getDurationAttribute(): int
     {
         $now = Carbon::now();
         if (! $this->expires_at || $now->isAfter($this->expires_at)) {
             return 0;
         }
 
-        return $now->diffInSeconds($this->expires_at);
+        return (int) $now->diffInSeconds($this->expires_at);
     }
 
-    public function getDurationHumanAttribute()
+    public function getDurationHumanAttribute(): ?string
     {
         if (! $this->expires_at) {
             return null;
@@ -101,7 +113,7 @@ class Ban extends BaseModel
         return $this->expires_at->longAbsoluteDiffForHumans(parts: 99);
     }
 
-    public function getActiveAttribute()
+    public function getActiveAttribute(): bool
     {
         $now = Carbon::now();
         $isExpired = $this->expires_at ? $now->isAfter($this->expires_at) : false;
@@ -109,67 +121,48 @@ class Ban extends BaseModel
         return ! $isExpired && is_null($this->deleted_at);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameRound()
+    public function gameRound(): BelongsTo
     {
         return $this->belongsTo(GameRound::class, 'round_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameAdmin()
+    public function gameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'game_admin_id');
+        return $this->belongsTo(PlayerAdmin::class, 'game_admin_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameServer()
+    public function gameServer(): BelongsTo
     {
         return $this->belongsTo(GameServer::class, 'server_id', 'server_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function details()
+    public function gameServerGroup(): BelongsTo
+    {
+        return $this->belongsTo(GameServerGroup::class, 'server_group', 'id');
+    }
+
+    public function details(): HasMany
     {
         return $this->hasMany(BanDetail::class, 'ban_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function inactiveDetails()
+    public function inactiveDetails(): HasMany
     {
         return $this->hasMany(BanDetail::class, 'ban_id')->withTrashed()->whereNotNull('deleted_at');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function originalBanDetail()
+    public function originalBanDetail(): HasOne
     {
         return $this->hasOne(BanDetail::class, 'ban_id')->withTrashed()->oldest();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function notes()
+    public function notes(): HasMany
     {
         return $this->hasMany(PlayerNote::class, 'ban_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function deletedByGameAdmin()
+    public function deletedByGameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'deleted_by');
+        return $this->belongsTo(PlayerAdmin::class, 'deleted_by');
     }
 }

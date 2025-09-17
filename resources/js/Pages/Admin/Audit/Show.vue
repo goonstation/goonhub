@@ -17,7 +17,7 @@
           <tr>
             <td><strong>User</strong></td>
             <td>
-              <Link :href="$route('admin.users.edit', audit.user.id)">
+              <Link v-if="audit.user" :href="$route('admin.users.edit', audit.user.id)">
                 {{ audit.user.name }}
               </Link>
             </td>

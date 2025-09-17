@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\PlayerAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -42,8 +43,10 @@ class UsersController extends Controller
         $user = new User;
         $user->name = $data['name'];
         $user->email = $data['email'];
-        $user->game_admin_id = isset($data['game_admin_id']) ? $data['game_admin_id'] : null;
+        // $user->player_admin_id = isset($data['game_admin_id']) ? $data['game_admin_id'] : null;
         $user->password = Hash::make($data['password']);
+
+        // TODO: create or find a Player, associate it with the User and the PlayerAdmin
 
         // Only current admins can modify other admin status
         if ($request->user()->isAdmin()) {
@@ -82,7 +85,9 @@ class UsersController extends Controller
 
         $user->name = $data['name'];
         $user->email = $data['email'];
-        $user->game_admin_id = isset($data['game_admin_id']) ? $data['game_admin_id'] : null;
+        // $user->game_admin_id = isset($data['game_admin_id']) ? $data['game_admin_id'] : null;
+
+        // TODO: update the PlayerAdmin
 
         if (! empty($data['password'])) {
             $user->password = Hash::make($data['password']);

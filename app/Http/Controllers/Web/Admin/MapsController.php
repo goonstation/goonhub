@@ -55,7 +55,7 @@ class MapsController extends Controller
 
     public function index(IndexRequest $request)
     {
-        $maps = Map::with(['gameAdmin'])
+        $maps = Map::with(['gameAdmin.player'])
             ->indexFilterPaginate(sortBy: 'name', desc: false, perPage: 30);
 
         if ($this->wantsInertia($request)) {
@@ -82,7 +82,7 @@ class MapsController extends Controller
             'filePath' => 'required|string',
         ]);
 
-        $gameAdminId = $request->user()->game_admin_id;
+        $gameAdminId = $request->user()->gameAdmin->id;
 
         $finalPath = storage_path('app/'.$data['filePath'].$data['fileName']);
         $file = new File($finalPath);

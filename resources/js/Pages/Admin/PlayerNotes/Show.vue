@@ -27,7 +27,7 @@
               </tr>
               <tr>
                 <td><strong>Admin</strong></td>
-                <td>{{ note.game_admin?.name || note.game_admin?.ckey || '(None)' }}</td>
+                <td>{{ note.game_admin?.alias || note.game_admin?.player?.ckey || '(None)' }}</td>
               </tr>
               <tr>
                 <td><strong>Server</strong></td>

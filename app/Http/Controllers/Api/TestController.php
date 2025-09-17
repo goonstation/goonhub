@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\DiscordSettings;
 use App\Http\Controllers\Controller;
+use App\Models\DiscordSetting;
+use DiscordApi;
 use Illuminate\Http\Request;
-use Spatie\SchemaOrg\GamePlayMode;
-use Spatie\SchemaOrg\Schema;
 
 class TestController extends Controller
 {
@@ -14,35 +15,11 @@ class TestController extends Controller
      */
     public function index(Request $request)
     {
-        $author = Schema::organization()
-            ->name('Goonstation')
-            ->url('https://github.com/goonstation/goonstation');
-
-        $playMode = Schema::gamePlayMode()
-            ->name(GamePlayMode::MultiPlayer);
-
-        $numberOfPlayers = Schema::quantitativeValue()
-            ->value('Number')
-            ->minValue(0)
-            ->maxValue(200);
-
-        $language = Schema::language()
-            ->name('English')
-            ->alternateName('en');
-
-        $game = Schema::videoGame()
-            ->name('Goonstation')
-            ->description('')
-            ->author($author)
-            ->genre([''])
-            ->gamePlatform(['PC game'])
-            ->playMode($playMode)
-            ->numberOfPlayers($numberOfPlayers)
-            ->downloadUrl('https://www.byond.com/download/')
-            ->inLanguage($language);
+        $guildId = DiscordSetting::where('key', DiscordSettings::TOMATO_GUILD_ID->value)->first()?->value;
+        $guild = DiscordApi::guild($guildId);
 
         return response()->json([
-            'message' => $game,
+            'message' => $guild->members()->json(),
         ]);
     }
 }

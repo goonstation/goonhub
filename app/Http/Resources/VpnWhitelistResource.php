@@ -22,10 +22,7 @@ class VpnWhitelistResource extends JsonResource
             'ckey' => $this->ckey,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            /** @var array{id: int, ckey: string, name: string} */
-            'game_admin' => $this->whenLoaded('gameAdmin', function () {
-                return $this->gameAdmin()->select('id', 'ckey', 'name')->first();
-            }),
+            'game_admin' => new PlayerAdminResource($this->whenLoaded('gameAdmin')),
         ];
     }
 }

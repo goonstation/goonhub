@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Jobs\AddTomatoSubscriberToWhitelist;
 use App\Jobs\GrantDiscordRole;
 use App\Models\LinkedByondUser;
 use App\Models\LinkedDiscordUser;
@@ -15,6 +16,7 @@ use Laravel\Socialite\Facades\Socialite;
 trait ManagesUsers
 {
     use ManagesPlayers;
+    use ManagesWhitelist;
 
     private function handleDiscordCallback(string $redirectUrl)
     {
@@ -30,6 +32,7 @@ trait ManagesUsers
             $query->where('discord_id', $discordId);
         })->first();
 
+        $registered = false;
         if (! $user) {
             // Registering
 
@@ -48,6 +51,7 @@ trait ManagesUsers
                 'emailless' => $emailLess,
             ]);
             $this->linkToDiscord($user, $discordId, $discordName, $discordEmail);
+            $registered = true;
         }
 
         if (! $user->player) {
@@ -56,6 +60,10 @@ trait ManagesUsers
             $player = $this->createPlayer($discordName, 'discord');
             $user->player_id = $player->id;
             $user->save();
+        }
+
+        if ($registered) {
+            AddTomatoSubscriberToWhitelist::dispatchSync($discordId, $user->player);
         }
 
         return $user;

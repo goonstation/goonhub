@@ -2,15 +2,14 @@
 
 namespace App\Traits;
 
-use App\Http\Requests\BanRequest;
+use App\Http\Requests\Bans\StoreRequest;
 use App\Http\Resources\BanResource;
 use App\Models\Ban;
 use App\Models\BanDetail;
-use App\Models\GameAdmin;
 use App\Models\Player;
 use App\Models\PlayerNote;
+use App\Services\CommonRequest;
 use Carbon\CarbonInterval;
-use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -54,42 +53,51 @@ trait ManagesBans
     /**
      * Add a ban
      */
-    private function addBan(BanRequest $request)
+    private function addBan(StoreRequest $request)
     {
+        $data = collect($request->validated());
+
         $expiresAt = null;
-        if (isset($request['duration'])) {
-            $duration = (int) $request['duration'];
+        if ($data->has('duration')) {
+            $duration = (int) $data['duration'];
             if ($duration > 0) {
                 $expiresAt = Carbon::now()->addSeconds($duration);
             }
         }
 
-        $gameAdmin = GameAdmin::where('ckey', ckey($request['game_admin_ckey']))->first();
-
         $player = null;
-        $ckey = isset($request['ckey']) ? ckey($request['ckey']) : null;
+        $ckey = $data->has('ckey') ? ckey($data['ckey']) : null;
         if ($ckey) {
             $player = Player::where('ckey', $ckey)->first();
         }
 
-        $serverId = isset($request['server_id']) ? $request['server_id'] : null;
-        if ($serverId === 'all') {
-            $serverId = null;
+        $gameAdmin = $request->getGameAdmin();
+        $gameServer = $request->getGameServer();
+        $gameServerGroup = $request->getGameServerGroup();
+
+        if (! $gameServer) {
+            // If the ban isn't targeting a specific server, the user wants it to apply to all servers
+            // So we get the originating server group and apply it to the ban
+            $gameServerGroup = app(CommonRequest::class)->fromServerGroup();
         }
 
         $ban = new Ban;
-        $ban->round_id = isset($request['round_id']) ? $request['round_id'] : null;
-        $ban->server_id = $serverId;
-        $ban->reason = $request['reason'];
+        $ban->round_id = $data->has('round_id') ? $data['round_id'] : null;
+        $ban->reason = $data['reason'];
         $ban->expires_at = $expiresAt;
-        $ban->requires_appeal = isset($request['requires_appeal']) ? (bool) $request['requires_appeal'] : false;
+        $ban->requires_appeal = $data->has('requires_appeal') ? (bool) $data['requires_appeal'] : false;
         $ban->gameAdmin()->associate($gameAdmin);
+        if ($gameServer) {
+            $ban->gameServer()->associate($gameServer);
+        } elseif ($gameServerGroup) {
+            $ban->gameServerGroup()->associate($gameServerGroup);
+        }
         $ban->save();
 
         $banDetail = new BanDetail;
         $banDetail->ckey = $ckey;
-        $banDetail->comp_id = isset($request['comp_id']) ? $request['comp_id'] : null;
-        $banDetail->ip = isset($request['ip']) ? $request['ip'] : null;
+        $banDetail->comp_id = $data->has('comp_id') ? $data['comp_id'] : null;
+        $banDetail->ip = $data->has('ip') ? $request['ip'] : null;
         $ban->details()->save($banDetail);
 
         $note = new PlayerNote;
@@ -98,17 +106,21 @@ trait ManagesBans
         } else {
             $note->ckey = $ckey;
         }
-        $note->server_id = $serverId;
-        $note->round_id = isset($request['round_id']) ? $request['round_id'] : null;
+        $note->round_id = $data->has('round_id') ? $data['round_id'] : null;
         $note->note = sprintf(
             'Banned from %s %s. Reason: %s',
-            is_null($serverId) ? 'all servers' : $serverId,
-            isset($request['duration']) && (int) $request['duration'] > 0
-                ? 'for '.CarbonInterval::seconds($request['duration'])->cascade()->forHumans()
+            is_null($gameServer) ? 'all servers' : $gameServer->server_id,
+            $data->has('duration') && (int) $data['duration'] > 0
+                ? 'for '.CarbonInterval::seconds($data['duration'])->cascade()->forHumans()
                 : 'permanently',
-            $request['reason']
+            $data['reason']
         );
         $note->gameAdmin()->associate($gameAdmin);
+        if ($gameServer) {
+            $note->gameServer()->associate($gameServer);
+        } elseif ($gameServerGroup) {
+            $note->gameServerGroup()->associate($gameServerGroup);
+        }
         $note->save();
 
         return new BanResource($ban);
@@ -117,53 +129,64 @@ trait ManagesBans
     /**
      * Update an existing ban
      */
-    private function updateBan(BanRequest $request, Ban $ban)
+    private function updateBan(StoreRequest $request, Ban $ban)
     {
         if ($ban->deleted_at) {
-            throw new Exception('This ban has already been removed.');
+            throw new \Exception('This ban has already been removed.');
         }
         if ($ban->expires_at && $ban->expires_at->lte(Carbon::now())) {
-            throw new Exception('This ban has already expired.');
+            throw new \Exception('This ban has already expired.');
         }
 
-        $gameAdmin = GameAdmin::where('ckey', ckey($request['game_admin_ckey']))->first();
+        $data = collect($request->validated());
+
+        $gameAdmin = $request->getGameAdmin();
+        $gameServerGroup = $request->getGameServerGroup();
+
         $player = null;
-        $ckey = isset($request['ckey']) ? ckey($request['ckey']) : null;
+        $ckey = $data->has('ckey') ? ckey($data['ckey']) : null;
         if ($ckey) {
             $player = Player::where('ckey', $ckey)->first();
         }
 
-        $newBanDetails = $request->only(['server_id', 'reason', 'requires_appeal']);
+        $newBan = $data->only(['reason', 'requires_appeal']);
 
         // Ensure the server ID is nulled out if we're being told about it, and it's falsey
-        if (isset($request['server_id'])) {
-            $newBanDetails['server_id'] = $request['server_id'] ? $request['server_id'] : null;
-            if ($newBanDetails['server_id'] === 'all') {
-                $newBanDetails['server_id'] = null;
-            }
+        if ($request->has('server_id')) {
+            $newBan['server_id'] = $data['server_id'] ? $data['server_id'] : null;
         }
 
-        if (isset($request['duration'])) {
+        // If the ban isn't targeting a specific server, the user wants it to apply to all servers
+        // So we get the originating server group and apply it to the ban
+        if ($newBan->has('server_id') && is_null($newBan['server_id'])) {
+            $gameServerGroup = app(CommonRequest::class)->fromServerGroup();
+
+            $newBan['server_group'] = $gameServerGroup->id;
+        } else {
+            $newBan['server_group'] = null;
+        }
+
+        if ($data->has('duration')) {
             // A falsey duration means it's essentially "unset", and thus now a permanent ban
             // Otherwise, the admin is altering how long the ban lasts
-            if (! $request['duration']) {
-                $newBanDetails['expires_at'] = null;
+            if (! $data['duration']) {
+                $newBan['expires_at'] = null;
             } else {
                 // Ban is temporary, the new duration shall apply from right now
                 // This is so we can add or reduce the duration if necessary
-                $newExpiresAt = Carbon::now()->addSeconds($request['duration']);
+                $newExpiresAt = Carbon::now()->addSeconds($data['duration']);
 
                 // Bans can't expire in the past
                 if ($newExpiresAt->lte(Carbon::now())) {
-                    throw new Exception('The ban cannot expire in the past, please increase the duration.');
+                    throw new \Exception('The ban cannot expire in the past, please increase the duration.');
                 }
 
-                $newBanDetails['expires_at'] = $newExpiresAt->toDateTimeString();
+                $newBan['expires_at'] = $newExpiresAt->toDateTimeString();
             }
         }
 
-        $ban->update($newBanDetails);
-        $ban->originalBanDetail->update($request->only(['ckey', 'comp_id', 'ip']));
+        $ban->update($newBan->toArray());
+        $ban->originalBanDetail->update($data->only(['ckey', 'comp_id', 'ip'])->toArray());
 
         $note = new PlayerNote;
         if ($player) {
@@ -171,7 +194,6 @@ trait ManagesBans
         } else {
             $note->ckey = $ckey;
         }
-        $note->server_id = $ban->server_id;
         $note->round_id = $ban->round_id;
         $note->note = sprintf(
             'Edited ban. Server: %s. Duration: %s. Reason: %s. Computer ID: %s. IP: %s',
@@ -179,11 +201,16 @@ trait ManagesBans
             $ban->expires_at
                 ? $ban->expires_at->longAbsoluteDiffForHumans()
                 : 'permanent',
-            $request['reason'],
+            $data['reason'],
             $ban->originalBanDetail->comp_id,
             $ban->originalBanDetail->ip
         );
         $note->gameAdmin()->associate($gameAdmin);
+        if ($ban->gameServer) {
+            $note->gameServer()->associate($ban->gameServer);
+        } elseif ($ban->gameServerGroup) {
+            $note->gameServerGroup()->associate($ban->gameServerGroup);
+        }
         $note->save();
 
         return new BanResource($ban);

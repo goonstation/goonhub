@@ -6,6 +6,7 @@ use App\Models\Team;
 use App\Models\User;
 use App\Policies\TeamPolicy;
 use App\Policies\TestPolicy;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,8 +26,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::before(function (User $user) {
-            if ($user->isAdmin()) {
+        Gate::before(function (AuthUser $user) {
+            if ($user instanceof User && $user->isAdmin()) {
                 // Admins can do anything
                 return true;
             }
@@ -36,8 +37,8 @@ class AuthServiceProvider extends ServiceProvider
             return true;
         });
 
-        Gate::define('viewPulse', function (User $user) {
-            return $user->isGameAdmin();
+        Gate::define('viewPulse', function (AuthUser $user) {
+            return $user instanceof User && $user->isGameAdmin();
         });
 
         Gate::define('view-test', [TestPolicy::class, 'view']);

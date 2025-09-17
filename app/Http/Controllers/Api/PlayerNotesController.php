@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\PlayerNotes\StoreRequest;
 use App\Http\Resources\PlayerNoteResource;
 use App\Models\Player;
 use App\Models\PlayerNote;
 use App\Rules\DateRange;
 use App\Traits\ManagesPlayerNotes;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -53,7 +53,7 @@ class PlayerNotesController extends Controller
         ]);
 
         return PlayerNoteResource::collection(
-            PlayerNote::with(['player', 'gameAdmin'])
+            PlayerNote::with(['player', 'gameAdmin.player'])
                 ->indexFilterPaginate()
         );
     }
@@ -63,7 +63,7 @@ class PlayerNotesController extends Controller
      *
      * Add a new player note
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         return $this->addNote($request);
     }
@@ -73,7 +73,7 @@ class PlayerNotesController extends Controller
      *
      * Update an existing player note
      */
-    public function update(Request $request, PlayerNote $note)
+    public function update(StoreRequest $request, PlayerNote $note)
     {
         return $this->updateNote($request, $note);
     }

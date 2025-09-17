@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       fields: {
-        game_admin_id: this.$page.props.auth.user.game_admin_id,
+        game_admin_id: this.$page.props.auth.user.game_admin.id,
         ckey: this.note?.player?.ckey || this.note.ckey,
         server_id: this.note.server_id || 'all',
         note: this.note.note,

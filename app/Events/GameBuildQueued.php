@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use App\Models\GameAdmin;
 use App\Models\GameServer;
+use App\Models\PlayerAdmin;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -21,7 +21,7 @@ class GameBuildQueued implements ShouldBroadcast
      * Create a new event instance.
      */
     public function __construct(
-        public GameAdmin $admin,
+        public PlayerAdmin $admin,
         public GameServer $server,
         public bool $mapSwitch,
         public Carbon $startedAt

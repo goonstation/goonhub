@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -17,12 +18,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $orchestrator
+ * @property int|null $group_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\PlayersOnline|null $currentPlayersOnline
  * @property-read \App\Models\GameRound|null $currentRound
  * @property-read \App\Models\GameBuildSetting|null $gameBuildSetting
  * @property-read mixed $byond_link
+ * @property-read \App\Models\GameServerGroup|null $group
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
@@ -59,6 +62,11 @@ class GameServer extends BaseModel
     public function getByondLinkAttribute()
     {
         return 'byond://'.$this->address.':'.$this->port;
+    }
+
+    public function group(): BelongsTo
+    {
+        return $this->belongsTo(GameServerGroup::class, 'group_id');
     }
 
     public function gameBuildSetting(): HasOne

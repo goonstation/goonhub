@@ -14,7 +14,7 @@ class GameServersController extends Controller
     public function index(IndexRequest $request)
     {
         $gameServers = GameServer::query();
-        if (! Auth::user()?->game_admin_id) {
+        if (! Auth::user()?->isGameAdmin()) {
             $gameServers->where('invisible', false);
         }
 

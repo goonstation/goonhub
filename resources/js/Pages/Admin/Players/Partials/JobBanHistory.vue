@@ -17,7 +17,7 @@
     <template v-slot:body-cell-admin_ckey="props">
       <q-td :props="props">
         <Link :href="$route('admin.game-admins.show', props.row.game_admin.id)">
-          {{ props.row.game_admin.name || props.row.game_admin.ckey }}
+          {{ props.row.game_admin.alias || props.row.game_admin.player?.ckey }}
         </Link>
       </q-td>
     </template>

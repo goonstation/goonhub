@@ -67,7 +67,7 @@ export default {
     return {
       opened: true,
       fields: {
-        game_admin_id: this.$page.props.auth.user.game_admin_id,
+        game_admin_id: this.$page.props.auth.user.game_admin.id,
         server_ids: [],
         pr_id: null,
         commit: null,

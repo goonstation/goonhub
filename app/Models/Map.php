@@ -26,7 +26,7 @@ use Illuminate\Notifications\Notifiable;
  * @property bool $admin_only
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read \App\Models\GameRound|null $latestGameRound
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Map> $layers
  * @property-read int|null $layers_count
@@ -79,7 +79,7 @@ class Map extends BaseModel
 
     public function gameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'last_built_by');
+        return $this->belongsTo(PlayerAdmin::class, 'last_built_by');
     }
 
     public function layers(): HasManyThrough

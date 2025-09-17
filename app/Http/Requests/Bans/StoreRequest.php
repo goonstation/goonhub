@@ -1,11 +1,16 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Bans;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\FormRequest;
+use App\Http\Requests\Traits\HasGameAdmin;
+use App\Http\Requests\Traits\HasGameServer;
 
-class BanRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
+    use HasGameAdmin;
+    use HasGameServer;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -24,10 +29,7 @@ class BanRequest extends FormRequest
     public function rules()
     {
         return [
-            'game_admin_id' => 'required_without:game_admin_ckey|exists:game_admins,id',
-            'game_admin_ckey' => 'required_without:game_admin_id|exists:game_admins,ckey',
             'round_id' => 'nullable|integer|exists:game_rounds,id',
-            'server_id' => 'nullable|string',
             'ckey' => 'required_without_all:comp_id,ip|nullable',
             'comp_id' => 'required_without_all:ckey,ip|nullable',
             'ip' => 'required_without_all:ckey,comp_id|nullable|ip',

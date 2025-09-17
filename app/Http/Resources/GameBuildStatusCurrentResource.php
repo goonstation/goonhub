@@ -2,9 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\GameAdmin;
 use App\Models\GameBuild;
 use App\Models\GameServer;
+use App\Models\PlayerAdmin;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GameBuildStatusCurrentResource extends JsonResource
@@ -12,7 +12,7 @@ class GameBuildStatusCurrentResource extends JsonResource
     public function toArray($request)
     {
         return [
-            /** @var GameAdmin */
+            /** @var PlayerAdmin */
             'admin' => $this['admin'],
             /** @var GameServer */
             'server' => $this['server'],

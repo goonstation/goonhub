@@ -138,7 +138,7 @@ class GameBuildTestMergesController extends Controller
     public function store(GameBuildTestMergeCreateRequest $request)
     {
         $request->merge([
-            'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+            'game_admin_id' => $request->user()->gameAdmin->id,
         ]);
 
         try {

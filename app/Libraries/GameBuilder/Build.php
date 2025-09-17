@@ -9,13 +9,13 @@ use App\Exceptions\ByondOutageException;
 use App\Facades\GameBridge;
 use App\Helpers\QueryByond;
 use App\Libraries\DiscordBot;
-use App\Models\GameAdmin;
 use App\Models\GameBuild;
 use App\Models\GameBuildLog;
 use App\Models\GameBuildSecret;
 use App\Models\GameBuildSetting;
 use App\Models\GameBuildTestMerge;
 use App\Models\GameServer;
+use App\Models\PlayerAdmin;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -32,7 +32,7 @@ class Build
 {
     private GameServer $server;
 
-    private GameAdmin $admin;
+    private PlayerAdmin $admin;
 
     private Repo $repo;
 
@@ -90,7 +90,7 @@ class Build
 
     private $logFlushBatchTime = 1;
 
-    public function __construct(GameServer $server, GameAdmin $admin, bool $mapSwitch = false)
+    public function __construct(GameServer $server, PlayerAdmin $admin, bool $mapSwitch = false)
     {
         $this->server = $server;
         $this->admin = $admin;
@@ -896,8 +896,8 @@ class Build
             $this->model->cancelled = true;
             $this->model->cancelled_by = $cancelled['adminId'];
             $this->model->cancelled_reason = $cancelled['reason'];
-            $cancelledByAdmin = GameAdmin::firstWhere('id', $cancelled['adminId']);
-            $cancelledByAdmin = $cancelledByAdmin->name ?: $cancelledByAdmin->ckey;
+            $cancelledByAdmin = PlayerAdmin::firstWhere('id', $cancelled['adminId']);
+            $cancelledByAdmin = $cancelledByAdmin->alias ?: $cancelledByAdmin->player->ckey;
 
             $logMessage = "Build cancelled by $cancelledByAdmin";
             if ($cancelled['reason']) {

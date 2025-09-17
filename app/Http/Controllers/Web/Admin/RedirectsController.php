@@ -12,8 +12,8 @@ class RedirectsController extends Controller
     public function index(Request $request)
     {
         $redirects = ModelsRedirect::with([
-            'createdByUser.gameAdmin',
-            'updatedByUser.gameAdmin',
+            'createdByUser.gameAdmin.player',
+            'updatedByUser.gameAdmin.player',
         ])->indexFilterPaginate(perPage: 30);
 
         if ($this->wantsInertia($request)) {

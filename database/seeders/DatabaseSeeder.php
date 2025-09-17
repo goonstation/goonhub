@@ -17,6 +17,8 @@ class DatabaseSeeder extends SeederOnce
     {
         $production = [
             DiscordSettingSeeder::class,
+            TomatoSeeder::class,
+            GameServerGroupSeeder::class,
             GameServerSeeder::class,
             MapSeeder::class,
             GameAdminRankSeeder::class,

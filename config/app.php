@@ -209,6 +209,7 @@ return [
         App\Providers\OpenGraphImageProvider::class,
         App\Providers\GameBridgeServiceProvider::class,
         App\Providers\DiscordApiServiceProvider::class,
+        App\Providers\CommonRequestServiceProvider::class,
     ],
 
     /*

@@ -54,5 +54,6 @@ return [
 
     'ui' => [
         'logo' => '/favicon-32x32.png',
+        'theme' => 'dark',
     ],
 ];

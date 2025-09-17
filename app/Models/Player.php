@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use App\Models\Events\EventDeath;
+use App\Services\CommonRequest;
 use App\Traits\HasOpenGraphData;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -19,17 +22,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\PlayerBypassCap|null $bypassCap
+ * @property-read mixed $can_bypass_cap
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerConnection> $connections
  * @property-read int|null $connections_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Events\EventDeath> $deaths
  * @property-read int|null $deaths_count
  * @property-read \App\Models\PlayerConnection|null $firstConnection
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read mixed $has_imported_medals
  * @property-read \App\Models\PlayerHos|null $hos
  * @property-read \App\Models\PlayerMedalsImported|null $importedMedals
  * @property-read mixed $is_admin
  * @property-read mixed $is_hos
  * @property-read mixed $is_mentor
+ * @property-read mixed $is_whitelisted
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\JobBan> $jobBans
  * @property-read int|null $job_bans_count
  * @property-read \App\Models\PlayerConnection|null $latestConnection
@@ -87,50 +93,37 @@ class Player extends BaseModel
         'key',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function user()
+    public function user(): HasOne
     {
         return $this->hasOne(User::class, 'player_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function connections()
+    public function gameAdmin(): HasOne
+    {
+        return $this->hasOne(PlayerAdmin::class, 'player_id');
+    }
+
+    public function connections(): HasMany
     {
         return $this->hasMany(PlayerConnection::class, 'player_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function latestConnection()
+    public function latestConnection(): HasOne
     {
         return $this->hasOne(PlayerConnection::class, 'player_id')->latestOfMany();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function firstConnection()
+    public function firstConnection(): HasOne
     {
         return $this->hasOne(PlayerConnection::class, 'player_id')->oldestOfMany();
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function participations()
+    public function participations(): HasMany
     {
         return $this->hasMany(PlayerParticipation::class, 'player_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function participationsRp()
+    public function participationsRp(): HasMany
     {
         return $this->hasMany(PlayerParticipation::class, 'player_id')
             ->where(function ($q) {
@@ -139,103 +132,57 @@ class Player extends BaseModel
             });
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function playtime()
+    public function playtime(): HasMany
     {
         return $this->hasMany(PlayerPlaytime::class, 'player_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function deaths()
+    public function deaths(): HasMany
     {
         return $this->hasMany(EventDeath::class, 'player_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function vpnWhitelist()
+    public function vpnWhitelist(): HasOne
     {
         return $this->hasOne(VpnWhitelist::class, 'ckey', 'ckey');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function jobBans()
+    public function jobBans(): HasMany
     {
         return $this->hasMany(JobBan::class, 'ckey', 'ckey');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function notes()
+    public function notes(): HasMany
     {
         return $this->hasMany(PlayerNote::class, 'player_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    // public function medals()
-    // {
-    //     return $this->hasManyThrough(
-    //         Medal::class,
-    //         PlayerMedal::class,
-    //         'player_id',
-    //         'id'
-    //     );
-    // }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function medals()
+    public function medals(): HasMany
     {
         return $this->hasMany(PlayerMedal::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function importedMedals()
+    public function importedMedals(): HasOne
     {
         return $this->hasOne(PlayerMedalsImported::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function mentor()
+    public function mentor(): HasOne
     {
         return $this->hasOne(PlayerMentor::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function hos()
+    public function hos(): HasOne
     {
         return $this->hasOne(PlayerHos::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function whitelist()
+    public function whitelist(): HasOne
     {
         return $this->hasOne(PlayerWhitelist::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function bypassCap()
+    public function bypassCap(): HasOne
     {
         return $this->hasOne(PlayerBypassCap::class);
     }
@@ -244,7 +191,7 @@ class Player extends BaseModel
     protected function isAdmin(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->user?->game_admin_id !== null,
+            get: fn () => $this->gameAdmin()->exists(),
         );
     }
 
@@ -272,44 +219,37 @@ class Player extends BaseModel
         );
     }
 
-    public function isWhitelisted(string $serverId): bool
+    /** @return Attribute<bool, never> */
+    protected function isWhitelisted(): Attribute
     {
-        /** @var \App\Models\PlayerWhitelist|null $whitelist */
-        $whitelist = $this->whitelist()->first();
-        if (! $whitelist) {
-            return false;
-        }
-
-        $servers = $whitelist->servers()->pluck('game_servers.server_id');
-
-        if ($servers->isEmpty() || ($serverId && $servers->contains($serverId))) {
-            return true;
-        }
-
-        return false;
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                return $this->isWhitelistedOnServer(app(CommonRequest::class)->fromServerId());
+            }
+        );
     }
 
-    public function canBypassCap(string $serverId): bool
+    /** @return Attribute<bool, never> */
+    protected function canBypassCap(): Attribute
     {
-        /** @var \App\Models\PlayerBypassCap|null $bypassCap */
-        $bypassCap = $this->bypassCap()->first();
-        if (! $bypassCap) {
-            return false;
-        }
-
-        $servers = $bypassCap->servers()->pluck('game_servers.server_id');
-
-        if ($servers->isEmpty() || ($serverId && $servers->contains($serverId))) {
-            return true;
-        }
-
-        return false;
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                return $this->canBypassCapOnServer(app(CommonRequest::class)->fromServerId());
+            }
+        );
     }
 
-    /**
-     * @return \App\Models\Player
-     */
-    public static function getOpenGraphData(int $id)
+    public function isWhitelistedOnServer(string $serverId): bool
+    {
+        return $this->whitelist?->isWhitelisted($serverId) ?? false;
+    }
+
+    public function canBypassCapOnServer(string $serverId): bool
+    {
+        return $this->bypassCap?->canBypassCap($serverId) ?? false;
+    }
+
+    public static function getOpenGraphData(int $id): Player
     {
         $player = self::with([
             'playtime',

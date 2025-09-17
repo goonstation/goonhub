@@ -30,8 +30,8 @@ class GameBuildFilter extends ModelFilter
     public function startedBy($val)
     {
         return $this->related('startedBy', function ($query) use ($val) {
-            return $query->where('name', 'ILIKE', '%'.$val.'%')
-                ->orWhere('ckey', 'ILIKE', '%'.$val.'%');
+            return $query->where('alias', 'ILIKE', '%'.$val.'%')
+                ->orWhere('player.ckey', 'ILIKE', '%'.$val.'%');
         });
     }
 
@@ -82,8 +82,8 @@ class GameBuildFilter extends ModelFilter
     public function cancelledBy($val)
     {
         return $this->related('cancelledBy', function ($query) use ($val) {
-            return $query->where('name', 'ILIKE', '%'.$val.'%')
-                ->orWhere('ckey', 'ILIKE', '%'.$val.'%');
+            return $query->where('alias', 'ILIKE', '%'.$val.'%')
+                ->orWhere('player.ckey', 'ILIKE', '%'.$val.'%');
         });
     }
 

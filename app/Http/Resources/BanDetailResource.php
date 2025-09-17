@@ -26,10 +26,11 @@ class BanDetailResource extends JsonResource
             'ckey' => $this->ckey,
             'comp_id' => $this->comp_id,
             'ip' => $this->ip,
+            'player_id' => $this->player_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
-            /** @var BanDetailResource */
+            /** @var BanDetailResource|null */
             'original_ban_detail' => $this->when(! is_null($this->originalBanDetail), $this->originalBanDetail),
         ];
     }

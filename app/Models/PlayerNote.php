@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasApiScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -15,14 +17,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property string|null $legacy_data
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int|null $server_group
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
- * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read \App\Models\GameRound|null $gameRound
  * @property-read \App\Models\GameServer|null $gameServer
+ * @property-read \App\Models\GameServerGroup|null $gameServerGroup
  * @property-read \App\Models\Player|null $player
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote filter(array $input = [], $filter = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote forApi()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote newModelQuery()
@@ -41,6 +46,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereNote($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote wherePlayerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereServerGroup($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereServerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerNote whereUpdatedAt($value)
  *
@@ -48,45 +54,49 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class PlayerNote extends BaseModel
 {
+    use HasApiScope;
     use HasFactory;
 
     protected $fillable = [
         'game_admin_id',
         'player_id',
         'server_id',
+        'server_group',
         'ckey',
         'note',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameRound()
+    public function gameRound(): BelongsTo
     {
         return $this->belongsTo(GameRound::class, 'round_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function player()
+    public function player(): BelongsTo
     {
         return $this->belongsTo(Player::class, 'player_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameAdmin()
+    public function gameAdmin(): BelongsTo
     {
-        return $this->belongsTo(GameAdmin::class, 'game_admin_id');
+        return $this->belongsTo(PlayerAdmin::class, 'game_admin_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameServer()
+    public function gameServer(): BelongsTo
     {
         return $this->belongsTo(GameServer::class, 'server_id', 'server_id');
+    }
+
+    public function gameServerGroup(): BelongsTo
+    {
+        return $this->belongsTo(GameServerGroup::class, 'server_group', 'id');
+    }
+
+    public function allServers()
+    {
+        return GameServer::query()
+            ->where(function ($query) {
+                $query->whereIn('id', $this->gameServer()->select('game_servers.id'))
+                    ->orWhereIn('group_id', $this->gameServerGroup()->select('game_server_groups.id'));
+            });
     }
 }

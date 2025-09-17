@@ -13,6 +13,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property int $id
@@ -29,20 +30,23 @@ use Laravel\Sanctum\HasApiTokens;
  * @property string|null $two_factor_recovery_codes
  * @property string|null $two_factor_confirmed_at
  * @property bool $is_admin
- * @property int|null $game_admin_id
  * @property int|null $player_id
  * @property bool $passwordless
  * @property bool $emailless
  * @property-read \App\Models\Team|null $currentTeam
- * @property-read \App\Models\GameAdmin|null $gameAdmin
+ * @property-read \App\Models\PlayerAdmin|null $gameAdmin
  * @property-read \App\Models\LinkedByondUser|null $linkedByond
  * @property-read \App\Models\LinkedDiscordUser|null $linkedDiscord
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Team> $ownedTeams
  * @property-read int|null $owned_teams_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
+ * @property-read int|null $permissions_count
  * @property-read \App\Models\Player|null $player
  * @property-read string $profile_photo_url
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Role> $roles
+ * @property-read int|null $roles_count
  * @property-read \App\Models\Membership|null $membership
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Team> $teams
  * @property-read int|null $teams_count
@@ -56,7 +60,9 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User newQuery()
  * @method static \Illuminate\Pagination\LengthAwarePaginator paginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User permission($permissions, $without = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User role($roles, $guard = null, $without = false)
  * @method static \Illuminate\Pagination\LengthAwarePaginator simplePaginateFilter($query, $perPage = null, $columns = [], $pageName = 'page', $page = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereBeginsWith($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereCreatedAt($value)
@@ -65,7 +71,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEmailless($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereEndsWith($column, $value, $boolean = 'and')
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereGameAdminId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereLike($column, $value, $boolean = 'and')
@@ -79,6 +84,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereTwoFactorRecoveryCodes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereTwoFactorSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User withoutPermission($permissions)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User withoutRole($roles, $guard = null)
  *
  * @mixin \Eloquent
  */
@@ -88,6 +95,7 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens;
     use HasFactory;
     use HasProfilePhoto;
+    use HasRoles;
     use HasTeams;
     use IndexFilterScope;
     use Notifiable;
@@ -147,7 +155,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function gameAdmin(): HasOne
     {
-        return $this->hasOne(GameAdmin::class, 'id', 'game_admin_id');
+        return $this->hasOne(PlayerAdmin::class, 'player_id', 'player_id');
     }
 
     public function player(): HasOne
@@ -172,6 +180,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isGameAdmin()
     {
-        return (bool) $this->game_admin_id;
+        return (bool) $this->gameAdmin;
     }
 }

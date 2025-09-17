@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PlayerNotes\StoreRequest;
 use App\Models\PlayerNote;
 use App\Traits\ManagesPlayerNotes;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class PlayerNotesController extends Controller
     {
         $playerNotes = PlayerNote::with([
             'player:id,ckey',
-            'gameAdmin:id,name,ckey',
+            'gameAdmin.player',
             'gameServer:id,server_id,short_name',
         ])->indexFilterPaginate(perPage: 30);
 
@@ -35,16 +36,13 @@ class PlayerNotesController extends Controller
         return Inertia::render('Admin/PlayerNotes/Create');
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         $request->merge([
-            'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+            'game_admin_id' => $request->user()->gameAdmin->id,
         ]);
-        if ($request->input('server_id') === 'all') {
-            $request->merge(['server_id' => null]);
-        }
         $note = $this->addNote($request);
-        $note->load(['gameAdmin', 'gameServer']);
+        $note->load(['gameAdmin.player', 'gameServer']);
 
         if ($request->has('return_note')) {
             return $note;
@@ -62,15 +60,12 @@ class PlayerNotesController extends Controller
         ]);
     }
 
-    public function update(Request $request, PlayerNote $note)
+    public function update(StoreRequest $request, PlayerNote $note)
     {
         try {
             $request = $request->merge([
-                'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+                'game_admin_id' => $request->user()->gameAdmin->id,
             ]);
-            if ($request->input('server_id') === 'all') {
-                $request->merge(['server_id' => null]);
-            }
             $this->updateNote($request, $note);
         } catch (\Exception $e) {
             return Redirect::back()->withErrors(['error' => $e->getMessage()]);
@@ -83,7 +78,7 @@ class PlayerNotesController extends Controller
     {
         $note = PlayerNote::with([
             'player:id,ckey',
-            'gameAdmin:id,name,ckey',
+            'gameAdmin.player',
             'gameServer:id,server_id,short_name',
         ])
             ->findOrFail($note);

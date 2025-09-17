@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Web\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameBuildCancelRequest;
 use App\Http\Requests\GameBuildCreateRequest;
-use App\Models\GameAdmin;
 use App\Models\GameBuild;
+use App\Models\PlayerAdmin;
 use App\Traits\ManagesGameBuilds;
 use Illuminate\Contracts\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
@@ -73,8 +73,8 @@ class GameBuildsController extends Controller
     {
         $build->load([
             'gameServer:id,server_id,short_name,name',
-            'startedBy:id,name,ckey',
-            'cancelledBy:id,name,ckey',
+            'startedBy.player',
+            'cancelledBy.player',
             'map:map_id,name',
             'logs' => function (Builder $q) {
                 $q->select(['id', 'build_id', 'type', 'group', 'log', 'created_at'])
@@ -87,10 +87,12 @@ class GameBuildsController extends Controller
             'testMergeAuthors' => Inertia::lazy(function () use ($build) {
                 $ret = [];
                 foreach ($build->test_merges as $testMerge) {
+                    $addedBy = PlayerAdmin::with('player')->firstWhere('id', $testMerge['added_by']);
+                    $updatedBy = PlayerAdmin::with('player')->firstWhere('id', $testMerge['updated_by']);
                     $ret[] = [
                         'pr_id' => $testMerge['pr_id'],
-                        'added_by' => GameAdmin::firstWhere('id', $testMerge['added_by']),
-                        'updated_by' => GameAdmin::firstWhere('id', $testMerge['updated_by']),
+                        'added_by' => $addedBy ?? [],
+                        'updated_by' => $updatedBy ?? [],
                     ];
                 }
 
@@ -102,7 +104,7 @@ class GameBuildsController extends Controller
     public function store(GameBuildCreateRequest $request)
     {
         $request = $request->merge([
-            'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+            'game_admin_id' => $request->user()->gameAdmin->id,
         ]);
 
         try {
@@ -117,7 +119,7 @@ class GameBuildsController extends Controller
     public function cancel(GameBuildCancelRequest $request)
     {
         $request = $request->merge([
-            'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+            'game_admin_id' => $request->user()->gameAdmin->id,
         ]);
         $this->cancelBuild($request);
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JobBans\StoreRequest;
+use App\Http\Requests\JobBans\UpdateRequest;
 use App\Models\JobBan;
 use App\Traits\ManagesJobBans;
 use Illuminate\Http\Request;
@@ -16,7 +18,7 @@ class JobBansController extends Controller
     public function index(Request $request)
     {
         $jobBans = JobBan::with([
-            'gameAdmin:id,name,ckey',
+            'gameAdmin.player',
             'gameServer:id,server_id,short_name',
         ])->indexFilterPaginate(perPage: 30);
 
@@ -34,16 +36,13 @@ class JobBansController extends Controller
         return Inertia::render('Admin/JobBans/Create');
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
         $request->merge([
-            'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+            'game_admin_id' => $request->user()->gameAdmin->id,
         ]);
-        if ($request->input('server_id') === 'all') {
-            $request->merge(['server_id' => null]);
-        }
         $jobBan = $this->addJobBan($request);
-        $jobBan->load(['gameAdmin', 'gameServer']);
+        $jobBan->load(['gameAdmin.player', 'gameServer']);
 
         if ($request->has('return_job_ban')) {
             return $jobBan;
@@ -59,15 +58,12 @@ class JobBansController extends Controller
         ]);
     }
 
-    public function update(Request $request, JobBan $jobBan)
+    public function update(UpdateRequest $request, JobBan $jobBan)
     {
         try {
             $request = $request->merge([
-                'game_admin_ckey' => $request->user()->gameAdmin->ckey,
+                'game_admin_id' => $request->user()->gameAdmin->id,
             ]);
-            if ($request->input('server_id') === 'all') {
-                $request->merge(['server_id' => null]);
-            }
             $this->updateJobBan($request, $jobBan);
         } catch (\Exception $e) {
             return Redirect::back()->withErrors(['error' => $e->getMessage()]);
@@ -80,9 +76,9 @@ class JobBansController extends Controller
     {
         $jobBan = JobBan::withTrashed()
             ->with([
-                'gameAdmin:id,name,ckey',
+                'gameAdmin.player',
                 'gameServer',
-                'deletedByGameAdmin',
+                'deletedByGameAdmin.player',
             ])
             ->findOrFail($jobBan);
 
