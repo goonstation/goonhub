@@ -37,6 +37,7 @@ class GameServersController extends Controller
             'filters.port' => 'integer',
             'filters.active' => 'boolean',
             'filters.invisible' => 'boolean',
+            'filters.group_id' => 'integer',
             /**
              * A value, comparison, or range
              *
