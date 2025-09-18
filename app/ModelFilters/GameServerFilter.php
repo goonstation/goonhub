@@ -83,6 +83,11 @@ class GameServerFilter extends ModelFilter
         return $this;
     }
 
+    public function groupId($val)
+    {
+        return $this->where('group_id', $val);
+    }
+
     public function currentMap($val)
     {
         return $this->whereHas('currentRound.mapRecord', function ($query) use ($val) {
