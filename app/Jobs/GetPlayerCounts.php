@@ -33,8 +33,8 @@ class GetPlayerCounts implements ShouldQueue
      */
     public function handle()
     {
-        // Get player count for all active servers
-        $servers = GameServer::where('active', true)->where('invisible', false)->get();
+        // Get player count for all active servers (including invisible ones so their counts are tracked)
+        $servers = GameServer::where('active', true)->get();
 
         $when = Carbon::now();
         foreach ($servers as $server) {
