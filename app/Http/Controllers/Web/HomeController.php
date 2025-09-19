@@ -77,20 +77,15 @@ class HomeController extends Controller
     private function getServerStatus(Request $request)
     {
         $server = $request->input('server');
-        $res = GameBridge::create()
-            ->target($server)
-            ->message('status')
-            ->send();
+        $res = GameBridge::server($server)->status();
 
-        if ($res->error) {
-            Inertia::share('errors', ['status' => $res->message]);
+        if ($res->failed()) {
+            Inertia::share('errors', ['status' => $res->getMessage()]);
 
             return [];
         }
 
-        parse_str($res->message, $status);
-
-        return $status;
+        return $res->getData();
     }
 
     public function index(Request $request)
@@ -160,19 +155,15 @@ class HomeController extends Controller
 
         $data = ['servers' => $servers->toArray()];
         foreach ($servers as $key => $server) {
-            $res = GameBridge::create()
-                ->target($server)
-                ->message('status')
-                ->send();
+            $res = GameBridge::server($server)->status();
 
-            if ($res->error) {
+            if ($res->failed()) {
                 $data['servers'][$key]['error'] = true;
 
                 continue;
             }
 
-            parse_str($res->message, $status);
-            $data['servers'][$key]['status'] = $status;
+            $data['servers'][$key]['status'] = $res->getData();
         }
 
         return $data;

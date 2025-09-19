@@ -961,13 +961,11 @@ class Build
         $this->log('Notifying game of map switch', group: 'Map Switch Notification');
 
         // TODO: some way to cancel bridge comm?
-        GameBridge::create()
-            ->target($this->server->server_id)
-            ->message([
+        GameBridge::server($this->server->server_id)
+            ->force(true)
+            ->sendAndForget([
                 'type' => 'mapSwitchDone',
                 'map' => $this->error ? 'FAILED' : $this->settings->map_id,
-            ])
-            ->force(true)
-            ->sendAndForget();
+            ]);
     }
 }

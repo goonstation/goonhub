@@ -38,12 +38,10 @@ class GetPlayerCounts implements ShouldQueue
 
         $when = Carbon::now();
         foreach ($servers as $server) {
-            $response = GameBridge::create()
-                ->target($server)
+            $response = GameBridge::server($server)
                 ->force(true)
-                ->message('players')
-                ->send();
-            $playerCount = $response->error ? null : (int) $response->message;
+                ->players();
+            $playerCount = $response->failed() ? null : $response->asNumber();
             $playersOnline = new PlayersOnline;
             $playersOnline->timestamps = false;
             $playersOnline->server_id = $server->server_id;

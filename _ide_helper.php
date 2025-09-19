@@ -22916,16 +22916,115 @@ namespace App\Facades {
 
             }
     /**
-     * @see GameBridgeLibrary
+     * GameBridge Service Facade
+     *
+     * @method static \App\Services\GameBridge\GameBridgeResponse send(string|array $targets, string|array $message)
+     * @method static void sendAndForget(string|array $targets, string|array $message)
+     * @see GameBridgeService
      */
     class GameBridge {
         /**
+         * Get a server-specific API instance for fluent operations
+         *
          * @static
          */
-        public static function create()
+        public static function server($server)
         {
-            /** @var \App\Libraries\GameBridge\GameBridge $instance */
-            return $instance->create();
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->server($server);
+        }
+
+        /**
+         * Get multiple servers for batch operations
+         *
+         * @static
+         */
+        public static function servers($servers)
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->servers($servers);
+        }
+
+        /**
+         * Create a raw connection for advanced usage
+         *
+         * @static
+         */
+        public static function connection()
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->connection();
+        }
+
+        /**
+         * Resolve a single server target to a standardized format
+         *
+         * @static
+         */
+        public static function resolveTarget($target)
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->resolveTarget($target);
+        }
+
+        /**
+         * Resolve multiple server targets to a standardized format
+         *
+         * @static
+         */
+        public static function resolveTargets($targets)
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->resolveTargets($targets);
+        }
+
+        /**
+         * Execute a connection with retry logic and error handling
+         *
+         * @static
+         */
+        public static function executeConnection($target, $options)
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->executeConnection($target, $options);
+        }
+
+        /**
+         * Get configuration values
+         *
+         * @static
+         */
+        public static function getTimeout()
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->getTimeout();
+        }
+
+        /**
+         * @static
+         */
+        public static function getRetryAttempts()
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->getRetryAttempts();
+        }
+
+        /**
+         * @static
+         */
+        public static function getRetryDelay()
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->getRetryDelay();
+        }
+
+        /**
+         * @static
+         */
+        public static function getDefaultCacheTime()
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->getDefaultCacheTime();
         }
 
             }

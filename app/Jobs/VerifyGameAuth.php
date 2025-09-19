@@ -30,14 +30,12 @@ class VerifyGameAuth implements ShouldQueue
      */
     public function handle()
     {
-        $response = GameBridge::create()
-            ->target($this->serverId)
-            ->message($this->message)
+        $response = GameBridge::server($this->serverId)
             ->force(true)
-            ->send();
+            ->send($this->message);
 
-        if ($response->error) {
-            throw new \Exception('GameBridge error: '.$response->message);
+        if ($response->failed()) {
+            throw new \Exception('GameBridge error: '.$response->getMessage());
         }
     }
 }

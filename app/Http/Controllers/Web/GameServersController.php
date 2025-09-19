@@ -31,17 +31,12 @@ class GameServersController extends Controller
             ->where('server_id', $request['server'])
             ->firstOrFail();
 
-        $res = GameBridge::create()
-            ->target($gameServer)
-            ->message('status')
-            ->send();
+        $res = GameBridge::server($gameServer)->status();
 
-        if ($res->error) {
-            return abort(500, $res->message);
+        if ($res->failed()) {
+            return abort(500, $res->getMessage());
         }
 
-        parse_str($res->message, $status);
-
-        return ['data' => $status];
+        return ['data' => $res->getData()];
     }
 }

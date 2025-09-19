@@ -51,6 +51,13 @@ return [
         ],
     ],
 
+    'gamebridge' => [
+        'timeout' => env('GAMEBRIDGE_TIMEOUT', 5), // seconds
+        'retry_attempts' => env('GAMEBRIDGE_RETRY_ATTEMPTS', 3),
+        'retry_delay' => env('GAMEBRIDGE_RETRY_DELAY', 1000), // milliseconds
+        'default_cache_time' => env('GAMEBRIDGE_DEFAULT_CACHE_TIME', 30), // seconds
+    ],
+
     'bab' => [
         'base_url' => env('BAB_BASE_URL'),
         'client_id' => env('BAB_CLIENT_ID'),

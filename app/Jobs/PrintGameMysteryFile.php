@@ -38,14 +38,12 @@ class PrintGameMysteryFile implements ShouldQueue
      */
     public function handle()
     {
-        GameBridge::create()
-            ->target($this->serverId)
-            ->message([
+        GameBridge::server($this->serverId)
+            ->force(true)
+            ->sendAndForget([
                 'type' => 'mysteryPrint',
                 'print_title' => $this->title,
                 'print_file' => $this->file,
-            ])
-            ->force(true)
-            ->sendAndForget();
+            ]);
     }
 }

@@ -115,10 +115,12 @@ class RemoteMusic implements ShouldQueue
         $remoteMusicPlay->game_admin_id = $this->playerAdmin?->id;
         $remoteMusicPlay->save();
 
-        GameBridge::create()
-            ->target($this->round->server_id)
-            ->message("type=youtube&data=$data")
-            ->sendAndForget();
+        GameBridge::server($this->round->server_id)
+            ->force(true)
+            ->sendAndForget([
+                'type' => 'youtube',
+                'data' => $data,
+            ]);
     }
 
     /**
@@ -129,11 +131,12 @@ class RemoteMusic implements ShouldQueue
     public function failed(\Throwable $exception)
     {
         if ($this->round) {
-            GameBridge::create()
-                ->target($this->round->server_id)
-                ->message("type=youtube&error={$exception->getMessage()}")
+            GameBridge::server($this->round->server_id)
                 ->force(true)
-                ->sendAndForget();
+                ->sendAndForget([
+                    'type' => 'youtube',
+                    'error' => $exception->getMessage(),
+                ]);
         }
     }
 }

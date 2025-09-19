@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Libraries\GameBridge\GameBridge;
+use App\Services\GameBridge\GameBridgeService;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
@@ -13,7 +13,8 @@ class GameBridgeServiceProvider extends ServiceProvider implements DeferrablePro
      */
     public function register(): void
     {
-        $this->app->singleton(GameBridge::class);
+        // Register the new service
+        $this->app->singleton(GameBridgeService::class);
     }
 
     /**
@@ -23,6 +24,8 @@ class GameBridgeServiceProvider extends ServiceProvider implements DeferrablePro
      */
     public function provides(): array
     {
-        return [GameBridge::class];
+        return [
+            GameBridgeService::class,
+        ];
     }
 }

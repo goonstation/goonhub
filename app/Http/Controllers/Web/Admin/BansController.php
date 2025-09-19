@@ -83,9 +83,8 @@ class BansController extends Controller
                 // ignore
             }
 
-            GameBridge::create()
-                ->target($ban->server_id ?: 'active')
-                ->message([
+            GameBridge::server($ban->server_id ?: 'active')
+                ->sendAndForget([
                     'type' => 'ban_added',
                     'admin_ckey' => $ban->gameAdmin->player->ckey,
                     'server_id' => $ban->server_id,
@@ -95,9 +94,7 @@ class BansController extends Controller
                     'reason' => $ban->reason,
                     'duration' => $ban->duration,
                     'requires_appeal' => $ban->requires_appeal ? 1 : 0,
-                ])
-                ->force(true)
-                ->sendAndForget();
+                ]);
         });
 
         return to_route('admin.bans.index');
