@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Libraries\GameBuilder\Build;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\SplFileInfo;
 
-/**
- * @tags Game Build Artifacts
- */
+#[Group('Game Build Artifacts')]
 class GameBuildArtifactsController extends Controller
 {
     private function getGameArtifacts(string $server)

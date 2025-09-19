@@ -13,14 +13,13 @@ use App\Rules\DateRange;
 use App\Services\CommonRequest;
 use App\Traits\ManagesJobBans;
 use Carbon\Carbon;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Job Bans
- */
+#[Group('Job Bans')]
 class JobBansController extends Controller
 {
     use ManagesJobBans;

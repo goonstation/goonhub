@@ -10,12 +10,11 @@ use App\Http\Resources\GameBuildSettingResource;
 use App\Models\GameBuildSetting;
 use App\Rules\DateRange;
 use App\Traits\ManagesGameBuildSettings;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Game Build Settings
- */
+#[Group('Game Build Settings')]
 class GameBuildSettingsController extends Controller
 {
     use ManagesGameBuildSettings;

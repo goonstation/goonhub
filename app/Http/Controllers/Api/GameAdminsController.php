@@ -4,17 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
-use App\Http\Resources\GameAdminResource;
 use App\Http\Resources\PlayerAdminResource;
 use App\Models\PlayerAdmin;
 use App\Rules\DateRange;
-use Illuminate\Http\Request;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Game Admins
- */
+#[Group('Game Admins')]
 class GameAdminsController extends Controller
 {
     /**

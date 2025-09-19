@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Player;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
-/**
- * @tags Player Playtime
- */
+#[Group('Player Playtime')]
 class PlayerPlaytimeController extends Controller
 {
     /**

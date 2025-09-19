@@ -5,14 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ServerPerformanceMetricsResource;
 use App\Http\Resources\ServerPerformanceResource;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-/**
- * @tags Server Performance
- */
+#[Group('Server Performance')]
 class ServerPerformanceController extends Controller
 {
     private function getPerformance(string $address)

@@ -7,13 +7,12 @@ use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameAdminRankResource;
 use App\Models\GameAdminRank;
 use App\Rules\DateRange;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Game Admin Ranks
- */
+#[Group('Game Admin Ranks')]
 class GameAdminRanksController extends Controller
 {
     /**

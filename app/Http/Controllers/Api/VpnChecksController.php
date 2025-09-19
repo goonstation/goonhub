@@ -6,13 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\VpnCheckResource;
 use App\Models\VpnCheck;
 use App\Models\VpnWhitelist;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-/**
- * @tags VPN Checks
- */
+#[Group('VPN Checks')]
 class VpnChecksController extends Controller
 {
     private $checkCacheTime = 30; // days

@@ -9,14 +9,13 @@ use App\Models\Player;
 use App\Models\PlayerData;
 use App\Models\PlayerSave;
 use App\Rules\PlayerIdWithCkey;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Sentry\EventHint;
 
 use function Sentry\captureMessage;
 
-/**
- * @tags Player Saves
- */
+#[Group('Player Saves')]
 class PlayerSavesController extends Controller
 {
     /**

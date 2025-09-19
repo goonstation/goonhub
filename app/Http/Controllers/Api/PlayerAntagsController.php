@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PlayerAntagResource;
 use App\Models\PlayerAntag;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
-/**
- * @tags Player Antags
- */
+#[Group('Player Antags')]
 class PlayerAntagsController extends Controller
 {
     /**

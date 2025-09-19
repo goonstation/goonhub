@@ -8,13 +8,12 @@ use App\Http\Requests\VpnWhitelist\StoreRequest;
 use App\Http\Resources\VpnWhitelistResource;
 use App\Models\VpnWhitelist;
 use App\Rules\DateRange;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags VPN Whitelist
- */
+#[Group('VPN Whitelist')]
 class VpnWhitelistController extends Controller
 {
     /**

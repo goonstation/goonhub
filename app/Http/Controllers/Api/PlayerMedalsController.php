@@ -10,13 +10,12 @@ use App\Models\Player;
 use App\Models\PlayerMedal;
 use App\Rules\DateRange;
 use Carbon\Carbon;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Player Medals
- */
+#[Group('Player Medals')]
 class PlayerMedalsController extends Controller
 {
     /**
