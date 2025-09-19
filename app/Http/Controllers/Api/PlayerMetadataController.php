@@ -7,13 +7,12 @@ use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\PlayerMetadataResource;
 use App\Models\PlayerMetadata;
 use App\Rules\DateRange;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Player Metadata
- */
+#[Group('Player Metadata')]
 class PlayerMetadataController extends Controller
 {
     /**

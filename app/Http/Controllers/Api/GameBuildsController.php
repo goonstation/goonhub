@@ -11,12 +11,11 @@ use App\Http\Resources\GameBuildStatusResource;
 use App\Models\GameBuild;
 use App\Rules\DateRange;
 use App\Traits\ManagesGameBuilds;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Game Builds
- */
+#[Group('Game Builds')]
 class GameBuildsController extends Controller
 {
     use ManagesGameBuilds;

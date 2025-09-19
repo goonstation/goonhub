@@ -7,13 +7,12 @@ use App\Http\Resources\EventAiLawResource;
 use App\Http\Resources\EventFineResource;
 use App\Http\Resources\EventStationNameResource;
 use App\Http\Resources\EventTicketResource;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
-/**
- * @tags Random Entries
- */
+#[Group('Random Entries')]
 class RandomEntriesController extends Controller
 {
     /**

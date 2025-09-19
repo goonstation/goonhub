@@ -5,12 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GameRoundResource;
 use App\Models\GameRound;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-/**
- * @tags Game Rounds
- */
+#[Group('Game Rounds')]
 class GameRoundsController extends Controller
 {
     /**

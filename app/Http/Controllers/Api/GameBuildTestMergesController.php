@@ -10,12 +10,11 @@ use App\Http\Resources\GameBuildTestMergeResource;
 use App\Models\GameBuildTestMerge;
 use App\Rules\DateRange;
 use App\Traits\ManagesGameBuildTestMerges;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Game Build Test Merges
- */
+#[Group('Game Build Test Merges')]
 class GameBuildTestMergesController extends Controller
 {
     use ManagesGameBuildTestMerges;

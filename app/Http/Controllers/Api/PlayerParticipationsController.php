@@ -5,13 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PlayerParticipationResource;
 use App\Models\PlayerParticipation;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
 use function Sentry\captureMessage;
 
-/**
- * @tags Player Participations
- */
+#[Group('Player Participations')]
 class PlayerParticipationsController extends Controller
 {
     /**

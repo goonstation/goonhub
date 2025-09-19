@@ -8,12 +8,11 @@ use App\Http\Resources\GameServerResource;
 use App\Models\GameServer;
 use App\Rules\DateRange;
 use App\Rules\Range;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Game Servers
- */
+#[Group('Game Servers')]
 class GameServersController extends Controller
 {
     /**

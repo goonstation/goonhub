@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BeginAuthResource;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
-/**
- * @tags Game Auth
- */
+#[Group('Game Auth')]
 class GameAuthController extends Controller
 {
     const CACHE_PREFIX = 'game_auth_state_';

@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Jobs\RemoteMusic;
 use App\Services\CommonRequest;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
-/**
- * @tags Remote Music
- */
+#[Group('Remote Music')]
 class RemoteMusicController extends Controller
 {
     /**

@@ -5,11 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NumbersStationPasswordResource;
 use App\Models\NumbersStationPassword;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 
-/**
- * @tags Numbers Station
- */
+#[Group('Numbers Station')]
 class NumbersStationController extends Controller
 {
     /**

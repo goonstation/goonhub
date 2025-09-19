@@ -10,12 +10,11 @@ use App\Models\Player;
 use App\Models\PlayerNote;
 use App\Rules\DateRange;
 use App\Traits\ManagesPlayerNotes;
+use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-/**
- * @tags Player Notes
- */
+#[Group('Player Notes')]
 class PlayerNotesController extends Controller
 {
     use ManagesPlayerNotes;
