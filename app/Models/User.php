@@ -111,7 +111,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'is_admin',
-        'game_admin_id',
         'player_id',
         'passwordless',
         'emailless',

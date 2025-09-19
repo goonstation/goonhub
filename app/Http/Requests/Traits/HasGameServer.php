@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Traits;
 
-use App\Models\GameServer;
 use App\Services\CommonRequest;
 use Illuminate\Validation\Validator;
 
@@ -16,7 +15,7 @@ trait HasGameServer
                 function ($attribute, $value, $fail) {
                     $value = $value === 'all' ? null : $value;
 
-                    if ($value && ! GameServer::where('server_id', $value)->exists()) {
+                    if ($value && ! $this->getGameServer()) {
                         $fail('The server ID is invalid.');
                     }
                 },
