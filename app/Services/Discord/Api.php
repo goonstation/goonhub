@@ -151,6 +151,11 @@ class Api
                     throw new RequestException($response);
                 }
 
+                // For specific status codes, throwing here will skip the retry logic
+                if ($response->status() === 404) {
+                    throw new RequestException($response);
+                }
+
                 // If we get a 4xx (other than 429), throw after all retries are exhausted
                 if ($response->status() >= 400 && $response->status() < 500) {
                     if ($attempt >= $this->retryAttempts) {
