@@ -3,14 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameServerResource;
 use App\Models\GameServer;
-use App\Rules\DateRange;
-use App\Rules\Range;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Cache;
 
 #[Group('Game Servers')]
 class GameServersController extends Controller
@@ -18,55 +15,22 @@ class GameServersController extends Controller
     /**
      * List
      *
-     * List filtered and paginated servers
+     * List all servers
      *
      * @unauthenticated
      *
-     * @return AnonymousResourceCollection<LengthAwarePaginator<GameServerResource>>
+     * @return AnonymousResourceCollection<GameServerResource>
      */
-    public function index(IndexQueryRequest $request)
+    public function index()
     {
-        $request->validate([
-            'filters.id' => 'int',
-            /** @example main1 */
-            'filters.server' => 'string',
-            'filters.name' => 'string',
-            'filters.short_name' => 'string',
-            'filters.address' => 'string',
-            'filters.port' => 'integer',
-            'filters.active' => 'boolean',
-            'filters.invisible' => 'boolean',
-            'filters.group_id' => 'integer',
-            /**
-             * A value, comparison, or range
-             *
-             * @example 1 or >= 1 or 1-10
-             */
-            'filters.player_count' => new Range,
-            /** @example 12345 */
-            'filters.current_round_id' => 'integer',
-            /** @example Atlas */
-            'filters.current_map' => 'string',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
-        return GameServerResource::collection(
-            GameServer::with([
-                'currentPlayersOnline',
-                'currentRound.mapRecord',
-                'gameBuildSetting.map',
-            ])->indexFilterPaginate()
-        );
+        return Cache::remember('game_servers', now()->addSeconds(30), function () {
+            return GameServerResource::collection(
+                GameServer::with([
+                    'currentPlayersOnline',
+                    'currentRound.mapRecord',
+                    'gameBuildSetting.map',
+                ])->get()
+            );
+        });
     }
 }

@@ -8,12 +8,15 @@ use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Illuminate\Auth\RequestGuard;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
 
@@ -49,6 +52,18 @@ class AppServiceProvider extends ServiceProvider
                     app()->refresh('request', $guard, 'setRequest');
                 });
             });
+        });
+
+        RateLimiter::for('api', function (Request $request) {
+            $user = $request->user();
+
+            if ($user) {
+                return $user->isAdmin()
+                    ? Limit::none()
+                    : Limit::perMinute(1000)->by($user->id);
+            }
+
+            return Limit::perMinute(100)->by($request->ip());
         });
 
         Scramble::configure()
