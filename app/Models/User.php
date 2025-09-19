@@ -172,13 +172,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(LinkedDiscordUser::class);
     }
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return (bool) $this->is_admin;
     }
 
-    public function isGameAdmin()
+    public function isGameAdmin(?string $serverId = null): bool
     {
-        return (bool) $this->gameAdmin;
+        if (! $serverId) {
+            return (bool) $this->gameAdmin;
+        }
+
+        return $this->gameAdmin?->hasAccessToServer($serverId) ?? false;
     }
 }

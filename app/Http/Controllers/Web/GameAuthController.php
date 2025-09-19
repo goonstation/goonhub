@@ -97,7 +97,9 @@ class GameAuthController extends Controller
             $user->setRelation('player', $player);
         }
 
-        if ($user->linkedDiscord) {
+        $isGameAdmin = $user->isGameAdmin($cache['server_id']);
+
+        if (! $isGameAdmin) {
             $this->handleTomatoSubscriber($user);
         }
 
@@ -105,8 +107,8 @@ class GameAuthController extends Controller
             'player_id' => $user->player->id,
             'ckey' => $user->player->ckey,
             'key' => $user->player->key,
-            'is_admin' => $user->isGameAdmin(),
-            'admin_rank' => $user->isGameAdmin() ? $user->gameAdmin->rank->rank : null,
+            'is_admin' => $isGameAdmin,
+            'admin_rank' => $isGameAdmin ? $user->gameAdmin->rank->rank : null,
             'is_mentor' => $user->player->isMentor,
             'is_hos' => $user->player->isHos,
             'is_whitelisted' => $user->player->isWhitelistedOnServer($cache['server_id']),

@@ -24,15 +24,28 @@ trait ManagesUsers
 
     private function handleTomatoSubscriber(User $user)
     {
+        if (! $user->linkedDiscord) {
+            return;
+        }
+
         Cache::remember('tomato_subscriber_'.$user->linkedDiscord->discord_id, now()->addMinutes(30), function () use ($user) {
             $serverGroup = GameServerGroup::where('name', 'Streamer')->first();
 
             $guildId = DiscordSetting::where('key', DiscordSettings::TOMATO_GUILD_ID->value)->first()?->value;
             $subscriberRoleId = DiscordSetting::where('key', DiscordSettings::TOMATO_SUBSCRIBER_ROLE_ID->value)->first()?->value;
 
-            $guild = DiscordApi::guild($guildId);
-            $member = $guild->member($user->linkedDiscord->discord_id);
-            $roles = $member->json('roles', []);
+            if (! $guildId || ! $subscriberRoleId) {
+                return;
+            }
+
+            try {
+                $guild = DiscordApi::guild($guildId);
+                $member = $guild->member($user->linkedDiscord->discord_id);
+                $roles = $member->json('roles', []);
+            } catch (\Throwable $e) {
+                // User is probably not in the guild, womp womp
+                return;
+            }
 
             if (in_array($subscriberRoleId, $roles)) {
                 $whitelist = $this->addPlayerToWhitelist($user->player);
