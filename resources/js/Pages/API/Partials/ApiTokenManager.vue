@@ -1,7 +1,9 @@
 <script setup>
-import { ref } from 'vue'
-import { useForm } from '@inertiajs/vue3'
 import ActionMessage from '@/Components/ActionMessage.vue'
+import { useForm, usePage } from '@inertiajs/vue3'
+import { computed, ref } from 'vue'
+
+const page = usePage()
 
 const props = defineProps({
   tokens: Array,
@@ -9,13 +11,17 @@ const props = defineProps({
   defaultPermissions: Array,
 })
 
+const isAdmin = computed(() => page.props.auth.user.is_admin)
+
 const createApiTokenForm = useForm({
   name: '',
   permissions: props.defaultPermissions,
+  for_game_server: false,
 })
 
 const updateApiTokenForm = useForm({
   permissions: [],
+  for_game_server: false,
 })
 
 const deleteApiTokenForm = useForm({})
@@ -36,6 +42,7 @@ const createApiToken = () => {
 
 const manageApiTokenPermissions = (token) => {
   updateApiTokenForm.permissions = token.abilities
+  updateApiTokenForm.for_game_server = token.for_game_server
   managingPermissionsFor.value = token
 }
 
@@ -87,7 +94,7 @@ const deleteApiToken = () => {
                 :error-message="createApiTokenForm.errors.name"
               />
 
-              <div v-if="availablePermissions.length > 0">
+              <div v-if="availablePermissions.length > 0" class="q-mb-md">
                 <div class="text-body1 q-mb-md">Permissions</div>
 
                 <div v-for="permission in availablePermissions" :key="permission">
@@ -99,6 +106,13 @@ const deleteApiToken = () => {
                     />
                   </label>
                 </div>
+              </div>
+
+              <div v-if="isAdmin">
+                <q-checkbox
+                  v-model="createApiTokenForm.for_game_server"
+                  label="For Game Server"
+                />
               </div>
 
               <div class="flex items-center q-mt-md">
@@ -213,6 +227,13 @@ const deleteApiToken = () => {
                 :label="permission"
               />
             </label>
+          </div>
+
+          <div v-if="isAdmin" class="q-mt-md">
+            <q-checkbox
+              v-model="updateApiTokenForm.for_game_server"
+              label="For Game Server"
+            />
           </div>
         </q-card-section>
 

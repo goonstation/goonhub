@@ -58,9 +58,11 @@ class AppServiceProvider extends ServiceProvider
             $user = $request->user();
 
             if ($user) {
-                return $user->isAdmin()
-                    ? Limit::none()
-                    : Limit::perMinute(1000)->by($user->id);
+                if ($user->currentAccessToken()->for_game_server) {
+                    return Limit::none();
+                }
+
+                return Limit::perMinute(1000)->by($user->id);
             }
 
             return Limit::perMinute(100)->by($request->ip());

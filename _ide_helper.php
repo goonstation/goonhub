@@ -5326,6 +5326,176 @@ namespace Illuminate\Support\Facades {
 
             }
     /**
+     * @method static array run(\Closure|array $tasks)
+     * @method static \Illuminate\Support\Defer\DeferredCallback defer(\Closure|array $tasks)
+     * @see \Illuminate\Concurrency\ConcurrencyManager
+     */
+    class Concurrency {
+        /**
+         * Get a driver instance by name.
+         *
+         * @param string|null $name
+         * @return mixed
+         * @static
+         */
+        public static function driver($name = null)
+        {
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->driver($name);
+        }
+
+        /**
+         * Create an instance of the process concurrency driver.
+         *
+         * @param array $config
+         * @return \Illuminate\Concurrency\ProcessDriver
+         * @static
+         */
+        public static function createProcessDriver($config)
+        {
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->createProcessDriver($config);
+        }
+
+        /**
+         * Create an instance of the fork concurrency driver.
+         *
+         * @param array $config
+         * @return \Illuminate\Concurrency\ForkDriver
+         * @throws \RuntimeException
+         * @static
+         */
+        public static function createForkDriver($config)
+        {
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->createForkDriver($config);
+        }
+
+        /**
+         * Create an instance of the sync concurrency driver.
+         *
+         * @param array $config
+         * @return \Illuminate\Concurrency\SyncDriver
+         * @static
+         */
+        public static function createSyncDriver($config)
+        {
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->createSyncDriver($config);
+        }
+
+        /**
+         * Get the default instance name.
+         *
+         * @return string
+         * @static
+         */
+        public static function getDefaultInstance()
+        {
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->getDefaultInstance();
+        }
+
+        /**
+         * Set the default instance name.
+         *
+         * @param string $name
+         * @return void
+         * @static
+         */
+        public static function setDefaultInstance($name)
+        {
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            $instance->setDefaultInstance($name);
+        }
+
+        /**
+         * Get the instance specific configuration.
+         *
+         * @param string $name
+         * @return array
+         * @static
+         */
+        public static function getInstanceConfig($name)
+        {
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->getInstanceConfig($name);
+        }
+
+        /**
+         * Get an instance by name.
+         *
+         * @param string|null $name
+         * @return mixed
+         * @static
+         */
+        public static function instance($name = null)
+        {
+            //Method inherited from \Illuminate\Support\MultipleInstanceManager 
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->instance($name);
+        }
+
+        /**
+         * Unset the given instances.
+         *
+         * @param array|string|null $name
+         * @return \Illuminate\Concurrency\ConcurrencyManager
+         * @static
+         */
+        public static function forgetInstance($name = null)
+        {
+            //Method inherited from \Illuminate\Support\MultipleInstanceManager 
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->forgetInstance($name);
+        }
+
+        /**
+         * Disconnect the given instance and remove from local cache.
+         *
+         * @param string|null $name
+         * @return void
+         * @static
+         */
+        public static function purge($name = null)
+        {
+            //Method inherited from \Illuminate\Support\MultipleInstanceManager 
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            $instance->purge($name);
+        }
+
+        /**
+         * Register a custom instance creator Closure.
+         *
+         * @param string $name
+         * @param \Closure $callback
+         * @param-closure-this $this  $callback
+         * @return \Illuminate\Concurrency\ConcurrencyManager
+         * @static
+         */
+        public static function extend($name, $callback)
+        {
+            //Method inherited from \Illuminate\Support\MultipleInstanceManager 
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->extend($name, $callback);
+        }
+
+        /**
+         * Set the application instance used by the manager.
+         *
+         * @param \Illuminate\Contracts\Foundation\Application $app
+         * @return \Illuminate\Concurrency\ConcurrencyManager
+         * @static
+         */
+        public static function setApplication($app)
+        {
+            //Method inherited from \Illuminate\Support\MultipleInstanceManager 
+            /** @var \Illuminate\Concurrency\ConcurrencyManager $instance */
+            return $instance->setApplication($app);
+        }
+
+            }
+    /**
      * @see \Illuminate\Config\Repository
      */
     class Config {
@@ -25782,6 +25952,7 @@ namespace  {
     class Broadcast extends \Illuminate\Support\Facades\Broadcast {}
     class Bus extends \Illuminate\Support\Facades\Bus {}
     class Cache extends \Illuminate\Support\Facades\Cache {}
+    class Concurrency extends \Illuminate\Support\Facades\Concurrency {}
     class Config extends \Illuminate\Support\Facades\Config {}
     class Context extends \Illuminate\Support\Facades\Context {}
     class Cookie extends \Illuminate\Support\Facades\Cookie {}

@@ -91,7 +91,7 @@
     "analyse": "./vendor/bin/phpstan analyse",
     "docs-models": [
       "@php artisan ide-helper:models -W -R",
-      "./vendor/bin/pint ./app/Models"
+      "./vendor/bin/pint --parallel ./app/Models"
     ],
     "pint": "./vendor/bin/pint --parallel"
   },

@@ -43,5 +43,6 @@
   },
   "phpstan.checkValidity": true,
   "bladeFormatter.format.wrapLineLength": 100,
-  "bladeFormatter.format.indentSize": 2
+  "bladeFormatter.format.indentSize": 2,
+  "phpstan.memoryLimit": "2G"
 }

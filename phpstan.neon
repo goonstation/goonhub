@@ -19,3 +19,4 @@ parameters:
 
     excludePaths:
         - app/Actions/Fortify
+        - _ide_helper.php

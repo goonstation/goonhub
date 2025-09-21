@@ -46,6 +46,14 @@ use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
  */
 class PersonalAccessToken extends SanctumPersonalAccessToken
 {
+    protected $fillable = [
+        'name',
+        'token',
+        'abilities',
+        'expires_at',
+        'for_game_server',
+    ];
+
     /**
      * Determine if the token has a given ability.
      *
