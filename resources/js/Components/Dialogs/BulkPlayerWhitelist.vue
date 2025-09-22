@@ -30,7 +30,7 @@ import GameServersSelect from '@/Components/Selects/GameServers.vue'
 export default {
   props: {
     modelValue: Boolean,
-    player: Object,
+    players: Array,
   },
 
   components: {
@@ -60,7 +60,8 @@ export default {
     async toggleWhitelisted() {
       this.loading = true
       const removing = this.serverGroups.length === 0 && this.servers.length === 0
-      const { data } = await axios.post(this.$route('admin.whitelist.toggle', this.player.id), {
+      const { data } = await axios.post(this.$route('admin.whitelist.bulk-toggle'), {
+        player_ids: this.players.map((row) => row.id),
         server_group_ids: this.serverGroups,
         server_ids: this.servers,
       })
@@ -68,7 +69,7 @@ export default {
       this.$q.notify({ message: data.message, color: 'positive' })
       this.loading = false
       this.opened = false
-      this.$emit('success', { whitelist: removing ? null : data.whitelist })
+      this.$emit('success', { removed: removing })
     },
   },
 
@@ -77,12 +78,22 @@ export default {
       immediate: true,
       handler(opened) {
         if (!opened) return
-        this.serverGroups = this.player.whitelist?.server_groups
-          ? [...this.player.whitelist.server_groups.map((row) => row.id)]
-          : []
-        this.servers = this.player.whitelist?.servers
-          ? [...this.player.whitelist.servers.map((row) => row.id)]
-          : []
+        this.serverGroups = [
+          ...new Set(
+            this.players
+              .map((row) => row.whitelist?.server_groups.map((row) => row.id))
+              .flat()
+              .filter(Number)
+          ),
+        ]
+        this.servers = [
+          ...new Set(
+            this.players
+              .map((row) => row.whitelist?.servers.map((row) => row.id))
+              .flat()
+              .filter(Number)
+          ),
+        ]
       },
     },
   },

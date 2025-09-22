@@ -37,7 +37,7 @@ class MapsController extends Controller
                 'maps' => $query->get(),
             ]);
         } else {
-            return $query->indexFilterPaginate(perPage: 30, sortBy: 'name', desc: false);
+            return $query->indexFilterPaginate(perPage: 30, sortBy: 'name', order: 'asc');
         }
     }
 

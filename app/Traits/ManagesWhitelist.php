@@ -12,14 +12,15 @@ trait ManagesWhitelist
         return $player->whitelist()->firstOrCreate(['player_id' => $player->id]);
     }
 
-    private function setPlayerWhitelistServers(Player $player, array $serverIds)
+    private function setWhitelistsByPlayer(Player $player, array $serverGroupIds, array $serverIds)
     {
         $whitelistedPlayer = $this->addPlayerToWhitelist($player);
 
+        $whitelistedPlayer->serverGroups()->sync($serverGroupIds);
         $whitelistedPlayer->servers()->sync($serverIds);
     }
 
-    private function setPlayersWhitelistServers(array $playerIds, array $serverIds)
+    private function setWhitelistsByPlayerIds(array $playerIds, array $serverGroupIds, array $serverIds)
     {
         foreach ($playerIds as $playerId) {
             $player = Player::find($playerId);
@@ -28,12 +29,14 @@ trait ManagesWhitelist
             }
             $whitelistedPlayer = $this->addPlayerToWhitelist($player);
 
+            $whitelistedPlayer->serverGroups()->sync($serverGroupIds);
             $whitelistedPlayer->servers()->sync($serverIds);
         }
     }
 
-    private function updatePlayerWhitelistServers(PlayerWhitelist $whitelistedPlayer, array $serverIds)
+    private function updatePlayerWhitelist(PlayerWhitelist $whitelistedPlayer, array $serverGroupIds, array $serverIds)
     {
+        $whitelistedPlayer->serverGroups()->sync($serverGroupIds);
         $whitelistedPlayer->servers()->sync($serverIds);
     }
 
@@ -42,8 +45,18 @@ trait ManagesWhitelist
         $whitelistedPlayer->delete();
     }
 
-    private function removePlayerWhitelists(array $playerWhitelistIds)
+    private function removeWhitelistsById(array $playerWhitelistIds)
     {
         PlayerWhitelist::whereIn('id', $playerWhitelistIds)->delete();
+    }
+
+    private function removeWhitelistsByPlayerId(array $playerIds)
+    {
+        PlayerWhitelist::whereIn('player_id', $playerIds)->delete();
+    }
+
+    private function removeWhitelistByPlayer(Player $player)
+    {
+        $player->whitelist()->delete();
     }
 }

@@ -86,4 +86,22 @@ class PlayerBypassCap extends BaseModel
     {
         return $this->allServers()->where('server_id', $serverId)->exists();
     }
+
+    public function addServer(GameServer $server)
+    {
+        if ($this->servers()->where('server_id', $server->id)->exists()) {
+            return;
+        }
+
+        $this->servers()->attach($server->id);
+    }
+
+    public function addServerGroup(GameServerGroup $serverGroup)
+    {
+        if ($this->serverGroups()->where('server_group_id', $serverGroup->id)->exists()) {
+            return;
+        }
+
+        $this->serverGroups()->attach($serverGroup->id);
+    }
 }

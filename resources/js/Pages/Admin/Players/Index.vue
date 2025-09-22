@@ -1,5 +1,5 @@
 <template>
-  <players-table :initial="players" />
+  <players-table prop-key="players" />
 </template>
 
 <script>

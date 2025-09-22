@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Web\Admin\AuditController;
 use App\Http\Controllers\Web\Admin\BansController;
+use App\Http\Controllers\Web\Admin\BypassCapController;
 use App\Http\Controllers\Web\Admin\DiscordSettingsController;
 use App\Http\Controllers\Web\Admin\ErrorsController;
 use App\Http\Controllers\Web\Admin\EventsController;
@@ -188,18 +189,15 @@ Route::controller(HosController::class)->prefix('hos')->group(function () {
 });
 
 Route::controller(WhitelistController::class)->prefix('whitelist')->group(function () {
-    Route::get('/', 'index')->name('admin.whitelist.index')
-        ->breadcrumbs(fn (Trail $trail) => $trail->push('Whitelist', 'admin.whitelist.index'));
-    Route::get('/create', 'create')->name('admin.whitelist.create')
-        ->breadcrumbs(fn (Trail $trail) => $trail->parent('admin.whitelist.index')->push('Create', 'admin.whitelist.create'));
-    Route::post('/', 'store')->name('admin.whitelist.store');
-    Route::get('/edit/{whitelistedPlayer}', 'edit')->whereNumber('whitelistedPlayer')->name('admin.whitelist.edit')
-        ->breadcrumbs(fn (Trail $trail, $whitelistedPlayer) => $trail->parent('admin.whitelist.index')->push('Edit', route('admin.whitelist.edit', $whitelistedPlayer)));
-    Route::put('/{whitelistedPlayer}', 'update')->whereNumber('whitelistedPlayer')->name('admin.whitelist.update');
-    Route::post('/bulk-toggle', 'bulkToggle')->name('admin.whitelist.bulk-toggle');
-
-    Route::delete('/{whitelistedPlayer}', 'destroy')->whereNumber('whitelistedPlayer')->name('admin.whitelist.delete');
     Route::delete('/', 'destroyMulti')->name('admin.whitelist.delete-multi');
+    Route::post('/bulk-toggle', 'bulkToggle')->name('admin.whitelist.bulk-toggle');
+    Route::post('/toggle/{player}', 'toggle')->whereNumber('player')->name('admin.whitelist.toggle');
+});
+
+Route::controller(BypassCapController::class)->prefix('bypass-cap')->group(function () {
+    Route::delete('/', 'destroyMulti')->name('admin.bypass-cap.delete-multi');
+    Route::post('/bulk-toggle', 'bulkToggle')->name('admin.bypass-cap.bulk-toggle');
+    Route::post('/toggle/{player}', 'toggle')->whereNumber('player')->name('admin.bypass-cap.toggle');
 });
 
 Route::controller(EventsController::class)->prefix('events')->group(function () {

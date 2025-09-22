@@ -56,7 +56,7 @@ class MapsController extends Controller
     public function index(IndexRequest $request)
     {
         $maps = Map::with(['gameAdmin.player'])
-            ->indexFilterPaginate(sortBy: 'name', desc: false, perPage: 30);
+            ->indexFilterPaginate(sortBy: 'name', order: 'asc', perPage: 30);
 
         if ($this->wantsInertia($request)) {
             return Inertia::render('Admin/Maps/Index', [

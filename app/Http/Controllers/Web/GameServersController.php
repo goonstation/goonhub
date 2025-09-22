@@ -13,12 +13,12 @@ class GameServersController extends Controller
 {
     public function index(IndexRequest $request)
     {
-        $gameServers = GameServer::query();
+        $gameServers = GameServer::with(['group:id,name']);
         if (! Auth::user()?->isGameAdmin()) {
             $gameServers->where('invisible', false);
         }
 
-        return $gameServers->indexFilterPaginate(perPage: 30, sortBy: 'name', desc: false);
+        return $gameServers->indexFilterPaginate(perPage: 30, sortBy: 'name', order: 'asc');
     }
 
     public function status(Request $request)

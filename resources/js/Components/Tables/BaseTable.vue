@@ -4,10 +4,10 @@
       ref="tableRef"
       v-show="!(lazyFetching && firstLoad)"
       v-bind="$attrs"
-      v-model:pagination="_pagination"
+      v-model:pagination="internalPagination"
       v-model:selected="selectedModel"
       :rows="rows"
-      :columns="_columns"
+      :columns="internalColumns"
       :loading="loading"
       :rows-per-page-options="rowsPerPageOptions"
       :visible-columns="visibleColumns"
@@ -25,7 +25,7 @@
 
       <template v-slot:top v-if="!hideTop">
         <div
-          class="flex full-width gap-xs-sm q-pa-md rounded-borders items-start no-wrap relative"
+          class="flex full-width gap-xs-sm q-pa-md items-start no-wrap relative"
           style="z-index: 2"
           :class="{ 'bg-dark': !transparent }"
           :style="{
@@ -35,14 +35,14 @@
           <slot name="top-left" />
 
           <div v-if="showGridFilters" class="gh-grid-filters flex items-start gap-xs-sm">
-            <q-checkbox
+            <!-- <q-checkbox
               v-if="canSelect"
               :model-value="allSelected"
               @click="handleSelectAll"
               class="q-mr-sm"
               style="margin-top: 6px"
               dense
-            />
+            /> -->
 
             <!-- sort button/menu -->
             <q-btn
@@ -58,8 +58,8 @@
                 <q-list style="min-width: 100px">
                   <q-item>
                     <q-toggle
-                      v-model="_pagination.descending"
-                      :label="_pagination.descending ? 'Descending' : 'Ascending'"
+                      v-model="internalPagination.descending"
+                      :label="internalPagination.descending ? 'Descending' : 'Ascending'"
                       @update:model-value="onSortChange({ descending: $event })"
                     />
                   </q-item>
@@ -68,7 +68,7 @@
                     <template v-for="col in columns">
                       <div v-if="col.sortable" :key="`sort-filter-${col.name}`">
                         <q-radio
-                          v-model="_pagination.sortBy"
+                          v-model="internalPagination.sortBy"
                           :val="col.name"
                           :label="col.label"
                           @update:model-value="onSortChange({ column: $event })"
@@ -152,24 +152,27 @@
 
           <q-btn :icon="ionSettings" class="q-ml-md" dense unelevated>
             <q-tooltip>Table Settings</q-tooltip>
-            <q-menu :offset="[0, 10]">
-              <q-markup-table class="q-py-none" flat dense>
-                <tbody>
-                  <tr v-if="hasTimestamps && !noTimestampToggle">
-                    <td>Toggle Timestamps</td>
-                    <td>
-                      <q-toggle v-model="showTimestamps" :icon="ionCalendar" />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td colspan="2" class="text-right">
-                      <q-btn color="primary" text-color="dark" class="q-my-sm" @click="reset">
-                        Reset
-                      </q-btn>
-                    </td>
-                  </tr>
-                </tbody>
-              </q-markup-table>
+            <q-menu :offset="[0, 10]" class="shadow-0 bordered border-opacity-20">
+              <q-list>
+                <q-item v-if="hasTimestamps && !noTimestampToggle">
+                  <q-item-section>
+                    <q-item-label class="text-no-wrap">Toggle Timestamps</q-item-label>
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-toggle v-model="showTimestamps" :icon="ionCalendar" />
+                  </q-item-section>
+                </q-item>
+                <q-item>
+                  <q-btn
+                    color="primary"
+                    text-color="dark"
+                    class="full-width q-my-xs"
+                    @click="reset"
+                  >
+                    Reset
+                  </q-btn>
+                </q-item>
+              </q-list>
             </q-menu>
           </q-btn>
         </div>
@@ -241,7 +244,7 @@
       <template v-slot:body="props">
         <slot name="body-prepend" :props="props" />
         <q-tr
-          @click.capture="onRowClick(props)"
+          @click="onRowClick(props)"
           :props="props"
           :class="{ 'clickable-row': clickableRows }"
           :style="props.rowIndex % 2 === 0 ? '' : 'background-color: rgba(255, 255, 255, 0.02);'"
@@ -266,7 +269,7 @@
             />
             <template v-else>
               <template v-if="col.name === 'actions'">
-                <q-btn-dropdown @click="$event.stopPropagation()" menu-self="top middle" flat dense>
+                <q-btn-dropdown @click.stop menu-self="top middle" flat dense>
                   <q-list class="action-dropdown" dense>
                     <q-item
                       v-if="routes.view"
@@ -343,7 +346,7 @@
           <div class="flex items-center q-mr-sm">
             Records per page:
             <q-select
-              v-model="_pagination.rowsPerPage"
+              v-model="internalPagination.rowsPerPage"
               :options="rowsPerPageOptions"
               @update:model-value="updateTable"
               class="q-ml-sm"
@@ -353,8 +356,8 @@
             />
           </div>
           <q-pagination
-            v-if="!(props.pagesNumber === 1 && props.pagesNumber === _pagination.page)"
-            v-model="_pagination.page"
+            v-if="!(props.pagesNumber === 1 && props.pagesNumber === internalPagination.page)"
+            v-model="internalPagination.page"
             :max="props.pagesNumber"
             @update:model-value="onPageChange"
             color="grey"
@@ -369,8 +372,8 @@
     <template v-if="lazyFetching && firstLoad">
       <table-skeleton
         v-if="!Object.keys($attrs).includes('grid')"
-        :columns="_columns.filter((c) => visibleColumns.includes(c.name))"
-        :rows="_pagination.rowsPerPage"
+        :columns="internalColumns.filter((c) => visibleColumns.includes(c.name))"
+        :rows="internalPagination.rowsPerPage"
         :dense="Object.keys($attrs).includes('dense')"
         :options="skeletonOptions"
         :grid-filters="showGridFilters"
@@ -598,10 +601,10 @@ export default {
   data() {
     return {
       rows: [],
-      _columns: [],
+      internalColumns: [],
       loading: false,
       firstLoad: true,
-      _pagination: {
+      internalPagination: {
         sortBy: 'id',
         descending: true,
         page: 1,
@@ -658,12 +661,12 @@ export default {
     },
 
     currentSortColumn() {
-      return this.columns.find((column) => column.name === this._pagination.sortBy)
+      return this.columns.find((column) => column.name === this.internalPagination.sortBy)
     },
 
     sortedByLabel() {
       if (!this.currentSortColumn) return
-      const dir = this._pagination.descending ? 'descending' : 'ascending'
+      const dir = this.internalPagination.descending ? 'descending' : 'ascending'
       return `Sorted by ${this.currentSortColumn.label.toLowerCase()} ${dir}`
     },
 
@@ -713,10 +716,10 @@ export default {
   },
 
   created() {
-    const mergedPagination = merge(this._pagination, this.pagination)
+    const mergedPagination = merge(this.internalPagination, this.pagination)
     this.defaultFilters = Object.assign({}, this.search)
     this.defaultPagination = Object.assign({}, mergedPagination)
-    this._pagination = mergedPagination
+    this.internalPagination = mergedPagination
   },
 
   mounted() {
@@ -732,9 +735,11 @@ export default {
         params: {
           page,
           per_page: fetchCount,
-          sort_by: sortBy,
-          descending,
-          filters: this.filters,
+          filters: {
+            ...this.filters,
+            sort: sortBy,
+            order: descending ? 'desc' : 'asc',
+          },
           ...this.extraParams,
         },
       }
@@ -773,11 +778,11 @@ export default {
         if (row) this.selectedModel[idx] = row
       }
 
-      this._pagination.page = data.current_page
-      this._pagination.rowsPerPage = data.per_page
-      this._pagination.sortBy = sortBy
-      this._pagination.descending = descending
-      this._pagination.rowsNumber = data.total
+      this.internalPagination.page = data.current_page
+      this.internalPagination.rowsPerPage = data.per_page
+      this.internalPagination.sortBy = sortBy
+      this.internalPagination.descending = descending
+      this.internalPagination.rowsNumber = data.total
       this.setUrlParams()
 
       if (this.scrollToTop) {
@@ -797,11 +802,11 @@ export default {
       urlSearch.forEach((param, key) => {
         const match = key.match(/filters\[(.*?)\]/)
         if (match && match[1]) {
-          newFilters[match[1]] = param
-        } else if (key === 'page') this._pagination.page = parseInt(param)
-        else if (key === 'sort_by') this._pagination.sortBy = param
-        else if (key === 'descending') this._pagination.descending = param === 'true'
-        else if (key === 'per_page') this._pagination.rowsPerPage = parseInt(param)
+          if (match[1] === 'sort') this.internalPagination.sortBy = param
+          else if (match[1] === 'order') this.internalPagination.descending = param === 'desc'
+          else newFilters[match[1]] = param
+        } else if (key === 'page') this.internalPagination.page = parseInt(param)
+        else if (key === 'per_page') this.internalPagination.rowsPerPage = parseInt(param)
       })
       if (!isEqual(this.filters, newFilters)) {
         this.settingFiltersFromUrl = true
@@ -816,15 +821,6 @@ export default {
       const url = new URL(window.location.origin + window.location.pathname)
       const urlSearch = new URLSearchParams(url.search)
 
-      if (this._pagination.page !== this.defaultPagination.page)
-        urlSearch.append('page', this._pagination.page)
-      if (this._pagination.sortBy !== this.defaultPagination.sortBy)
-        urlSearch.append('sort_by', this._pagination.sortBy)
-      if (this._pagination.descending !== this.defaultPagination.descending)
-        urlSearch.append('descending', this._pagination.descending)
-      if (this._pagination.rowsPerPage !== this.defaultPagination.rowsPerPage)
-        urlSearch.append('per_page', this._pagination.rowsPerPage)
-
       for (const p in this.filters) {
         const filter = this.filters[p]
         const propKey = `filters[${p}]`
@@ -835,6 +831,15 @@ export default {
           urlSearch.append(propKey, filter)
         }
       }
+
+      if (this.internalPagination.page !== this.defaultPagination.page)
+        urlSearch.append('page', this.internalPagination.page)
+      if (this.internalPagination.sortBy !== this.defaultPagination.sortBy)
+        urlSearch.append('filters[sort]', this.internalPagination.sortBy)
+      if (this.internalPagination.descending !== this.defaultPagination.descending)
+        urlSearch.append('filters[order]', this.internalPagination.descending ? 'desc' : 'asc')
+      if (this.internalPagination.rowsPerPage !== this.defaultPagination.rowsPerPage)
+        urlSearch.append('per_page', this.internalPagination.rowsPerPage)
 
       const newParams = decodeURI(urlSearch.toString())
       let newUrl = window.location.pathname
@@ -876,10 +881,10 @@ export default {
 
     onSortChange({ column, descending }) {
       if (column) {
-        this._pagination.sortBy = column
+        this.internalPagination.sortBy = column
       }
       if (descending) {
-        this._pagination.descending = descending
+        this.internalPagination.descending = descending
       }
       this.updateTable()
     },
@@ -898,7 +903,7 @@ export default {
       if (!isEmpty(this.filters)) {
         this.filters = Object.assign({}, this.defaultFilters)
       }
-      this._pagination = Object.assign({}, this.defaultPagination)
+      this.internalPagination = Object.assign({}, this.defaultPagination)
       this.$emit('reset', { filters: this.filters })
     },
 
@@ -1008,7 +1013,6 @@ export default {
 
     updateTable() {
       if (!this.$refs.tableRef) return
-      console.warn('updateTable')
       this.$refs.tableRef.requestServerInteraction()
     },
 
@@ -1026,7 +1030,7 @@ export default {
         //   mergedPagination.page = this.initial.current_page
         // }
         // mergedPagination.rowsPerPage = this.initial.per_page || 15
-        this._pagination.rowsNumber = init.total
+        this.internalPagination.rowsNumber = init.total
       }
     },
   },
@@ -1050,7 +1054,7 @@ export default {
         }
 
         newColumns.forEach((column) => (this.filters[column.name] = null))
-        this._columns = newColumns
+        this.internalColumns = newColumns
       },
     },
 

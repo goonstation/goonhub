@@ -7,10 +7,16 @@
     :columns="columns"
     :pagination="{ rowsPerPage: 30 }"
     :extra-params="{ with_latest_connection: true }"
+    :show-columns="['created_at']"
+    :hide-columns="['mentor', 'hos', 'whitelist', 'bypass_cap']"
+    :skeleton-options="{ rows: 15 }"
+    @row-click="$inertia.visit(route('admin.players.show', $event.id))"
     selection="multiple"
     no-timestamp-toggle
-    transparent
-    grid
+    no-row-actions
+    clickable-rows
+    grid-filters
+    dense
     flat
   >
     <template v-slot:grid-filters-actions="{ props }">
@@ -63,8 +69,7 @@
       <q-btn
         @click="toggleWhitelistedDialog = true"
         class="q-px-sm text-weight-bold"
-        color="orange"
-        text-color="dark"
+        color="info"
         size="sm"
       >
         <q-icon :name="ionToggle" class="q-mr-xs" />
@@ -75,183 +80,79 @@
         :players="selected"
         @success="$refs.table.updateTable()"
       />
-    </template>
-
-    <template v-slot:header-bottom>
-      <div
-        class="player-columns text-xs text-uppercase text-opacity-80 text-weight-medium text-center q-mt-md"
+      <q-btn
+        @click="toggleBypassCapDialog = true"
+        class="q-px-sm text-weight-bold"
+        color="green"
+        text-color="dark"
+        size="sm"
       >
-        <div></div>
-        <div class="text-left">Ckey</div>
-        <div>Connections</div>
-        <div>Participations</div>
-        <div>Comp ID</div>
-        <div>IP</div>
-        <div>Byond</div>
-        <div></div>
-        <div></div>
-        <div class="text-right">Created</div>
-      </div>
+        <q-icon :name="ionToggle" class="q-mr-xs" />
+        Toggle Cap Bypass
+      </q-btn>
+      <player-bypass-cap-dialog
+        v-model="toggleBypassCapDialog"
+        :players="selected"
+        @success="$refs.table.updateTable()"
+      />
     </template>
 
-    <template v-slot:item="props">
-      <div class="q-table__grid-item">
-        <q-card
-          :class="{ 'gh-link-card--bar-on': props.selected }"
-          class="gh-link-card gh-link-card--no-scale gh-link-card--bar-left gh-link-card--dense items-center gap-xs-md"
-          flat
+    <template #cell-content-status="{ props }">
+      <q-btn-group>
+        <q-btn
+          v-if="props.row.mentor"
+          class="q-py-none q-px-sm text-weight-bold"
+          color="purple-4"
+          size="sm"
+          dense
         >
-          <q-checkbox
-            v-model="props.selected"
-            @update:model-value="
-              (val, evt) => {
-                Object.getOwnPropertyDescriptor(props, 'selected').set(val, evt)
-              }
-            "
-            dense
-          />
-          <div class="q-py-xs">
-            <Link :href="$route('admin.players.show', props.row.id)">
-              {{ props.row.ckey }}
-            </Link>
-          </div>
-          <div class="text-center text-caption">
-            {{ $formats.number(props.row.connections_count) }}
-          </div>
-          <div class="text-center text-caption">
-            {{ $formats.number(props.row.participations_count) }}
-          </div>
-          <div class="text-center text-caption">
-            {{ props.row.latest_connection?.comp_id }}
-          </div>
-          <div class="text-center text-caption">
-            {{ props.row.latest_connection?.ip }}
-          </div>
-          <div class="text-center text-caption">
-            <template v-if="props.row.byond_major && props.row.byond_minor">
-              {{ props.row.byond_major }}.{{ props.row.byond_minor }}
-            </template>
-            <template v-else>&nbsp;</template>
-          </div>
-          <div></div>
-          <div class="text-right">
-            <q-btn-group>
-              <q-btn
-                v-if="props.row.mentor"
-                class="q-py-none q-px-sm text-weight-bold"
-                color="purple-4"
-                size="sm"
-                dense
-              >
-                Mentor
-              </q-btn>
-              <q-btn
-                v-if="props.row.hos"
-                class="q-py-none q-px-sm text-weight-bold"
-                color="orange"
-                text-color="dark"
-                size="sm"
-                dense
-              >
-                HOS
-              </q-btn>
-              <q-btn
-                v-if="props.row.whitelist"
-                class="q-py-none q-px-sm text-weight-bold"
-                color="info"
-                size="sm"
-                dense
-              >
-                Whitelisted
-              </q-btn>
-              <q-btn
-                v-if="props.row.bypass_cap"
-                class="q-py-none q-px-sm text-weight-bold"
-                color="green"
-                text-color="dark"
-                size="sm"
-                dense
-              >
-                Bypass Cap
-              </q-btn>
-            </q-btn-group>
-          </div>
-          <div class="text-right text-caption">{{ $formats.date(props.row.created_at) }}</div>
-        </q-card>
-      </div>
+          Mentor
+        </q-btn>
+        <q-btn
+          v-if="props.row.hos"
+          class="q-py-none q-px-sm text-weight-bold"
+          color="orange"
+          text-color="dark"
+          size="sm"
+          dense
+        >
+          HOS
+        </q-btn>
+        <q-btn
+          v-if="props.row.whitelist"
+          class="q-py-none q-px-sm text-weight-bold"
+          color="info"
+          size="sm"
+          dense
+        >
+          Whitelisted
+        </q-btn>
+        <q-btn
+          v-if="props.row.bypass_cap"
+          class="q-py-none q-px-sm text-weight-bold"
+          color="green"
+          text-color="dark"
+          size="sm"
+          dense
+        >
+          Can Bypass Cap
+        </q-btn>
+      </q-btn-group>
     </template>
   </base-table>
 </template>
 
-<style lang="scss" scoped>
-.gh-link-card--dense {
-  padding-top: 2px;
-  padding-bottom: 2px;
-}
-
-:deep(.q-table--grid) {
-  display: grid;
-  grid-template:
-    'select ckey connections participations compid ip byond spacer abilities created' /
-    min-content max-content max-content max-content max-content max-content max-content 1fr max-content max-content;
-  column-gap: map-get($space-md, 'x');
-
-  > *,
-  .q-table__top > * {
-    grid-column: 1 / -1;
-  }
-
-  .q-table__top,
-  .player-columns,
-  .q-table__grid-content,
-  .q-table__grid-item,
-  .gh-link-card {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: subgrid;
-  }
-}
-
-.player-columns {
-  padding: 0 4px;
-}
-
-.q-table__grid-item {
-  padding-top: 2px;
-  padding-bottom: 2px;
-}
-
-// @media (max-width: $breakpoint-sm-max) {
-//   :deep(.q-table--grid) {
-//     grid-template:
-//       'select ckey connections participations spacer' 1fr
-//       'compid ip byond abilities created' 1fr
-//       / min-content max-content max-content max-content max-content;
-
-//     > *,
-//     .q-table__top,
-//     .q-table__grid-content,
-//     .q-table__grid-item,
-//     .gh-link-card {
-//       grid-row: span 2;
-//     }
-
-//     .player-columns {
-//       display: none;
-//     }
-//   }
-// }
-</style>
-
 <script>
-import PlayerWhitelistDialog from '@/Components/Dialogs/PlayerWhitelist.vue'
+import PlayerBypassCapDialog from '@/Components/Dialogs/BulkPlayerBypassCap.vue'
+import PlayerWhitelistDialog from '@/Components/Dialogs/BulkPlayerWhitelist.vue'
 import { ionAdd, ionRemove, ionToggle } from '@quasar/extras/ionicons-v6'
 import BaseTable from '../BaseTable.vue'
 
 export default {
   components: {
     BaseTable,
-    PlayerWhitelistDialog
+    PlayerWhitelistDialog,
+    PlayerBypassCapDialog,
   },
 
   setup() {
@@ -267,6 +168,7 @@ export default {
       toggleMentorLoading: false,
       toggleHosLoading: false,
       toggleWhitelistedDialog: false,
+      toggleBypassCapDialog: false,
       routes: {
         fetch: '/admin/players',
         view: '/admin/players/_id',
@@ -278,9 +180,10 @@ export default {
           field: 'id',
           sortable: true,
           filterable: false,
+          style: 'width: 1px;',
         },
-        { name: 'ckey', label: 'Ckey', field: 'ckey', sortable: true },
-        { name: 'key', label: 'Key', field: 'key', sortable: true },
+        { name: 'ckey', label: 'Key', field: 'ckey', sortable: true },
+        // { name: 'key', label: 'Key', field: 'key', sortable: true },
         {
           name: 'connections_count',
           label: 'Connections',
@@ -290,6 +193,7 @@ export default {
           filter: {
             type: 'range',
           },
+          style: 'width: 1px;',
         },
         {
           name: 'participations_count',
@@ -300,12 +204,24 @@ export default {
           filter: {
             type: 'range',
           },
+          style: 'width: 1px;',
         },
-        { name: 'compid', label: 'Comp ID', field: 'compid', sortable: true },
-        { name: 'ip', label: 'IP', field: 'ip', sortable: true },
+        {
+          name: 'compid',
+          label: 'Comp ID',
+          sortable: true,
+          field: (row) => row.latest_connection?.comp_id,
+        },
+        {
+          name: 'ip',
+          label: 'IP',
+          sortable: true,
+          field: (row) => row.latest_connection?.ip,
+        },
         {
           name: 'byond_version',
           label: 'Byond',
+          sortable: true,
           field: (row) => {
             if (!row.byond_major || !row.byond_minor) return ''
             return `${row.byond_major}.${row.byond_minor}`
@@ -313,47 +229,47 @@ export default {
         },
         {
           name: 'mentor',
-          label: 'Mentor',
+          label: 'Is Mentor',
           field: 'mentor',
           sortable: true,
           filter: { type: 'boolean' },
         },
         {
           name: 'hos',
-          label: 'HOS',
+          label: 'Is HOS',
           field: 'hos',
           sortable: true,
           filter: { type: 'boolean' },
         },
         {
           name: 'whitelist',
-          label: 'Whitelist',
+          label: 'Is Whitelisted',
           field: 'whitelist',
           sortable: true,
           filter: { type: 'boolean' },
         },
         {
           name: 'bypass_cap',
-          label: 'Bypass Cap',
-          field: 'can_bypass_cap',
+          label: 'Can Bypass Cap',
+          field: 'bypass_cap',
           sortable: true,
           filter: { type: 'boolean' },
         },
         {
           name: 'created_at',
-          label: 'Created',
+          label: 'Player Since',
           field: 'created_at',
           sortable: true,
           format: this.$formats.date,
           filter: { type: 'DateRange' },
         },
-        // {
-        //   name: 'updated_at',
-        //   label: 'Updated',
-        //   field: 'updated_at',
-        //   sortable: true,
-        //   format: this.$formats.date,
-        // },
+        {
+          name: 'status',
+          label: 'Status',
+          field: 'status',
+          sortable: false,
+          filterable: false,
+        },
       ],
       selected: [],
     }
@@ -374,14 +290,6 @@ export default {
 
     showRemoveHos() {
       return this.selected.some((row) => row.hos)
-    },
-
-    showMakeBypassCap() {
-      return this.selected.some((row) => !row.can_bypass_cap)
-    },
-
-    showRemoveBypassCap() {
-      return this.selected.some((row) => row.can_bypass_cap)
     },
   },
 
@@ -409,18 +317,6 @@ export default {
       this.toggleHosLoading = false
       this.$refs.table.updateTable()
     },
-
-    // async toggleBypassCap(makeBypassCap, selected) {
-    //   this.toggleBypassCapLoading = true
-    //   const { data } = await axios.post(this.$route('admin.bypass-cap.bulk-toggle'), {
-    //     player_ids: selected.map((row) => row.id),
-    //     make_bypass_cap: makeBypassCap,
-    //   })
-
-    //   this.$q.notify({ message: data.message, color: 'positive' })
-    //   this.toggleBypassCapLoading = false
-    //   this.$refs.table.updateTable()
-    // },
   },
 }
 </script>

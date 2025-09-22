@@ -2,14 +2,8 @@
 
 namespace App\ModelFilters;
 
-use App\ModelFilters\Common\HasRangeFilters;
-use App\ModelFilters\Common\HasTimestampFilters;
-use EloquentFilter\ModelFilter;
-
-class MapFilter extends ModelFilter
+class MapFilter extends BaseModelFilter
 {
-    use HasRangeFilters, HasTimestampFilters;
-
     /**
      * Related Models that have ModelFilters as well as the method on the ModelFilter
      * As [relationMethod => [input_key1, input_key2]].

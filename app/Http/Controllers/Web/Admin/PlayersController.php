@@ -20,28 +20,25 @@ class PlayersController extends Controller
 
     public function index(Request $request)
     {
-        $model = Player::withCount(['connections', 'participations'])
-            ->with([
-                'mentor:id,player_id',
-                'hos:id,player_id',
-                'whitelist.servers',
-                'bypassCap.servers',
-            ]);
+        return Inertia::render('Admin/Players/Index', [
+            'players' => Inertia::lazy(function () use ($request) {
+                $players = Player::withCount(['connections', 'participations'])
+                    ->with([
+                        'mentor:id,player_id',
+                        'hos:id,player_id',
+                        'whitelist.servers',
+                        'whitelist.serverGroups',
+                        'bypassCap.servers',
+                        'bypassCap.serverGroups',
+                    ]);
 
-        if ($this->wantsInertia($request)) {
-            $model = $model->with('latestConnection');
-            $players = $model->indexFilterPaginate(perPage: 30);
+                if ($request->has('with_latest_connection')) {
+                    $players->with('latestConnection');
+                }
 
-            return Inertia::render('Admin/Players/Index', [
-                'players' => $players,
-            ]);
-        } else {
-            if ($request->has('with_latest_connection')) {
-                $model = $model->with('latestConnection');
-            }
-
-            return $model->indexFilterPaginate(perPage: 30);
-        }
+                return $players->indexFilterPaginate(perPage: 30);
+            }),
+        ]);
     }
 
     public function show(Request $request, Player $player)
@@ -66,6 +63,10 @@ class PlayersController extends Controller
             'notes.gameAdmin',
             'notes.gameServer',
             'medals.medal',
+            'whitelist.serverGroups',
+            'whitelist.servers',
+            'bypassCap.serverGroups',
+            'bypassCap.servers',
         ])
             ->loadCount([
                 'participations',

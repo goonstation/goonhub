@@ -204,7 +204,7 @@ export default {
         },
       ]
 
-      if (!!this.user.game_admin.id || !!this.user.is_admin) {
+      if (!!this.user.game_admin?.id || !!this.user.is_admin) {
         items.push(
           {
             label: 'Admins',
@@ -228,8 +228,6 @@ export default {
               route('admin.job-bans.index'),
               route('admin.notes.index'),
               route('admin.mentors.index'),
-              route('admin.hos.index'),
-              route('admin.whitelist.index'),
             ],
             children: [
               {
@@ -251,14 +249,6 @@ export default {
               {
                 label: 'Mentors',
                 href: route('admin.mentors.index'),
-              },
-              {
-                label: 'Heads of Security',
-                href: route('admin.hos.index'),
-              },
-              {
-                label: 'Whitelist',
-                href: route('admin.whitelist.index'),
               },
             ],
           },

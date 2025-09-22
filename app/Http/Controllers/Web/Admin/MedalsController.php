@@ -23,7 +23,7 @@ class MedalsController extends Controller
                 'SELECT medal_id, COUNT(*) AS earned_count FROM player_medals GROUP BY medal_id',
                 'pm', 'medals.id', '=', 'pm.medal_id', 'left'
             )
-            ->indexFilterPaginate(perPage: 30, sortBy: 'title', desc: false);
+            ->indexFilterPaginate(perPage: 30, sortBy: 'title', order: 'asc');
 
         $medals->through(fn (Medal $medal) => $medal->makeVisible(['id']));
 
@@ -41,7 +41,7 @@ class MedalsController extends Controller
         return Medal::whereDoesntHave('earned', function ($q) use ($player) {
             $q->where('player_id', $player);
         })
-            ->indexFilterPaginate(perPage: 30, sortBy: 'title', desc: false);
+            ->indexFilterPaginate(perPage: 30, sortBy: 'title', order: 'asc');
     }
 
     public function create()

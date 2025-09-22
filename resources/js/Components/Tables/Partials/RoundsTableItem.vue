@@ -1,5 +1,5 @@
 <template>
-  <div class="q-table__grid-item col-xs-12 col-md-6 col-lg-4">
+  <div class="q-table__grid-item col-xs-12">
     <Link :href="`/rounds/${item.row.id}`" class="gh-link-card q-py-sm">
       <div v-if="item.row.server" class="text-caption opacity-60 q-mb-xs">
         {{ item.row.server.name }}

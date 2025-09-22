@@ -2,7 +2,7 @@
   <q-dialog v-model="opened">
     <q-card style="max-width: 500px; width: 100%" flat bordered>
       <div class="gh-card__header q-pa-md bordered">
-        <span>Whitelisted Servers</span>
+        <span>Bypass Cap Servers</span>
       </div>
 
       <q-card-section class="q-pb-none">
@@ -18,7 +18,7 @@
 
       <q-card-actions align="right">
         <q-btn flat label="Cancel" v-close-popup />
-        <q-btn @click="toggleWhitelisted" label="Toggle" color="primary" :loading="loading" flat />
+        <q-btn @click="toggleBypassCap" label="Toggle" color="primary" :loading="loading" flat />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -57,10 +57,10 @@ export default {
   },
 
   methods: {
-    async toggleWhitelisted() {
+    async toggleBypassCap() {
       this.loading = true
       const removing = this.serverGroups.length === 0 && this.servers.length === 0
-      const { data } = await axios.post(this.$route('admin.whitelist.toggle', this.player.id), {
+      const { data } = await axios.post(this.$route('admin.bypass-cap.toggle', this.player.id), {
         server_group_ids: this.serverGroups,
         server_ids: this.servers,
       })
@@ -68,7 +68,7 @@ export default {
       this.$q.notify({ message: data.message, color: 'positive' })
       this.loading = false
       this.opened = false
-      this.$emit('success', { whitelist: removing ? null : data.whitelist })
+      this.$emit('success', { bypassCap: removing ? null : data.bypassCap })
     },
   },
 
@@ -77,11 +77,11 @@ export default {
       immediate: true,
       handler(opened) {
         if (!opened) return
-        this.serverGroups = this.player.whitelist?.server_groups
-          ? [...this.player.whitelist.server_groups.map((row) => row.id)]
+        this.serverGroups = this.player.bypass_cap?.server_groups
+          ? [...this.player.bypass_cap.server_groups.map((row) => row.id)]
           : []
-        this.servers = this.player.whitelist?.servers
-          ? [...this.player.whitelist.servers.map((row) => row.id)]
+        this.servers = this.player.bypass_cap?.servers
+          ? [...this.player.bypass_cap.servers.map((row) => row.id)]
           : []
       },
     },

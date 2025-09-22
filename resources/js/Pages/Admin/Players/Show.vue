@@ -3,7 +3,7 @@
     <div class="row gap-xs-sm q-mb-sm player-header">
       <q-card flat>
         <div>
-          <q-card-section class="flex gap-xs-md items-start q-px-lg q-pb-none q-mb-none">
+          <q-card-section class="flex no-wrap gap-xs-md items-start q-px-lg q-pb-none q-mb-none">
             <player-avatar :player="player" class="q-mt-xs" />
             <div class="q-pb-xs">
               <div class="text-weight-bold text-h6">
@@ -82,6 +82,24 @@
               square
             >
               HOS
+            </q-chip>
+            <q-chip
+              v-if="player.whitelist"
+              color="info"
+              text-color="dark"
+              class="text-weight-bold"
+              square
+            >
+              Whitelisted
+            </q-chip>
+            <q-chip
+              v-if="player.bypass_cap"
+              color="green"
+              text-color="dark"
+              class="text-weight-bold"
+              square
+            >
+              Can Bypass Cap
             </q-chip>
           </q-card-section>
         </div>
@@ -183,12 +201,64 @@
                 )
               "
               :icon="ionBan"
-              color="primary"
-              text-color="primary"
+              color="negative"
+              text-color="negative"
               class="text-weight-bold"
               label="Ban"
               size="11px"
               outline
+            />
+            <q-btn
+              :loading="toggleMentorLoading"
+              :icon="player.is_mentor ? ionRemove : ionAdd"
+              :label="player.is_mentor ? 'Remove Mentor' : 'Make Mentor'"
+              @click="toggleMentor(!player.is_mentor, [player])"
+              color="purple-4"
+              text-color="purple-4"
+              class="text-weight-bold"
+              size="11px"
+              outline
+            />
+            <q-btn
+              :loading="toggleHosLoading"
+              :icon="player.is_hos ? ionRemove : ionAdd"
+              :label="player.is_hos ? 'Remove HOS' : 'Make HOS'"
+              @click="toggleHos(!player.is_hos, [player])"
+              color="orange"
+              text-color="orange"
+              class="text-weight-bold"
+              size="11px"
+              outline
+            />
+            <q-btn
+              :icon="ionToggle"
+              @click="toggleWhitelistedDialog = true"
+              label="Toggle Whitelisted"
+              color="info"
+              text-color="info"
+              class="text-weight-bold"
+              size="11px"
+              outline
+            />
+            <player-whitelist-dialog
+              v-model="toggleWhitelistedDialog"
+              :player="{ ...player }"
+              @success="({ whitelist }) => ($page.props.player.whitelist = whitelist)"
+            />
+            <q-btn
+              :icon="ionToggle"
+              @click="toggleBypassCapDialog = true"
+              label="Toggle Cap Bypass"
+              color="green"
+              text-color="green"
+              class="text-weight-bold"
+              size="11px"
+              outline
+            />
+            <player-bypass-cap-dialog
+              v-model="toggleBypassCapDialog"
+              :player="{ ...player }"
+              @success="({ bypassCap }) => ($page.props.player.bypass_cap = bypassCap)"
             />
           </q-card-section>
         </div>
@@ -286,15 +356,20 @@
 </style>
 
 <script>
+import PlayerBypassCapDialog from '@/Components/Dialogs/PlayerBypassCap.vue'
+import PlayerWhitelistDialog from '@/Components/Dialogs/PlayerWhitelist.vue'
 import PlayerAvatar from '@/Components/PlayerAvatar.vue'
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import {
+  ionAdd,
   ionBan,
   ionEarth,
   ionInformationCircleOutline,
   ionMedal,
   ionPencil,
   ionPeople,
+  ionRemove,
+  ionToggle,
 } from '@quasar/extras/ionicons-v6'
 import { mdiBird } from '@quasar/extras/mdi-v7'
 import dayjs from 'dayjs'
@@ -327,6 +402,8 @@ export default {
     Notes,
     Medals,
     OtherAccounts,
+    PlayerBypassCapDialog,
+    PlayerWhitelistDialog,
   },
 
   setup() {
@@ -334,11 +411,14 @@ export default {
       dayjs,
       ionEarth,
       ionBan,
+      ionAdd,
+      ionRemove,
       ionPencil,
       ionPeople,
       ionInformationCircleOutline,
       ionMedal,
       mdiBird,
+      ionToggle,
     }
   },
 
@@ -356,6 +436,10 @@ export default {
   data() {
     return {
       currentTab: 'bans',
+      toggleMentorLoading: false,
+      toggleHosLoading: false,
+      toggleWhitelistedDialog: false,
+      toggleBypassCapDialog: false,
     }
   },
 
@@ -435,6 +519,32 @@ export default {
         }
       }
       return banned
+    },
+  },
+
+  methods: {
+    async toggleMentor(makeMentor, selected) {
+      this.toggleMentorLoading = true
+      const { data } = await axios.post(this.$route('admin.mentors.bulk-toggle'), {
+        player_ids: selected.map((row) => row.id),
+        make_mentor: makeMentor,
+      })
+
+      this.$q.notify({ message: data.message, color: 'positive' })
+      this.toggleMentorLoading = false
+      this.$page.props.player.is_mentor = makeMentor
+    },
+
+    async toggleHos(makeHos, selected) {
+      this.toggleHosLoading = true
+      const { data } = await axios.post(this.$route('admin.hos.bulk-toggle'), {
+        player_ids: selected.map((row) => row.id),
+        make_hos: makeHos,
+      })
+
+      this.$q.notify({ message: data.message, color: 'positive' })
+      this.toggleHosLoading = false
+      this.$page.props.player.is_hos = makeHos
     },
   },
 }

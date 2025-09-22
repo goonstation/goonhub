@@ -2,9 +2,7 @@
 
 namespace App\ModelFilters;
 
-use EloquentFilter\ModelFilter;
-
-class BanDetailFilter extends ModelFilter
+class BanDetailFilter extends BaseModelFilter
 {
     /**
      * Related Models that have ModelFilters as well as the method on the ModelFilter

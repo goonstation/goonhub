@@ -12,20 +12,20 @@ trait IndexFilterScope
     private function applyIndexFilter(
         Builder $query,
         ModelFilter|string|null $filter = null,
+        array $default = [],
         string $sortBy = 'id',
-        bool $desc = true,
+        string $order = 'desc',
         int $perPage = 15
     ) {
         $request = request();
 
-        // @phpstan-ignore method.notFound
-        $query->filter($request->input('filters', []), $filter);
+        $filters = $request->input('filters', []);
+        $filters = array_merge($default, $filters);
+        $filters['order'] = $filters['order'] ?? $order;
+        $filters['sort'] = $filters['sort'] ?? $sortBy;
 
-        $desc = $request->input('descending', $desc);
-        $query->orderBy(
-            $request->input('sort_by', $sortBy),
-            $desc === 'true' || $desc === '1' || $desc === true ? 'desc' : 'asc'
-        );
+        // @phpstan-ignore method.notFound
+        $query->filter($filters, $filter);
 
         $maxPerPage = 100;
         $perPage = (int) $request->input('per_page', $perPage);
@@ -46,12 +46,13 @@ trait IndexFilterScope
     public function scopeIndexFilterPaginate(
         Builder $query,
         ModelFilter|string|null $filter = null,
+        array $default = [],
         string $sortBy = 'id',
-        bool $desc = true,
+        string $order = 'desc',
         int $perPage = 15,
         bool $simple = false
     ) {
-        $query = $this->applyIndexFilter($query, $filter, $sortBy, $desc, $perPage);
+        $query = $this->applyIndexFilter($query, $filter, $default, $sortBy, $order, $perPage);
 
         /** @var LengthAwarePaginator */
         $paginator = $simple ?
@@ -73,10 +74,11 @@ trait IndexFilterScope
     public function scopeIndexFilter(
         Builder $query,
         ModelFilter|string|null $filter = null,
+        array $default = [],
         string $sortBy = 'id',
-        bool $desc = true,
+        string $order = 'desc',
         int $limit = 15
     ) {
-        return $this->applyIndexFilter($query, $filter, $sortBy, $desc, $limit);
+        return $this->applyIndexFilter($query, $filter, $default, $sortBy, $order, $limit);
     }
 }

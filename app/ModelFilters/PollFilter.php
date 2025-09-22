@@ -2,14 +2,10 @@
 
 namespace App\ModelFilters;
 
-use App\ModelFilters\Common\HasTimestampFilters;
 use Carbon\Carbon;
-use EloquentFilter\ModelFilter;
 
-class PollFilter extends ModelFilter
+class PollFilter extends BaseModelFilter
 {
-    use HasTimestampFilters;
-
     /**
      * Related Models that have ModelFilters as well as the method on the ModelFilter
      * As [relationMethod => [input_key1, input_key2]].

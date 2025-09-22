@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Player;
-use App\Traits\ManagesWhitelist;
+use App\Traits\ManagesBypassCap;
 use Illuminate\Http\Request;
 
-class WhitelistController extends Controller
+class BypassCapController extends Controller
 {
-    use ManagesWhitelist;
+    use ManagesBypassCap;
 
     public function destroyMulti(Request $request)
     {
@@ -17,9 +17,9 @@ class WhitelistController extends Controller
             'ids' => 'required|array',
         ]);
 
-        $this->removeWhitelistsById($data['ids']);
+        $this->removeBypassCapsById($data['ids']);
 
-        return ['message' => 'Whitelisted players removed successfully'];
+        return ['message' => 'Players removed from cap bypass successfully'];
     }
 
     public function toggle(Request $request, Player $player)
@@ -34,17 +34,17 @@ class WhitelistController extends Controller
         $removing = empty($data['server_ids']) && empty($data['server_group_ids']);
 
         if ($removing) {
-            $this->removeWhitelistByPlayer($player);
+            $this->removeBypassCapByPlayer($player);
 
-            return ['message' => 'Player removed from whitelists'];
+            return ['message' => 'Player removed from cap bypasses'];
         }
 
-        $this->setWhitelistsByPlayer($player, $data['server_group_ids'], $data['server_ids']);
-        $player->load(['whitelist.serverGroups', 'whitelist.servers']);
+        $this->setBypassCapsByPlayer($player, $data['server_group_ids'], $data['server_ids']);
+        $player->load(['bypassCap.serverGroups', 'bypassCap.servers']);
 
         return [
-            'message' => 'Player whitelisted successfully',
-            'whitelist' => $player->whitelist,
+            'message' => 'Player added to cap bypasses successfully',
+            'bypassCap' => $player->bypassCap,
         ];
     }
 
@@ -61,17 +61,17 @@ class WhitelistController extends Controller
         $removing = empty($data['server_ids']) && empty($data['server_group_ids']);
 
         if ($removing) {
-            $this->removeWhitelistsByPlayerId($data['player_ids']);
+            $this->removeBypassCapsByPlayerId($data['player_ids']);
 
-            return ['message' => sprintf('%s removed from whitelists', count($data['player_ids']) > 1 ? 'Players' : 'Player')];
+            return ['message' => sprintf('%s removed from bypass cap', count($data['player_ids']) > 1 ? 'Players' : 'Player')];
         }
 
-        $this->setWhitelistsByPlayerIds(
+        $this->setBypassCapsByPlayerIds(
             $data['player_ids'],
             $request->input('server_group_ids', []),
             $request->input('server_ids', [])
         );
 
-        return ['message' => sprintf('%s whitelists updated', count($data['player_ids']) > 1 ? 'Players' : 'Player')];
+        return ['message' => sprintf('%s bypass cap updated', count($data['player_ids']) > 1 ? 'Players' : 'Player')];
     }
 }
