@@ -60,6 +60,10 @@ class CommonRequest
         }
 
         return Cache::memo('array')->rememberForever('request_target_server', function () use ($serverId) {
+            if (is_numeric($serverId)) {
+                return GameServer::find($serverId);
+            }
+
             return GameServer::firstWhere('server_id', $serverId);
         });
     }
