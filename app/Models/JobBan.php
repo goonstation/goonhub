@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property int|null $deleted_by
+ * @property int|null $server_group
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\PlayerAdmin|null $deletedByGameAdmin
@@ -34,8 +35,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan forApi()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $limit = 15)
- * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, string $sortBy = 'id', bool $desc = true, int $perPage = 15, bool $simple = false)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $limit = 15)
+ * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan onlyTrashed()
@@ -55,6 +56,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereLike($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereReason($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereRoundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereServerGroup($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereServerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\JobBan withTrashed(bool $withTrashed = true)

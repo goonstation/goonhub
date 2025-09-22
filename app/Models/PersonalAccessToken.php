@@ -20,6 +20,7 @@ use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
  * @property \Illuminate\Support\Carbon|null $expires_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property bool $for_game_server
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameServerGroup> $serverGroups
  * @property-read int|null $server_groups_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameServer> $servers
@@ -34,6 +35,7 @@ use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PersonalAccessToken whereAbilities($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PersonalAccessToken whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PersonalAccessToken whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PersonalAccessToken whereForGameServer($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PersonalAccessToken whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PersonalAccessToken whereLastUsedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PersonalAccessToken whereName($value)

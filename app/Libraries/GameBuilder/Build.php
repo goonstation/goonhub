@@ -403,11 +403,16 @@ class Build
     {
         $this->checkCancelled();
         $this->log('Generating secrets');
-        $secrets = GameBuildSecret::all()->map(function ($secret) {
-            $key = Str::upper($secret->key);
+        $secrets = GameBuildSecret::where(function ($query) {
+            $query->whereNull('server_id')->whereNull('server_group_id');
+        })
+            ->orWhere('server_id', $this->server->id)
+            ->orWhere('server_group_id', $this->server->group_id)
+            ->get()->map(function ($secret) {
+                $key = Str::upper($secret->key);
 
-            return "$key {$secret->value}";
-        })->toArray();
+                return "$key {$secret->value}";
+            })->toArray();
 
         $secrets[] = 'GOONHUB_URL '.config('app.url');
         $secrets[] = 'GOONHUB_API_ENDPOINT '.config('app.api_url');
