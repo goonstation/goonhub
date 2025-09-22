@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\DiscordSettings;
 use App\Http\Controllers\Controller;
-use App\Models\DiscordSetting;
-use DiscordApi;
+use App\Services\CommonRequest;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -15,11 +13,12 @@ class TestController extends Controller
      */
     public function index(Request $request)
     {
-        $guildId = DiscordSetting::where('key', DiscordSettings::TOMATO_GUILD_ID->value)->first()?->value;
-        $guild = DiscordApi::guild($guildId);
+        $commonRequest = app(CommonRequest::class);
 
         return response()->json([
-            'message' => $guild->members()->json(),
+            'fromServerId' => $commonRequest->fromServerId(),
+            'fromServer' => $commonRequest->fromServer(),
+            'fromServerGroup' => $commonRequest->fromServerGroup(),
         ]);
     }
 }
