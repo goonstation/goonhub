@@ -753,7 +753,7 @@ class Build
         }
         $process = Process::fromShellCommandline("mv {$this->buildDir}/rsc.zip {$this->cdnTarget}/");
         $this->runProcess($process);
-        if (File::exists("{$this->buildCdnDir}/browserassets/build")) {
+        if (File::exists("{$this->buildCdnDir}/browserassets/build") && ! File::isEmptyDirectory("{$this->buildCdnDir}/browserassets/build")) {
             $process = Process::fromShellCommandline(
                 'rsync -rl --ignore-existing '.
                 "{$this->buildCdnDir}/browserassets/build/* ".
