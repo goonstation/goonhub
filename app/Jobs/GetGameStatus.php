@@ -3,15 +3,21 @@
 namespace App\Jobs;
 
 use App\Facades\GameBridge;
+use App\Models\GameServer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 
-class VerifyGameAuth implements ShouldQueue
+class GetGameStatus implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $timeout = 30;
+
+    public $tries = 1;
 
     /**
      * Create a new job instance.
@@ -19,8 +25,7 @@ class VerifyGameAuth implements ShouldQueue
      * @return void
      */
     public function __construct(
-        public string $serverId,
-        public array $message,
+        public GameServer $server,
     ) {}
 
     /**
@@ -30,13 +35,16 @@ class VerifyGameAuth implements ShouldQueue
      */
     public function handle()
     {
-        $response = GameBridge::server($this->serverId)
-            ->force(true)
+        $status = GameBridge::noRetry()
+            ->server($this->server)
             ->priority('high')
-            ->send($this->message);
+            ->timeout(25)
+            ->status();
 
-        if ($response->failed()) {
-            throw new \Exception('GameBridge error: '.$response->getMessage());
+        if ($status->failed()) {
+            throw new \Exception('GameBridge error: '.$status->getMessage());
         }
+
+        Cache::put("game_status_{$this->server->server_id}", $status->getData(), 60);
     }
 }

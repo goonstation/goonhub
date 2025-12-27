@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Facade;
 /**
  * GameBridge Service Facade
  *
+ * @method static \App\Services\GameBridge\GameBridgeService retryAttempts(int $retryAttempts)
+ * @method static \App\Services\GameBridge\GameBridgeService noRetry()
  * @method static \App\Services\GameBridge\Server server(string|\App\Models\GameServer $server)
  * @method static \App\Services\GameBridge\ServerCollection servers(array|\Illuminate\Database\Eloquent\Collection $servers)
  * @method static \App\Services\GameBridge\GameBridgeResponse send(string|array $targets, string|array $message)

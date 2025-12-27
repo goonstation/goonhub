@@ -72,11 +72,10 @@ RUN dpkg --add-architecture i386; \
     intl \
     gd \
     redis \
-    rdkafka \
     memcached \
     igbinary \
     ldap \
-    swoole \
+    swoole-6.1.4 \
     uv \
     vips \
     excimer \

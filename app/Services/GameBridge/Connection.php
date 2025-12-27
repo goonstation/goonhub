@@ -21,12 +21,15 @@ class Connection
 
     private int $cacheFor;
 
+    private string $priority;
+
     public function __construct(GameBridgeService $gameBridge)
     {
         $this->gameBridge = $gameBridge;
         $this->targets = collect();
         $this->timeout = $gameBridge->getTimeout();
         $this->cacheFor = $gameBridge->getDefaultCacheTime();
+        $this->priority = 'medium';
     }
 
     /**
@@ -107,6 +110,16 @@ class Connection
     }
 
     /**
+     * Set priority
+     */
+    public function priority(string $priority): self
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
      * Send the message and wait for response
      */
     public function send(bool $wantResponse = true): GameBridgeResponse|Collection
@@ -128,6 +141,7 @@ class Connection
             'timeout' => $this->timeout,
             'force' => $this->force,
             'cacheFor' => $this->cacheFor,
+            'priority' => $this->priority,
             'wantResponse' => $wantResponse,
         ];
 
@@ -197,5 +211,13 @@ class Connection
     public function getCacheFor(): int
     {
         return $this->cacheFor;
+    }
+
+    /**
+     * Get priority
+     */
+    public function getPriority(): string
+    {
+        return $this->priority;
     }
 }

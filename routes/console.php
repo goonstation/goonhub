@@ -1,5 +1,7 @@
 <?php
 
+use App\Jobs\GetAllGameStatus;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Schedule;
 use Spatie\Health\Commands\RunHealthChecksCommand;
 
@@ -15,3 +17,7 @@ use Spatie\Health\Commands\RunHealthChecksCommand;
 */
 
 Schedule::command(RunHealthChecksCommand::class)->everyMinute();
+
+if (App::isProduction()) {
+    Schedule::job(GetAllGameStatus::class)->everyThirtySeconds();
+}

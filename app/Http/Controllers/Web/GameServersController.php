@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Facades\GameBridge;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameServers\IndexRequest;
 use App\Models\GameServer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class GameServersController extends Controller
 {
@@ -31,12 +31,10 @@ class GameServersController extends Controller
             ->where('server_id', $request['server'])
             ->firstOrFail();
 
-        $res = GameBridge::server($gameServer)->status();
-
-        if ($res->failed()) {
-            return abort(500, $res->getMessage());
+        if (Cache::missing("game_status_{$gameServer->server_id}")) {
+            return ['error' => 'Server status not found'];
         }
 
-        return ['data' => $res->getData()];
+        return Cache::get("game_status_{$gameServer->server_id}");
     }
 }

@@ -54,6 +54,21 @@ class Socket
         $this->message = $options->message;
     }
 
+    public function isCached(): bool
+    {
+        $lock = Cache::lock($this->lockKey, 30);
+        if ($lock->owner()) {
+            return true;
+        }
+
+        if (Cache::has($this->cacheKey) && $this->wantResponse && ! $this->force) {
+            // We recently ran this exact query, and it returns a response we read later
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Handle socket errors
      */

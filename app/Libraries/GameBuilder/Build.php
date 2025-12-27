@@ -968,6 +968,7 @@ class Build
         // TODO: some way to cancel bridge comm?
         GameBridge::server($this->server->server_id)
             ->force(true)
+            ->priority('high')
             ->sendAndForget([
                 'type' => 'mapSwitchDone',
                 'map' => $this->error ? 'FAILED' : $this->settings->map_id,

@@ -16,6 +16,8 @@ class Server
 
     private int $cacheFor;
 
+    private ?string $priority = null;
+
     public function __construct(GameBridgeService $gameBridge, string|GameServer $server)
     {
         $this->gameBridge = $gameBridge;
@@ -63,10 +65,24 @@ class Server
     }
 
     /**
+     * Set priority
+     */
+    public function priority(string $priority): self
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
      * Get server status
      */
     public function status(): GameBridgeResponse
     {
+        if (! $this->priority) {
+            $this->priority = 'low';
+        }
+
         return $this->send('status');
     }
 
@@ -75,6 +91,10 @@ class Server
      */
     public function players(): GameBridgeResponse
     {
+        if (! $this->priority) {
+            $this->priority = 'low';
+        }
+
         return $this->send('players');
     }
 
@@ -91,6 +111,7 @@ class Server
             ->timeout($this->timeout)
             ->force($this->force)
             ->cacheFor($this->cacheFor)
+            ->priority($this->priority ?? 'medium')
             ->send();
     }
 
@@ -107,6 +128,7 @@ class Server
             ->timeout($this->timeout)
             ->force($this->force)
             ->cacheFor($this->cacheFor)
+            ->priority($this->priority ?? 'medium')
             ->sendAndForget();
     }
 }

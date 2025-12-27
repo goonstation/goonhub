@@ -117,6 +117,7 @@ class RemoteMusic implements ShouldQueue
 
         GameBridge::server($this->round->server_id)
             ->force(true)
+            ->priority('high')
             ->sendAndForget([
                 'type' => 'youtube',
                 'data' => $data,
@@ -133,6 +134,7 @@ class RemoteMusic implements ShouldQueue
         if ($this->round) {
             GameBridge::server($this->round->server_id)
                 ->force(true)
+                ->priority('high')
                 ->sendAndForget([
                     'type' => 'youtube',
                     'error' => $exception->getMessage(),

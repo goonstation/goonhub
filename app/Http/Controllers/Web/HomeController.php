@@ -10,6 +10,7 @@ use App\Models\GameServer;
 use App\Models\PlayersOnline;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Spatie\SchemaOrg\GamePlayMode;
@@ -77,15 +78,12 @@ class HomeController extends Controller
     private function getServerStatus(Request $request)
     {
         $server = $request->input('server');
-        $res = GameBridge::server($server)->status();
 
-        if ($res->failed()) {
-            Inertia::share('errors', ['status' => $res->getMessage()]);
-
-            return [];
+        if (Cache::missing("game_status_{$server}")) {
+            return ['error' => 'Server status not found'];
         }
 
-        return $res->getData();
+        return Cache::get("game_status_{$server}");
     }
 
     public function index(Request $request)
@@ -155,7 +153,7 @@ class HomeController extends Controller
 
         $data = ['servers' => $servers->toArray()];
         foreach ($servers as $key => $server) {
-            $res = GameBridge::server($server)->status();
+            $res = GameBridge::noRetry()->server($server)->status();
 
             if ($res->failed()) {
                 $data['servers'][$key]['error'] = true;

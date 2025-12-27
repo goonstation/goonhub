@@ -17,6 +17,8 @@ class ServerCollection
 
     private int $cacheFor;
 
+    private ?string $priority = null;
+
     public function __construct(GameBridgeService $gameBridge, array|ModelCollection $servers)
     {
         $this->gameBridge = $gameBridge;
@@ -66,10 +68,24 @@ class ServerCollection
     }
 
     /**
+     * Set priority
+     */
+    public function priority(string $priority): self
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
      * Get status from all servers
      */
     public function status(): Collection
     {
+        if (! $this->priority) {
+            $this->priority = 'low';
+        }
+
         return $this->send('status');
     }
 
@@ -78,6 +94,10 @@ class ServerCollection
      */
     public function players(): Collection
     {
+        if (! $this->priority) {
+            $this->priority = 'low';
+        }
+
         return $this->send('players');
     }
 
@@ -94,6 +114,7 @@ class ServerCollection
             ->timeout($this->timeout)
             ->force($this->force)
             ->cacheFor($this->cacheFor)
+            ->priority($this->priority ?? 'medium')
             ->send();
 
         // Always return a Collection for batch operations
@@ -113,6 +134,7 @@ class ServerCollection
             ->timeout($this->timeout)
             ->force($this->force)
             ->cacheFor($this->cacheFor)
+            ->priority($this->priority ?? 'medium')
             ->sendAndForget();
     }
 
