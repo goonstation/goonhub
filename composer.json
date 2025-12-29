@@ -9,14 +9,14 @@
     "awobaz/compoships": "^2.2",
     "aws/aws-sdk-php": "^3.283",
     "binarytorch/larecipe": "^2.6",
-    "dedoc/scramble": "^0.12.9",
+    "dedoc/scramble": "^0.13.8",
     "doctrine/dbal": "^4.2",
     "fakerphp/faker": "^1.9.1",
     "geoip2/geoip2": "^3.1",
     "goonstation/laravel-socialite-bab": "dev-master",
     "graham-campbell/github": "^13.0",
     "guzzlehttp/guzzle": "^7.2",
-    "inertiajs/inertia-laravel": "2.x-dev",
+    "inertiajs/inertia-laravel": "^2.0",
     "intervention/image-laravel": "*",
     "jaybizzle/laravel-crawler-detect": "1.*",
     "kdabrow/seeder-once": " ^6.0",
@@ -42,10 +42,12 @@
     "spatie/laravel-permission": "^6.21",
     "spatie/laravel-sitemap": "^7.3",
     "spatie/schema-org": "^3.23",
-    "symfony/css-selector": "^7.1",
+    "swoole/ide-helper": "^6.0",
+    "symfony/css-selector": "^8.0",
     "symfony/panther": "^2.1",
     "tabuna/breadcrumbs": "^4.3",
     "tightenco/ziggy": "^2.4",
+    "tpetry/laravel-postgresql-enhanced": "^3.5",
     "tucker-eric/eloquentfilter": "^3.1"
   },
   "require-dev": {
@@ -56,6 +58,7 @@
     "laravel/sail": "^1.0.1",
     "mockery/mockery": "^1.4.4",
     "nunomaduro/collision": "^8.1",
+    "phpstan/extension-installer": "^1.4",
     "phpstan/phpstan": "^2.1.23",
     "phpunit/phpunit": "^12.0",
     "spatie/laravel-ignition": "^2.0"
@@ -88,7 +91,7 @@
     "post-create-project-cmd": [
       "@php artisan key:generate --ansi"
     ],
-    "analyse": "./vendor/bin/phpstan analyse",
+    "analyse": "./vendor/bin/phpstan analyse --memory-limit=2048M",
     "docs-models": [
       "@php artisan ide-helper:models -W -R",
       "./vendor/bin/pint --parallel ./app/Models"
@@ -108,7 +111,8 @@
     "sort-packages": true,
     "allow-plugins": {
       "pestphp/pest-plugin": true,
-      "php-http/discovery": true
+      "php-http/discovery": true,
+      "phpstan/extension-installer": true
     }
   },
   "minimum-stability": "stable",
