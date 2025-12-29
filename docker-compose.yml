@@ -40,6 +40,7 @@ services:
       - mailpit
       - browserless
   nginx:
+    hostname: nginx
     image: openresty/openresty:latest
     entrypoint: ['/usr/bin/bash', '/usr/local/bin/nginx-entrypoint.sh']
     environment:
@@ -62,7 +63,15 @@ services:
     depends_on:
       - laravel
   pgsql:
-    image: 'postgres:17'
+    hostname: pgsql
+    build:
+      context: './docker/develop/postgresql'
+      dockerfile: Dockerfile
+      args:
+        PG_VERSION: '18'
+        PGDATA: '/var/lib/postgresql'
+        UID: '${WWWUSER}'
+        GID: '${WWWGROUP}'
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
     environment:
@@ -71,8 +80,8 @@ services:
       POSTGRES_USER: '${DB_USERNAME}'
       POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
     volumes:
-      - 'sail-pgsql:/var/lib/postgresql/data'
-      # - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+      - 'sail-pgsql:/var/lib/postgresql'
+      - './docker/develop/postgresql/postgresql.conf:/var/lib/postgresql/postgresql.conf'
     networks:
       - sail
     healthcheck:
@@ -102,12 +111,14 @@ services:
       retries: 3
       timeout: 5s
   memcached:
+    hostname: memcached
     image: 'memcached:alpine'
     ports:
       - '${FORWARD_MEMCACHED_PORT:-11211}:11211'
     networks:
       - sail
   mailpit:
+    hostname: mailpit
     image: 'axllent/mailpit:latest'
     ports:
       - '${FORWARD_MAILPIT_PORT:-1025}:1025'
@@ -115,6 +126,7 @@ services:
     networks:
       - sail
   browserless:
+    hostname: browserless
     image: 'ghcr.io/browserless/chromium'
     environment:
       TOKEN: '6R0W53R135510'
