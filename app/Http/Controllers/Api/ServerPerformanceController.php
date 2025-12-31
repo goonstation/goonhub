@@ -26,6 +26,7 @@ class ServerPerformanceController extends Controller
             function () use ($address) {
                 $res = null;
                 try {
+                    /** @var \Illuminate\Http\Client\Response|\Psr\Http\Message\MessageInterface */
                     $res = Http::withHeaders([
                         'Accept' => 'application/json',
                         'Authorization' => config('goonhub.server_performance.key'),

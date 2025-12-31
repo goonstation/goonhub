@@ -37,7 +37,6 @@ class BaseModelFilter extends ModelFilter
         if ($operator === 'between') {
             $amount = explode('-', $amount);
 
-            // @phpstan-ignore argument.type
             return $this->has($key, 'BETWEEN', DB::raw("{$amount[0]} and {$amount[1]}"));
         }
 

@@ -35,6 +35,7 @@ class OpenGraphImage
     {
         $response = null;
         try {
+            /** @var \Illuminate\Http\Client\Response|\Psr\Http\Message\MessageInterface */
             $response = Http::withHeaders([
                 'Cache-Control' => 'no-cache',
                 'Content-Type' => 'application/json',

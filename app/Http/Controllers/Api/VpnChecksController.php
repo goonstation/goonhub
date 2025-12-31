@@ -57,6 +57,7 @@ class VpnChecksController extends Controller
         $res = null;
 
         try {
+            /** @var \Illuminate\Http\Client\Response|\Psr\Http\Message\MessageInterface $res */
             $res = Http::get(
                 'https://ipqualityscore.com/api/json/ip/'
                     .config('goonhub.ipquality_pass')
