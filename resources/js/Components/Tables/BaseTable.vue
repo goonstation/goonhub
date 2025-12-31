@@ -355,8 +355,43 @@
               options-dense
             />
           </div>
+          <!-- Simple pagination: only show prev/next buttons without page numbers -->
+          <template v-if="isSimplePagination">
+            <q-btn
+              :disable="internalPagination.page <= 1"
+              @click="
+                () => {
+                  internalPagination.page--
+                  onPageChange()
+                }
+              "
+              :icon="ionChevronBack"
+              color="grey"
+              size="sm"
+              round
+              flat
+              dense
+            />
+            <span class="q-mx-sm text-grey">Page {{ internalPagination.page }}</span>
+            <q-btn
+              :disable="props.pagesNumber <= internalPagination.page"
+              @click="
+                () => {
+                  internalPagination.page++
+                  onPageChange()
+                }
+              "
+              :icon="ionChevronForward"
+              color="grey"
+              size="sm"
+              round
+              flat
+              dense
+            />
+          </template>
+          <!-- Full pagination with page numbers when total is known -->
           <q-pagination
-            v-if="!(props.pagesNumber === 1 && props.pagesNumber === internalPagination.page)"
+            v-else-if="!(props.pagesNumber === 1 && props.pagesNumber === internalPagination.page)"
             v-model="internalPagination.page"
             :max="props.pagesNumber"
             @update:model-value="onPageChange"
@@ -451,6 +486,8 @@ import {
   ionAdd,
   ionCalendar,
   ionCheckmark,
+  ionChevronBack,
+  ionChevronForward,
   ionClose,
   ionEye,
   ionInformationCircleOutline,
@@ -489,6 +526,8 @@ export default {
       ionTrash,
       ionSettings,
       ionInformationCircleOutline,
+      ionChevronBack,
+      ionChevronForward,
     }
   },
 
@@ -625,6 +664,7 @@ export default {
       selectedInternal: null,
       storedSelectedRow: null,
       scrollToTop: false,
+      isSimplePagination: false,
     }
   },
 
@@ -782,7 +822,19 @@ export default {
       this.internalPagination.rowsPerPage = data.per_page
       this.internalPagination.sortBy = sortBy
       this.internalPagination.descending = descending
-      this.internalPagination.rowsNumber = data.total
+
+      // Handle both LengthAwarePaginator (has total) and SimplePaginator (no total)
+      if (data.total !== undefined) {
+        this.internalPagination.rowsNumber = data.total
+        this.isSimplePagination = false
+      } else {
+        // SimplePaginator: estimate rowsNumber based on whether there are more pages
+        // This allows q-table to show next/prev navigation without knowing total
+        const hasMore = data.next_page_url !== null && data.next_page_url !== undefined
+        const currentCount = data.current_page * data.per_page
+        this.internalPagination.rowsNumber = hasMore ? currentCount + 1 : currentCount
+        this.isSimplePagination = true
+      }
       this.setUrlParams()
 
       if (this.scrollToTop) {
@@ -1030,7 +1082,18 @@ export default {
         //   mergedPagination.page = this.initial.current_page
         // }
         // mergedPagination.rowsPerPage = this.initial.per_page || 15
-        this.internalPagination.rowsNumber = init.total
+
+        // Handle both LengthAwarePaginator (has total) and SimplePaginator (no total)
+        if (init.total !== undefined) {
+          this.internalPagination.rowsNumber = init.total
+          this.isSimplePagination = false
+        } else {
+          // SimplePaginator: estimate rowsNumber based on whether there are more pages
+          const hasMore = init.next_page_url !== null && init.next_page_url !== undefined
+          const currentCount = (init.current_page || 1) * (init.per_page || 30)
+          this.internalPagination.rowsNumber = hasMore ? currentCount + 1 : currentCount
+          this.isSimplePagination = true
+        }
       }
     },
   },

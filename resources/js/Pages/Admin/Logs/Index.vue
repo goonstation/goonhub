@@ -1,10 +1,10 @@
 <template>
-  <log-rounds-table :initial="rounds" />
+  <log-rounds-table prop-key="rounds" />
 </template>
 
 <script>
-import LogRoundsTable from '@/Components/Tables/Admin/LogRoundsTable.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import LogRoundsTable from '@/Components/Tables/Admin/LogRoundsTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {
