@@ -48,6 +48,8 @@ RUN dpkg --add-architecture i386; \
     libsodium-dev \
     libbrotli-dev \
     locales \
+    # For SSH signing
+    openssh-client \
     # Custom packages
     nano zip unzip gnupg software-properties-common rsync \
     ffmpeg automake build-essential libasound2-dev libpulse-dev lame \
