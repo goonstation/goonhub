@@ -12,6 +12,9 @@ jobs:
     name: Deploy
     runs-on: self-hosted
 
+    permissions:
+      contents: read
+
     env:
       GOONHUB_DOCKER_PATH: ${{ secrets.GOONHUB_DOCKER_PATH }}
 

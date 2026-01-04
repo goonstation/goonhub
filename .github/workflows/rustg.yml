@@ -17,6 +17,9 @@ jobs:
     name: Build and upload release
     runs-on: ubuntu-22.04
 
+    permissions:
+      contents: read
+
     steps:
       - if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |

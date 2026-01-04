@@ -12,10 +12,15 @@ jobs:
   analyse:
     name: Analyse code
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
     strategy:
       fail-fast: true
       matrix:
         php: [8.4]
+
     env:
       extensions: pcntl, zip, pgsql, gd, imap, mysql, bcmath, soap, intl, ldap, msgpack, igbinary, redis, swoole, memcached, pcov, imagick
 
