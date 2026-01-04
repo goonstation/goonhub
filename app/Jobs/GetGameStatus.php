@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class GetGameStatus implements ShouldQueue
 {
@@ -42,7 +43,12 @@ class GetGameStatus implements ShouldQueue
             ->status();
 
         if ($status->failed()) {
-            throw new \Exception('GameBridge error: '.$status->getMessage());
+            Log::error('GameBridge error getting status', [
+                'server_id' => $this->server->server_id,
+                'message' => $status->getMessage(),
+            ]);
+
+            return;
         }
 
         Cache::put("game_status_{$this->server->server_id}", $status->getData(), 60);

@@ -53,7 +53,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['single', 'sentry_logs'],
             'ignore_exceptions' => false,
         ],
 
@@ -122,6 +122,11 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/gameauth.log'),
             'level' => env('LOG_LEVEL', 'debug'),
+        ],
+
+        'sentry_logs' => [
+            'driver' => 'sentry_logs',
+            'level' => env('LOG_LEVEL', 'info'),
         ],
     ],
 
