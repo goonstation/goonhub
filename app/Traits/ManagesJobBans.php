@@ -26,7 +26,10 @@ trait ManagesJobBans
 
         $expiresAt = null;
         if ($data->has('duration')) {
-            $expiresAt = Carbon::now()->addSeconds($data['duration']);
+            $duration = (int) $data['duration'];
+            if ($duration > 0) {
+                $expiresAt = Carbon::now()->addSeconds($duration);
+            }
         }
 
         $gameAdmin = $request->getGameAdmin();
