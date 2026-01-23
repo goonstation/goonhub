@@ -72,6 +72,7 @@ services:
         PGDATA: '/var/lib/postgresql'
         UID: '${WWWUSER}'
         GID: '${WWWGROUP}'
+    command: ['postgres', '-c', 'config_file=/etc/postgresql/postgresql.conf']
     ports:
       - '${FORWARD_DB_PORT:-5432}:5432'
     environment:
@@ -81,7 +82,7 @@ services:
       POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
     volumes:
       - 'sail-pgsql:/var/lib/postgresql'
-      - './docker/develop/postgresql/postgresql.conf:/var/lib/postgresql/postgresql.conf'
+      - './docker/develop/postgresql/postgresql.conf:/etc/postgresql/postgresql.conf'
     networks:
       - sail
     healthcheck:
