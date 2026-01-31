@@ -77,18 +77,22 @@
         </div>
         @else
         <div class="status__details">
-          <span>{{ Str::ucfirst($server['status']['mode']) }}</span>
+          <span>
+            {{ Str::ucfirst(isset($server['status']['mode']) ? $server['status']['mode'] : 'Secret') }}
+          </span>
           <span class="text-primary">
             {{ $server['status']['players'] }}
             player{{ (int) $server['status']['players'] === 1 ? '' : 's' }}
           </span>
           <span>
-            @if ($server['status']['elapsed'] === 'pre')
+            {{-- GAME_STATE_PREGAME = 5 --}}
+            @if ((int) $server['status']['gamestate'] <= 5)
             Lobby
-            @elseif ($server['status']['elapsed'] === 'post')
+            {{-- GAME_STATE_FINISHED = 8 --}}
+            @elseif ((int) $server['status']['gamestate'] === 8)
             Ended
             @else
-            {{ date("G\h i\m", (int) $server['status']['elapsed']) }}
+            {{ date("G\h i\m", (int) $server['status']['round_duration']) }}
             @endif
           </span>
           @isset ($server['status']['map_name'])

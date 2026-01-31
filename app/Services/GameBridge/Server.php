@@ -75,6 +75,18 @@ class Server
     }
 
     /**
+     * Ping the server, returns player count
+     */
+    public function ping(): GameBridgeResponse
+    {
+        if (! $this->priority) {
+            $this->priority = 'low';
+        }
+
+        return $this->send('ping');
+    }
+
+    /**
      * Get server status
      */
     public function status(): GameBridgeResponse
@@ -87,15 +99,15 @@ class Server
     }
 
     /**
-     * Get player count
+     * Get player list
      */
-    public function players(): GameBridgeResponse
+    public function who(): GameBridgeResponse
     {
         if (! $this->priority) {
             $this->priority = 'low';
         }
 
-        return $this->send('players');
+        return $this->send('who');
     }
 
     /**

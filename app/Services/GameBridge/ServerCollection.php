@@ -78,6 +78,18 @@ class ServerCollection
     }
 
     /**
+     * Ping all servers, returns player count
+     */
+    public function ping(): Collection
+    {
+        if (! $this->priority) {
+            $this->priority = 'low';
+        }
+
+        return $this->send('ping');
+    }
+
+    /**
      * Get status from all servers
      */
     public function status(): Collection
@@ -90,15 +102,15 @@ class ServerCollection
     }
 
     /**
-     * Get player count from all servers
+     * Get player list from all servers
      */
-    public function players(): Collection
+    public function who(): Collection
     {
         if (! $this->priority) {
             $this->priority = 'low';
         }
 
-        return $this->send('players');
+        return $this->send('who');
     }
 
     /**

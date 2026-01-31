@@ -41,7 +41,7 @@ class GetPlayerCounts implements ShouldQueue
             $response = GameBridge::server($server)
                 ->force(true)
                 ->priority('high')
-                ->players();
+                ->ping();
             $playerCount = $response->failed() ? null : $response->asNumber();
             $playersOnline = new PlayersOnline;
             $playersOnline->timestamps = false;

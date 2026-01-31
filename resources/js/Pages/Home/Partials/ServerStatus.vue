@@ -23,7 +23,7 @@
           <div v-if="error">&nbsp;</div>
           <q-skeleton type="text" v-else-if="loading" width="100%" />
           <template v-else>
-            <span>{{ $formats.capitalize(status.mode) }} Mode</span>
+            <span>{{ $formats.capitalize(status.mode || 'Secret') }} Mode</span>
             <q-separator vertical color="grey" class="q-mx-sm q-my-xs" />
             <span>{{ status.players }} players</span>
             <q-separator vertical color="grey" class="q-mx-sm q-my-xs" />
@@ -167,16 +167,18 @@ export default {
 
   computed: {
     isPreRound() {
-      return this.status?.elapsed === 'pre'
+      // GAME_STATE_PREGAME = 5
+      return parseInt(this.status.gamestate) <= 5
     },
 
     isPostRound() {
-      return this.status?.elapsed === 'post'
+      // GAME_STATE_FINISHED = 8
+      return parseInt(this.status.gamestate) === 8
     },
 
     roundTime() {
-      if (!this.status.elapsed || this.isPreRound) return 0
-      return dayjs.duration(parseInt(this.status.elapsed), 'seconds').format('H[h] m[m]')
+      if (!this.status.round_duration || this.isPreRound) return 0
+      return dayjs.duration(parseInt(this.status.round_duration), 'seconds').format('H[h] m[m]')
     },
 
     mapId() {
@@ -214,6 +216,11 @@ export default {
         preserveState: false,
         onCancelToken: (cancelToken) => (this.cancelToken = cancelToken),
         onSuccess: (page) => {
+          if (page.props.status.error) {
+            this.error = true
+            this.status = {}
+            return
+          }
           this.status = page.props.status
         },
         onError: () => {
@@ -240,8 +247,8 @@ export default {
     cleanup() {
       if (this.cleaned) return
       this.cleaned = true
-      this.cancelToken && this.cancelToken.cancel()
-      this.refreshTimer && clearTimeout(this.refreshTimer)
+      if (this.cancelToken) this.cancelToken.cancel()
+      if (this.refreshTimer) clearTimeout(this.refreshTimer)
     },
   },
 }
