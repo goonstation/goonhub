@@ -472,7 +472,7 @@ class Build
         File::makeDirectory($workDir, recursive: true);
 
         Http::sink("$workDir/byond.zip")
-            ->get("https://spacestation13.github.io/byond-builds/{$this->settings->byond_major}/{$version}_byond_linux.zip");
+            ->get("https://byond-builds.dm-lang.org/{$this->settings->byond_major}/{$version}_byond_linux.zip");
 
         // try {
         //     QueryByond::query(

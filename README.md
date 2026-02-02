@@ -32,6 +32,8 @@ bun install
 php artisan gh:setup
 ```
 
+Note: If you're migrating from a prior version/installation, be sure to copy any new defaults from `.env.example`
+
 ### Tasks
 
 To build the frontend in development mode, press F5 to run the "Serve Frontend" debug task. This boots the Vite server and opens the debug console. Given the default `.env` file, you can now visit http://localhost.
