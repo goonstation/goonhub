@@ -760,7 +760,7 @@ class Build
                 "{$this->cdnTarget}/"
             );
             $this->runProcess($process);
-            File::copy("{$this->buildCdnDir}/browserassets/build/manifest.json", "{$this->cdnTarget}/manifest.json");
+            // File::copy("{$this->buildCdnDir}/browserassets/build/manifest.json", "{$this->cdnTarget}/manifest.json");
             File::deleteDirectory("{$this->buildCdnDir}/browserassets/build");
         }
     }
