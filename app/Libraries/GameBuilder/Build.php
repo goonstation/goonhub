@@ -599,6 +599,10 @@ class Build
         // Transfer new files
         File::moveDirectory("{$this->buildDir}/browserassets", "{$this->buildCdnDir}/browserassets");
         File::moveDirectory("{$this->buildDir}/tgui", "{$this->buildCdnDir}/tgui");
+        // Copy +secret/tgui so tgui build can find secret interfaces relative to its workspace root
+        if (File::exists("{$this->buildDir}/+secret/tgui")) {
+            File::copyDirectory("{$this->buildDir}/+secret/tgui", "{$this->buildCdnDir}/+secret/tgui");
+        }
         // Restore node modules backup
         File::moveDirectory("{$this->buildCdnDir}/browserassets_modules", "{$this->buildCdnDir}/browserassets/node_modules");
 
@@ -643,6 +647,14 @@ class Build
         );
         $this->runProcess($process);
 
+        if (File::exists("{$this->buildCdnDir}/+secret/browserassets/src/tgui")) {
+            $this->log('Copying secret TGUI bundles');
+            $process = Process::fromShellCommandline(
+                "rsync -rl {$this->buildCdnDir}/+secret/browserassets/src/tgui/ {$this->buildCdnDir}/browserassets/src/tgui/"
+            );
+            $this->runProcess($process);
+        }
+
         $process = Process::fromShellCommandline(
             'npm run build',
             cwd: "{$this->buildCdnDir}/browserassets",
@@ -650,8 +662,6 @@ class Build
                 'NODE_ENV' => 'production',
                 'CDN_VERSION' => $this->cdnVersion,
                 'CDN_BASE_URL' => "https://cdn-{$this->server->server_id}.goonhub.com",
-                // TODO: remove when game repo gulpfile is updated everywhere
-                'SERVER_TARGET' => $this->server->server_id,
             ]
         );
         $this->runProcess($process);
