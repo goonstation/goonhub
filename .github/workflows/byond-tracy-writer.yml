@@ -1,0 +1,45 @@
+name: BYOND-Tracy-Writer
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: goonstation/byond-tracy-writer git ref
+        type: string
+        default: master
+  repository_dispatch:
+    types: [byond_tracy_writer_update]
+
+jobs:
+  build:
+    name: Build and upload latest release
+    runs-on: ubuntu-22.04
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: goonstation/byond-tracy-writer
+          ref: ${{ github.event.client_payload.sha || github.event.client_payload.ref || inputs.ref || 'master' }}
+
+      - run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install zip gcc-multilib libc6-dev-i386
+
+      - name: Build
+        run: gcc -m32 -shared -fPIC -O2 -o libprof.so prof.c
+
+      - run: zip latest.zip libprof.so
+
+      - uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.BYOND_TRACY_WRITER_RELEASES_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.BYOND_TRACY_WRITER_RELEASES_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.BYOND_TRACY_WRITER_RELEASES_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.BYOND_TRACY_WRITER_RELEASES_BUCKET }}
+          source-dir: './latest.zip'
+          destination-dir: ./
+          keep-file-fresh: true
