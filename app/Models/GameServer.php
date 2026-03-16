@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * @property int $id
@@ -24,6 +25,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \App\Models\PlayersOnline|null $currentPlayersOnline
  * @property-read \App\Models\GameRound|null $currentRound
  * @property-read \App\Models\GameBuildSetting|null $gameBuildSetting
+ * @property-read int|null $gamestate
+ * @property-read int|null $round_duration
+ * @property-read int|null $shuttle_direction
+ * @property-read float|null $shuttle_location
+ * @property-read int|null $shuttle_online
+ * @property-read int|null $shuttle_timer
  * @property-read mixed $byond_link
  * @property-read \App\Models\GameServerGroup|null $group
  *
@@ -59,6 +66,10 @@ class GameServer extends BaseModel
 
     protected $appends = ['byond_link'];
 
+    private bool $statusLoaded = false;
+
+    private ?array $cachedStatus = null;
+
     public function getByondLinkAttribute()
     {
         return 'byond://'.$this->address.':'.$this->port;
@@ -84,5 +95,48 @@ class GameServer extends BaseModel
         return $this->hasOne(GameRound::class, 'server_id', 'server_id')
             ->whereNull('ended_at')
             ->latestOfMany();
+    }
+
+    public function getGamestateAttribute(): ?int
+    {
+        return $this->getCachedStatus()['gamestate'] ?? null;
+    }
+
+    public function getRoundDurationAttribute(): ?int
+    {
+        return $this->getCachedStatus()['round_duration'] ?? null;
+    }
+
+    public function getShuttleOnlineAttribute(): ?int
+    {
+        return $this->getCachedStatus()['shuttle_online'] ?? null;
+    }
+
+    public function getShuttleDirectionAttribute(): ?int
+    {
+        return $this->getCachedStatus()['shuttle_direction'] ?? null;
+    }
+
+    public function getShuttleLocationAttribute(): ?float
+    {
+        $shuttleLocation = $this->getCachedStatus()['shuttle_location'] ?? null;
+
+        return $shuttleLocation !== null ? (float) $shuttleLocation : null;
+    }
+
+    public function getShuttleTimerAttribute(): ?int
+    {
+        return $this->getCachedStatus()['shuttle_timer'] ?? null;
+    }
+
+    private function getCachedStatus(): array
+    {
+        if (! $this->statusLoaded) {
+            $status = Cache::get("game_status_{$this->server_id}");
+            $this->cachedStatus = is_array($status) ? $status : [];
+            $this->statusLoaded = true;
+        }
+
+        return $this->cachedStatus ?? [];
     }
 }

@@ -44,6 +44,18 @@ class GameServerResource extends JsonResource
                     null
                 ),
             ),
+            /** @var int|null */
+            'gamestate' => $this->gamestate,
+            /** @var int|null */
+            'round_duration' => $this->round_duration,
+            /** @var int|null */
+            'shuttle_direction' => $this->shuttle_direction,
+            /** @var float|null */
+            'shuttle_location' => $this->shuttle_location,
+            /** @var int|null */
+            'shuttle_online' => $this->shuttle_online,
+            /** @var int|null */
+            'shuttle_timer' => $this->shuttle_timer,
         ];
     }
 }
