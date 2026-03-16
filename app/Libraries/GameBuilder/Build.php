@@ -52,6 +52,8 @@ class Build
 
     private $rootRustgDir;
 
+    private $rootByondTracyWriterDir;
+
     private $byondDir;
 
     private $serverDir;
@@ -103,6 +105,7 @@ class Build
         $this->rootDir = storage_path($this::$path);
         $this->rootByondDir = "{$this->rootDir}/byond";
         $this->rootRustgDir = "{$this->rootDir}/rustg";
+        $this->rootByondTracyWriterDir = "{$this->rootDir}/byond-tracy-writer";
         $this->serverDir = "{$this->rootDir}/servers/{$server->server_id}";
         $this->buildDir = "{$this->serverDir}/build";
         $this->buildCdnDir = "{$this->serverDir}/buildcdn";
@@ -549,6 +552,28 @@ class Build
         $this->log("Downloaded {$this->settings->rustg_version}");
     }
 
+    private function updateByondTracyWriter()
+    {
+        $this->checkCancelled();
+        $this->log('Checking for updates', group: 'BYOND Tracy Writer');
+
+        $artifactPath = "{$this->rootByondTracyWriterDir}/latest.zip";
+        $this->log('Refreshing latest artifact');
+
+        if (! File::exists($this->rootByondTracyWriterDir)) {
+            File::makeDirectory($this->rootByondTracyWriterDir);
+        }
+
+        if (File::exists($artifactPath)) {
+            File::delete($artifactPath);
+        }
+
+        Http::sink($artifactPath)
+            ->get('https://byond-tracy-writer.goonhub.com/latest.zip');
+
+        $this->log('Downloaded latest byond-tracy-writer');
+    }
+
     private function buildCdn()
     {
         $this->checkCancelled();
@@ -785,7 +810,7 @@ class Build
         $buildStamp = $this->getBuildStamp();
         $byondVersion = "{$this->settings->byond_major}.{$this->settings->byond_minor}";
 
-        $toUpload = ['game' => false, 'byond' => false, 'rustg' => false];
+        $toUpload = ['game' => false, 'byond' => false, 'rustg' => false, 'byond_tracy_writer' => true];
         $res = Http::get("{$this->server->orchestrator}/build/check", [
             'server' => $this->server->server_id,
             'buildstamp' => $buildStamp,
@@ -793,7 +818,9 @@ class Build
             'rustg' => $this->settings->rustg_version,
         ]);
         $res = $res->json();
-        $toUpload = $res['outdated'];
+        if (isset($res['outdated'])) {
+            $toUpload = array_merge($toUpload, $res['outdated']);
+        }
 
         if (in_array(true, $toUpload, true) === false) {
             $this->log('Remote server wants no new artifacts');
@@ -826,6 +853,14 @@ class Build
                 "{$this->settings->rustg_version}.zip"
             );
         }
+        if ($toUpload['byond_tracy_writer']) {
+            $this->log('Attaching new byond-tracy-writer artifact to upload');
+            $req->attach(
+                'byond_tracy_writer',
+                file_get_contents("{$this->rootByondTracyWriterDir}/latest.zip"),
+                'latest.zip'
+            );
+        }
         $this->log('Uploading new artifacts to remote server');
         $res = $req->withQueryParameters(['server' => $this->server->server_id])
             ->post("{$this->server->orchestrator}/build/upload");
@@ -847,6 +882,7 @@ class Build
 
         $this->compile();
         $this->updateRustg();
+        $this->updateByondTracyWriter();
         $this->buildCdn();
     }
 
@@ -861,6 +897,7 @@ class Build
         $this->prepareBuildDir();
         $this->compile();
         $this->updateRustg();
+        $this->updateByondTracyWriter();
     }
 
     public function start()

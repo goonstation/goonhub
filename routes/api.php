@@ -208,6 +208,7 @@ Route::middleware(['isadmin'])->group(function () {
         Route::get('/game', 'game');
         Route::get('/byond', 'byond');
         Route::get('/rustg', 'rustg');
+        Route::get('/byond-tracy-writer', 'byondTracyWriter');
     });
     Route::controller(OrchestrationController::class)->prefix('orchestration')->group(function () {
         Route::get('/status', 'status');

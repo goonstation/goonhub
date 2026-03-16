@@ -107,4 +107,19 @@ class GameBuildArtifactsController extends Controller
 
         return response()->download($path);
     }
+
+    /**
+     * Download BYOND Tracy Writer
+     */
+    public function byondTracyWriter()
+    {
+        $buildPath = Build::$path;
+        $path = storage_path("$buildPath/byond-tracy-writer/latest.zip");
+
+        if (! file_exists($path)) {
+            return abort(404);
+        }
+
+        return response()->download($path);
+    }
 }
