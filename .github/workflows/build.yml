@@ -64,7 +64,9 @@ jobs:
         with:
           context: .
           file: docker/deploy/Dockerfile
-          build-args: SENTRY_RELEASE=${{ env.RELEASE_NAME }}
+          build-args: |
+            SENTRY_RELEASE=${{ env.RELEASE_NAME }}
+            NODE_VERSION=24
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
