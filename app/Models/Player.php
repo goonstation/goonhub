@@ -22,20 +22,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\PlayerBypassCap|null $bypassCap
- * @property-read mixed $can_bypass_cap
+ * @property-read bool $can_bypass_cap
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerConnection> $connections
  * @property-read int|null $connections_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Events\EventDeath> $deaths
  * @property-read int|null $deaths_count
  * @property-read \App\Models\PlayerConnection|null $firstConnection
  * @property-read \App\Models\PlayerAdmin|null $gameAdmin
- * @property-read mixed $has_imported_medals
+ * @property-read bool $has_imported_medals
  * @property-read \App\Models\PlayerHos|null $hos
  * @property-read \App\Models\PlayerMedalsImported|null $importedMedals
- * @property-read mixed $is_admin
- * @property-read mixed $is_hos
- * @property-read mixed $is_mentor
- * @property-read mixed $is_whitelisted
+ * @property-read bool $is_admin
+ * @property-read bool $is_hos
+ * @property-read bool $is_mentor
+ * @property-read bool $is_whitelisted
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\JobBan> $jobBans
  * @property-read int|null $job_bans_count
  * @property-read \App\Models\PlayerConnection|null $latestConnection
@@ -56,7 +56,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @method static \Database\Factories\PlayerFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $limit = 15)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc')
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Player newQuery()
@@ -191,7 +191,7 @@ class Player extends BaseModel
     protected function isAdmin(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->gameAdmin()->exists(),
+            get: fn (): bool => $this->gameAdmin()->exists(),
         );
     }
 
@@ -199,7 +199,7 @@ class Player extends BaseModel
     protected function hasImportedMedals(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->importedMedals()->exists(),
+            get: fn (): bool => $this->importedMedals()->exists(),
         );
     }
 
@@ -207,7 +207,7 @@ class Player extends BaseModel
     protected function isMentor(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->mentor()->exists()
+            get: fn (): bool => $this->mentor()->exists()
         );
     }
 
@@ -215,7 +215,7 @@ class Player extends BaseModel
     protected function isHos(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->hos()->exists()
+            get: fn (): bool => $this->hos()->exists()
         );
     }
 
@@ -223,7 +223,7 @@ class Player extends BaseModel
     protected function isWhitelisted(): Attribute
     {
         return Attribute::make(
-            get: function ($value, $attributes) {
+            get: function ($value, $attributes): bool {
                 return $this->isWhitelistedOnServer(app(CommonRequest::class)->fromServerId());
             }
         );
@@ -233,7 +233,7 @@ class Player extends BaseModel
     protected function canBypassCap(): Attribute
     {
         return Attribute::make(
-            get: function ($value, $attributes) {
+            get: function ($value, $attributes): bool {
                 return $this->canBypassCapOnServer(app(CommonRequest::class)->fromServerId());
             }
         );

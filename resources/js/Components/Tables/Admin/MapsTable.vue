@@ -8,14 +8,14 @@
     flat
   >
     <template #header-right>
-      <q-btn @click="router.visit(route('admin.maps.upload'))" color="primary" text-color="dark">
+      <q-btn @click="$inertia.visit($route('admin.maps.upload'))" color="primary" text-color="dark">
         Upload Tiles
       </q-btn>
     </template>
 
     <template #cell-content-thumbnail="{ props }">
       <map-thumbnail v-if="props.row.is_layer" :map="props.row" />
-      <a v-else :href="route('maps.show', props.row.map_id.toLowerCase())" target="_blank">
+      <a v-else :href="$route('web.maps.show', props.row.map_id.toLowerCase())" target="_blank">
         <map-thumbnail :map="props.row" />
       </a>
     </template>
@@ -25,7 +25,9 @@
         <q-badge v-if="props.row.active" color="positive" text-color="black"> Active </q-badge>
         <q-badge v-else color="negative" text-color="black"> Inactive </q-badge>
         <q-badge v-if="props.row.is_layer" color="primary" text-color="black"> Layer </q-badge>
-        <q-badge v-if="props.row.admin_only" color="negative" text-color="black"> Admin Only </q-badge>
+        <q-badge v-if="props.row.admin_only" color="negative" text-color="black">
+          Admin Only
+        </q-badge>
       </div>
     </template>
   </base-table>
@@ -33,29 +35,22 @@
 
 <script>
 import MapThumbnail from '@/Components/MapThumbnail.vue'
-import { router } from '@inertiajs/vue3'
 import BaseTable from '../BaseTable.vue'
 
 export default {
   components: {
     BaseTable,
-    MapThumbnail
-  },
-
-  setup() {
-    return {
-      router,
-    }
+    MapThumbnail,
   },
 
   data() {
     return {
       routes: {
-        fetch: '/admin/maps',
-        // view: '/admin/maps/_id',
-        create: '/admin/maps/create',
-        edit: '/admin/maps/edit/_id',
-        delete: '/admin/maps/_id',
+        fetch: 'admin.maps.index',
+        // view: 'admin.maps.show',
+        create: 'admin.maps.create',
+        edit: 'admin.maps.edit',
+        delete: 'admin.maps.delete',
       },
       columns: [
         {

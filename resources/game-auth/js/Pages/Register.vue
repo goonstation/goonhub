@@ -70,7 +70,7 @@
       <Button :disabled="form.processing" icon="log-in" type="submit">Register</Button>
 
       <div class="links" style="justify-content: center">
-        <Link :href="route('game-auth.show-login')">Already registered?</Link>
+        <Link :href="route('web.game-auth.show-login')">Already registered?</Link>
       </div>
     </div>
   </form>
@@ -93,7 +93,7 @@ const form = useForm({
 })
 
 const submit = () => {
-  form.post(route('game-auth.register'), {
+  form.post(route('web.game-auth.register'), {
     onFinish: () => form.reset('password', 'password_confirmation'),
   })
 }

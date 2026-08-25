@@ -8,7 +8,6 @@ services:
       args:
         WWWGROUP: '${WWWGROUP}'
         WWWUSER: '${WWWUSER}'
-    image: 'sail-8.4/app'
     extra_hosts:
       - 'host.docker.internal:host-gateway'
       - '${REVERB_HOST:-wslocal}:host-gateway'

@@ -13,7 +13,7 @@ COMMANDS.login = function (argv, cb) {
     const password = this.stdout().innerHTML
 
     axios
-      .post(route('terminal.login'), {
+      .post(route('web.terminal.login'), {
         password,
       })
       .then(() => {

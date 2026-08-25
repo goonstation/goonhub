@@ -16,7 +16,7 @@
               emit-value
               map-options
               required
-              :load-route="route('game-servers.index', { with_invisible: 1 })"
+              :load-route="route('web.game-servers.index', { with_invisible: 1 })"
               :disabled-items="existingServers"
               :error="!!form.errors.server_id"
               :error-message="form.errors.server_id"
@@ -31,7 +31,7 @@
               dense
               emit-value
               map-options
-              :load-route="route('maps.index')"
+              :load-route="route('web.maps.index')"
               :error="!!form.errors.map_id"
               :error-message="form.errors.map_id"
             />

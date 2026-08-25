@@ -13,7 +13,7 @@
       multiple
       use-chips
       hide-bottom-space
-      :load-route="route('game-servers.index', { with_invisible: 1 })"
+      :load-route="route('web.game-servers.index', { with_invisible: 1 })"
       :rules="[(val) => !!val.length || 'Field is required']"
       :error="!!form.errors.server_ids"
       :error-message="form.errors.server_ids"

@@ -6,7 +6,7 @@ const form = useForm({
 })
 
 const createTeam = () => {
-  form.post(route('teams.store'), {
+  form.post(route('web.teams.store'), {
     errorBag: 'createTeam',
     preserveScroll: true,
   })

@@ -11,18 +11,18 @@
 </template>
 
 <script>
-import BaseTable from '../BaseTable.vue';
+import BaseTable from '../BaseTable.vue'
 
 export default {
   components: { BaseTable },
   data() {
     return {
       routes: {
-        fetch: '/admin/redirects',
-        // view: '/admin/redirects/_id',
-        create: '/admin/redirects/create',
-        edit: '/admin/redirects/edit/_id',
-        delete: '/admin/redirects/_id',
+        fetch: 'admin.redirects.index',
+        // view: 'admin.redirects.show',
+        create: 'admin.redirects.create',
+        edit: 'admin.redirects.edit',
+        delete: 'admin.redirects.delete',
       },
       columns: [
         {
@@ -49,14 +49,16 @@ export default {
         {
           name: 'created_by',
           label: 'Created By',
-          field: (row) => row.created_by_user?.game_admin.alias || row.created_by_user?.game_admin.player?.ckey,
+          field: (row) =>
+            row.created_by_user?.game_admin.alias || row.created_by_user?.game_admin.player?.ckey,
           sortable: false,
           filterable: false,
         },
         {
           name: 'updated_by',
           label: 'Updated By',
-          field: (row) => row.updated_by_user?.game_admin.alias || row.updated_by_user?.game_admin.player?.ckey,
+          field: (row) =>
+            row.updated_by_user?.game_admin.alias || row.updated_by_user?.game_admin.player?.ckey,
           sortable: false,
           filterable: false,
         },

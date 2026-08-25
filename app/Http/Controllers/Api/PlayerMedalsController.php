@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\Medals\IndexRequest;
 use App\Http\Resources\PlayerMedalResource;
 use App\Models\Medal;
 use App\Models\Player;
 use App\Models\PlayerMedal;
-use App\Rules\DateRange;
 use Carbon\Carbon;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
@@ -25,27 +25,12 @@ class PlayerMedalsController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<PlayerMedalResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.player_id' => 'int',
-            'filters.ckey' => 'string',
-            'filters.medal_id' => 'int',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         $query = PlayerMedal::with(['medal']);
 
         if ($request->input('sort_by') === 'medal_title') {

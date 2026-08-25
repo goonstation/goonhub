@@ -1,6 +1,6 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
 import ActionMessage from '@/Components/ActionMessage.vue'
+import { useForm } from '@inertiajs/vue3'
 
 const props = defineProps({
   team: Object,
@@ -12,7 +12,7 @@ const form = useForm({
 })
 
 const updateTeamName = () => {
-  form.put(route('teams.update', props.team), {
+  form.put(route('web.teams.update', props.team), {
     errorBag: 'updateTeamName',
     preserveScroll: true,
   })

@@ -25,7 +25,7 @@
         </div>
         <div v-if="map">
           <div>
-            <a v-if="mapUri" :href="route('maps.show', mapUri)" target="_blank">
+            <a v-if="mapUri" :href="route('web.maps.show', mapUri)" target="_blank">
               {{ map }}
               <q-icon :name="ionOpenOutline" />
             </a>
@@ -81,8 +81,8 @@
 </style>
 
 <script>
-import dayjs from 'dayjs'
 import { ionOpenOutline } from '@quasar/extras/ionicons-v6'
+import dayjs from 'dayjs'
 
 export default {
   props: {

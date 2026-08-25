@@ -1,11 +1,18 @@
-import pluginJs from '@eslint/js'
+// @ts-check
+
+import eslint from '@eslint/js'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import pluginVue from 'eslint-plugin-vue'
 import globals from 'globals'
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-  { files: ['**/*.{js,mjs,cjs,vue}'] },
+export default defineConfig([
+  globalIgnores(['resources/js/Pages/Terminal/jsterm/js/jsterm.js']),
+  {
+    basePath: 'resources/js',
+    files: ['**/*.{ts,js,mjs,cjs,vue}'],
+  },
   {
     languageOptions: {
       globals: {
@@ -19,7 +26,8 @@ export default [
       },
     },
   },
-  pluginJs.configs.recommended,
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
   ...pluginVue.configs['flat/essential'],
   eslintConfigPrettier,
   {
@@ -27,4 +35,4 @@ export default [
       'vue/multi-word-component-names': 'off',
     },
   },
-]
+])

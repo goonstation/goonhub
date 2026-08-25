@@ -105,14 +105,14 @@
 </template>
 
 <script>
-import BaseForm from './BaseForm.vue'
 import SelectGameAdmins from '@/Components/Selects/GameAdmins.vue'
+import BaseForm from './BaseForm.vue'
 
 export default {
   extends: BaseForm,
 
   components: {
-    SelectGameAdmins
+    SelectGameAdmins,
   },
 
   computed: {
@@ -120,7 +120,7 @@ export default {
       // Can't edit own is_admin
       if (this.form.id === this.$page.props.auth.user.id) return false
       return this.$page.props.auth.user.is_admin
-    }
-  }
+    },
+  },
 }
 </script>

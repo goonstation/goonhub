@@ -5,6 +5,7 @@ namespace App\Models\Events;
 use App\Models\GameRound;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -21,10 +22,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\GameRound $gameRound
- * @property-read mixed $signature
+ * @property-read string $signature
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventError filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventError indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $limit = 15)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventError indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc')
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventError newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventError newQuery()
@@ -73,7 +74,7 @@ class EventError extends BaseEventModel
     protected function signature(): Attribute
     {
         return Attribute::make(
-            get: fn (mixed $value, array $attributes) => md5(
+            get: fn (mixed $value, array $attributes): string => md5(
                 $attributes['name'].
                 $attributes['file'].
                 $attributes['line']
@@ -81,10 +82,7 @@ class EventError extends BaseEventModel
         );
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function gameRound()
+    public function gameRound(): BelongsTo
     {
         return $this->belongsTo(GameRound::class, 'round_id');
     }

@@ -76,7 +76,7 @@
 
         <div class="flex">
           <q-btn
-            @click="$inertia.visit($route('login'))"
+            @click="$inertia.visit($route('web.login'))"
             label="Already registered?"
             color="primary"
             flat
@@ -114,7 +114,7 @@ const form = useForm({
 })
 
 const submit = () => {
-  form.post(route('register'), {
+  form.post(route('web.register'), {
     onFinish: () => form.reset('password', 'password_confirmation'),
   })
 }

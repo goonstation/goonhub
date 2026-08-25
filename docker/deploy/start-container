@@ -4,8 +4,9 @@ set -e
 if [ "$1" != "" ]; then
     exec "$@"
 else
-    php artisan optimize
+    php artisan optimize:clear
     php artisan migrate --seed --force
+    php artisan optimize
     php artisan gh:generate-sitemap
     php artisan gh:update-geo-lite
 

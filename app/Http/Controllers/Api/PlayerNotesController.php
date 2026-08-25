@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
+use App\Attributes\HasServerFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\PlayerNotes\IndexRequest;
 use App\Http\Requests\PlayerNotes\StoreRequest;
 use App\Http\Resources\PlayerNoteResource;
 use App\Models\Player;
 use App\Models\PlayerNote;
-use App\Rules\DateRange;
 use App\Traits\ManagesPlayerNotes;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -26,31 +27,13 @@ class PlayerNotesController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<PlayerNoteResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasServerFilter,
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.ckey' => 'string',
-            'filters.game_admin' => 'string',
-            'filters.server' => 'string',
-            'filters.round' => 'int',
-            'filters.note' => 'string',
-            /** Enable exact matching on the ckey filter */
-            'filters.exact' => 'boolean',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         return PlayerNoteResource::collection(
             PlayerNote::with(['player', 'gameAdmin.player'])
                 ->indexFilterPaginate()

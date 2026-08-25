@@ -1,6 +1,6 @@
 <script setup>
-import { ref } from 'vue'
 import { useForm } from '@inertiajs/vue3'
+import { ref } from 'vue'
 
 const props = defineProps({
   team: Object,
@@ -14,7 +14,7 @@ const confirmTeamDeletion = () => {
 }
 
 const deleteTeam = () => {
-  form.delete(route('teams.destroy', props.team), {
+  form.delete(route('web.teams.destroy', props.team), {
     errorBag: 'deleteTeam',
   })
 }

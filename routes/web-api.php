@@ -3,4 +3,4 @@
 use App\Http\Controllers\Api\HealthcheckController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('healthcheck', [HealthcheckController::class, 'index']);
+Route::get('healthcheck', [HealthcheckController::class, 'index'])->name('healthcheck.index');

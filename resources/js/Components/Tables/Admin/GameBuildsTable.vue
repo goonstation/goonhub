@@ -7,7 +7,6 @@
     :show-columns="['created_at']"
     :hide-columns="['cancelled', 'failed', 'map_switch', 'success']"
     :pagination="{ sortBy: 'created_at' }"
-    @row-click="onRowClick"
     flat
     dense
     no-row-actions
@@ -84,7 +83,6 @@
 </style>
 
 <script>
-import { router } from '@inertiajs/vue3'
 import { date } from 'quasar'
 import BaseTable from '../BaseTable.vue'
 
@@ -94,8 +92,8 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/builds',
-        view: '/admin/builds/_id',
+        fetch: 'admin.builds.index',
+        view: 'admin.builds.show',
       },
       columns: [
         {
@@ -173,10 +171,6 @@ export default {
   methods: {
     onBuildFinished() {
       this.$refs.table.updateTable()
-    },
-
-    onRowClick(row) {
-      router.visit(route('admin.builds.show', row.id))
     },
 
     formatDuration(seconds) {

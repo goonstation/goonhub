@@ -49,14 +49,14 @@
         <div class="flex items-center q-mb-md">
           <q-toggle v-model="form.remember" label="Remember me" />
           <q-space />
-          <Link v-if="canResetPassword" :href="$route('password.request')">
+          <Link v-if="canResetPassword" :href="$route('web.password.request')">
             Forgot your password?
           </Link>
         </div>
 
         <div class="flex">
           <q-btn
-            @click="$inertia.visit($route('register'))"
+            @click="$inertia.visit($route('web.register'))"
             label="Create Account"
             color="primary"
             flat
@@ -113,8 +113,8 @@ export default {
   created() {
     const urlParams = new URLSearchParams(window.location.search)
     const prev = urlParams.get('prev')
-    if (prev) this.url = route('login', { prev })
-    else this.url = route('login')
+    if (prev) this.url = route('web.login', { prev })
+    else this.url = route('web.login')
   },
 
   methods: {

@@ -14,11 +14,12 @@ trait ManagesPlayerNotes
         $data = $request->validated();
         $gameAdmin = $request->getGameAdmin();
         $player = Player::where('ckey', $data['ckey'])->first();
+        $gameServer = $request->getGameServer();
 
         $note = new PlayerNote;
         $note->game_admin_id = $gameAdmin ? $gameAdmin->id : null;
         $note->round_id = isset($data['round_id']) ? $data['round_id'] : null;
-        $note->server_id = isset($data['server_id']) ? $data['server_id'] : null;
+        $note->server_id = $gameServer ? $gameServer->server_id : null;
         if ($player) {
             $note->player_id = $player->id;
         } else {
@@ -47,8 +48,9 @@ trait ManagesPlayerNotes
             $updateData['ckey'] = $data['ckey'];
         }
 
-        if (isset($data['server_id'])) {
-            $updateData['server_id'] = $data['server_id'];
+        $gameServer = $request->getGameServer();
+        if ($gameServer) {
+            $updateData['server_id'] = $gameServer->server_id;
         }
         $updateData['note'] = $data['note'];
         $note->update($updateData);

@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\Http\Requests\GameBuildTestMergeCreateRequest;
-use App\Http\Requests\GameBuildTestMergeUpdateRequest;
+use App\Http\Requests\GameBuildTestMerges\StoreRequest;
+use App\Http\Requests\GameBuildTestMerges\UpdateRequest;
 use App\Http\Resources\GameBuildTestMergeResource;
 use App\Libraries\DiscordBot;
 use App\Models\GameBuildSetting;
@@ -80,7 +80,7 @@ trait ManagesGameBuildTestMerges
         }
     }
 
-    private function addTestMerge(GameBuildTestMergeCreateRequest $request)
+    private function addTestMerge(StoreRequest $request)
     {
         $gameAdmin = $request->getGameAdmin();
         $servers = $request->input('server_ids', [$request->input('server_id')]);
@@ -126,7 +126,7 @@ trait ManagesGameBuildTestMerges
         return GameBuildTestMergeResource::collection($testMerges);
     }
 
-    private function updateTestMerge(GameBuildTestMergeUpdateRequest $request, GameBuildTestMerge $testMerge)
+    private function updateTestMerge(UpdateRequest $request, GameBuildTestMerge $testMerge)
     {
         if ($request->has('pr_id') || $request->has('server_id')) {
             $prId = $request->input('pr_id', $testMerge->pr_id);

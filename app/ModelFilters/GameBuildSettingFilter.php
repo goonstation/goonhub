@@ -24,7 +24,7 @@ class GameBuildSettingFilter extends BaseModelFilter
 
     public function branch($val)
     {
-        return $this->where('branch', $val);
+        return $this->where('branch', 'ILIKE', '%'.$val.'%');
     }
 
     public function byondMajor($val)

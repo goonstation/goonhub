@@ -17,13 +17,13 @@ class LinkDiscordController extends Controller
         $user = Auth::user();
 
         if ($user->linkedDiscord) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'You are already linked to a Discord account.');
         }
 
         /** @var \SocialiteProviders\Discord\Provider */
         $driver = Socialite::driver('discord');
-        $driver = $driver->redirectUrl(route('link-discord.callback'));
+        $driver = $driver->redirectUrl(route('web.link-discord.callback'));
 
         return $driver->redirect();
     }
@@ -32,23 +32,23 @@ class LinkDiscordController extends Controller
     {
         /** @var \SocialiteProviders\Discord\Provider */
         $driver = Socialite::driver('discord');
-        $discordUser = $driver->redirectUrl(route('link-discord.callback'))->user();
+        $discordUser = $driver->redirectUrl(route('web.link-discord.callback'))->user();
         $user = Auth::user();
 
         if ($user->linkedDiscord) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'You are already linked to a Discord account.');
         }
 
         $existingDiscordLink = LinkedDiscordUser::where('discord_id', $discordUser->getId())->first();
         if ($existingDiscordLink) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'This Discord account is already linked to another user.');
         }
 
         $this->linkToDiscord($user, $discordUser->getId(), $discordUser->getName(), $discordUser->getEmail());
 
-        return redirect()->route('profile.show')
+        return redirect()->route('web.profile.show')
             ->with('success', 'Successfully linked Discord account.');
     }
 
@@ -57,13 +57,13 @@ class LinkDiscordController extends Controller
         $user = Auth::user();
 
         if (! $user->linkedDiscord) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'You are not linked to a Discord account.');
         }
 
         $user->linkedDiscord()->delete();
 
-        return redirect()->route('profile.show')
+        return redirect()->route('web.profile.show')
             ->with('success', 'Successfully unlinked Discord account.');
     }
 }

@@ -17,14 +17,14 @@ class LinkByondController extends Controller
         $user = Auth::user();
 
         if ($user->linkedByond) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'You are already linked to a BYOND account.');
         }
 
         try {
             return Socialite::driver('bab')->redirect();
         } catch (\Exception $e) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'Failed to redirect to BYOND. Please try again later.');
         }
     }
@@ -37,19 +37,19 @@ class LinkByondController extends Controller
         $user = Auth::user();
 
         if ($user->linkedByond) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'You are already linked to a BYOND account.');
         }
 
         $existingByondLink = LinkedByondUser::where('ckey', $byondUser['ckey'])->first();
         if ($existingByondLink) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'This BYOND account is already linked to another user.');
         }
 
         $this->linkToByond($user, $byondUser['ckey']);
 
-        return redirect()->route('profile.show')
+        return redirect()->route('web.profile.show')
             ->with('success', 'Successfully linked BYOND account.');
     }
 
@@ -58,13 +58,13 @@ class LinkByondController extends Controller
         $user = Auth::user();
 
         if (! $user->linkedByond) {
-            return redirect()->route('profile.show')
+            return redirect()->route('web.profile.show')
                 ->with('error', 'You are not linked to a BYOND account.');
         }
 
         $user->linkedByond()->delete();
 
-        return redirect()->route('profile.show')
+        return redirect()->route('web.profile.show')
             ->with('success', 'Successfully unlinked BYOND account.');
     }
 }

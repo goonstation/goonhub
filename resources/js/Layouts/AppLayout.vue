@@ -9,7 +9,7 @@
       <template #bottom>
         <q-separator />
         <div class="site-nav__item">
-          <Link :href="$route('dashboard')" class="dashboard-login site-nav__item q-pa-sm">
+          <Link :href="$route('web.user.dashboard')" class="dashboard-login site-nav__item q-pa-sm">
             <div class="site-nav__label">
               <q-icon :name="ionLogInOutline" size="2em" />
               Dashboard
@@ -86,63 +86,63 @@ export default {
       siteNavItems: [
         {
           label: 'Home',
-          href: route('home'),
+          href: route('web.home'),
         },
         {
           label: 'Rounds',
-          href: route('rounds.index'),
+          href: route('web.rounds.index'),
         },
         {
           label: 'Players',
-          match: route('players.index'),
+          match: route('web.players.index'),
           children: [
             {
               label: 'Overview',
-              href: route('players.index'),
+              href: route('web.players.index'),
             },
             {
               label: 'Search',
-              href: route('players.search'),
+              href: route('web.players.search'),
             },
           ],
         },
         {
           label: 'Events',
-          match: route('events.index'),
+          match: route('web.events.index'),
           children: [
             {
               label: 'Overview',
-              href: route('events.index'),
+              href: route('web.events.index'),
             },
             {
               label: 'Antagonists',
-              href: route('antags.index'),
+              href: route('web.events.antags.index'),
             },
             {
               label: 'Deaths',
-              href: route('deaths.index'),
+              href: route('web.events.deaths.index'),
             },
             {
               label: 'Errors',
-              href: route('errors.index'),
+              href: route('web.events.errors.index'),
             },
             {
               label: 'Fines',
-              href: route('fines.index'),
+              href: route('web.events.fines.index'),
             },
             {
               label: 'Tickets',
-              href: route('tickets.index'),
+              href: route('web.events.tickets.index'),
             },
           ],
         },
         {
           label: 'Medals',
-          href: route('medals.index'),
+          href: route('web.medals.index'),
         },
         {
           label: 'Maps',
-          href: route('maps.index'),
+          href: route('web.maps.index'),
         },
       ],
     }

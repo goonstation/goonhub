@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Middleware\CanAccessAdminRoutes;
+use App\Http\Middleware\ValidateFromGameServer;
 use App\Http\Middleware\ValidateTargetGameAdmin;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -31,23 +32,28 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             Route::middleware(['sentry:web-api', 'api'])
+                ->name('web-api.')
                 ->group(base_path('routes/web-api.php'));
 
             Route::middleware(['sentry:api-open', 'api'])
                 ->domain(config('app.api_url'))
+                ->name('api-open.')
                 ->group(base_path('routes/api-open.php'));
 
             Route::middleware([
                 'sentry:api',
-                'auth:api',
+                'auth:sanctum',
                 'api',
+                ValidateFromGameServer::class,
                 ValidateTargetGameAdmin::class,
             ])
                 ->domain(config('app.api_url'))
+                ->name('api.')
                 ->group(base_path('routes/api.php'));
 
             if (config('goonhub.include_frontend')) {
                 Route::middleware(['sentry:web', 'web'])
+                    ->name('web.')
                     ->group(base_path('routes/web.php'));
 
                 Route::middleware([
@@ -57,6 +63,7 @@ class RouteServiceProvider extends ServiceProvider
                     config('jetstream.auth_session'),
                     'nometa',
                 ])
+                    ->name('web.user.')
                     ->group(base_path('routes/user.php'));
 
                 Route::middleware([
@@ -68,6 +75,7 @@ class RouteServiceProvider extends ServiceProvider
                     CanAccessAdminRoutes::class,
                 ])
                     ->prefix('/admin')
+                    ->name('admin.')
                     ->group(base_path('routes/admin.php'));
             }
         });

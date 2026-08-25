@@ -138,7 +138,7 @@ COMMANDS.sudo = function (argv, cb) {
     if (count <= 3) {
       console.log(password)
       axios
-        .post(route('terminal.sudo'), {
+        .post(route('web.terminal.sudo'), {
           password,
         })
         .then(() => {
@@ -226,7 +226,7 @@ COMMANDS.lpr = function (argv, cb) {
   }
 
   axios
-    .post(route('terminal.print'), { fileName })
+    .post(route('web.terminal.print'), { fileName })
     .then((res) => {
       const server = res.data.message
       this._terminal.write('lpr: file sent to to qqqqqqueeeeeeu---<br>')

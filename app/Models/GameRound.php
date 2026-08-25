@@ -67,7 +67,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @method static \Database\Factories\GameRoundFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameRound filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameRound indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $limit = 15)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameRound indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc')
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameRound newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameRound newQuery()

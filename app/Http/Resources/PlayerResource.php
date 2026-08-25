@@ -23,19 +23,35 @@ class PlayerResource extends JsonResource
             'byond_join_date' => $this->byond_join_date,
             'byond_major' => $this->byond_major,
             'byond_minor' => $this->byond_minor,
-            /** @var bool|null */
+            /** @var bool */
             'is_admin' => $this->whenAppended('is_admin'),
             'admin_rank' => $this->whenLoaded('user', function () {
                 return $this->user?->gameAdmin?->rank?->rank;
             }),
-            /** @var bool|null */
-            'is_mentor' => $this->whenAppended('is_mentor'),
-            /** @var bool|null */
-            'is_hos' => $this->whenAppended('is_hos'),
-            /** @var bool|null */
-            'is_whitelisted' => $this->whenAppended('is_whitelisted'),
-            /** @var bool|null */
-            'can_bypass_cap' => $this->whenAppended('can_bypass_cap'),
+            /** @var bool */
+            'is_mentor' => $this->when(
+                $this->relationLoaded('mentor'),
+                fn () => (bool) $this->mentor?->exists,
+                $this->whenAppended('is_mentor')
+            ),
+            /** @var bool */
+            'is_hos' => $this->when(
+                $this->relationLoaded('hos'),
+                fn () => (bool) $this->hos?->exists,
+                $this->whenAppended('is_hos')
+            ),
+            /** @var bool */
+            'is_whitelisted' => $this->when(
+                $this->relationLoaded('whitelist'),
+                fn () => (bool) $this->whitelist?->exists,
+                $this->whenAppended('is_whitelisted')
+            ),
+            /** @var bool */
+            'can_bypass_cap' => $this->when(
+                $this->relationLoaded('bypassCap'),
+                fn () => (bool) $this->bypassCap?->exists,
+                $this->whenAppended('can_bypass_cap')
+            ),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

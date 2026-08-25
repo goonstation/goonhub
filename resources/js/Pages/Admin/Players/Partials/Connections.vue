@@ -27,7 +27,7 @@
         </template>
         <template v-slot:body-cell-round_id="props">
           <q-td :props="props">
-            <Link v-if="props.row.round_id" :href="$route('rounds.show', props.row.round_id)">
+            <Link v-if="props.row.round_id" :href="$route('web.rounds.show', props.row.round_id)">
               #{{ props.row.round_id }}
             </Link>
             <template v-else> N/A </template>

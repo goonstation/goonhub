@@ -2,6 +2,8 @@
 
 namespace App\ModelFilters;
 
+use Illuminate\Support\Carbon;
+
 class BanFilter extends BaseModelFilter
 {
     /**
@@ -50,30 +52,51 @@ class BanFilter extends BaseModelFilter
     public function ckey($val)
     {
         return $this->related('details', function ($query) use ($val) {
-            return $query->where('ckey', 'ILIKE', '%'.$val.'%')
-                ->where('deleted_at', null);
+            return $query->where('ckey', 'ILIKE', '%'.$val.'%');
         });
     }
 
     public function compId($val)
     {
         return $this->related('details', function ($query) use ($val) {
-            return $query->where('comp_id', 'ILIKE', '%'.$val.'%')
-                ->where('deleted_at', null);
+            return $query->where('comp_id', 'ILIKE', '%'.$val.'%');
         });
     }
 
     public function ip($val)
     {
         return $this->related('details', function ($query) use ($val) {
-            return $query->where('ip', 'ILIKE', '%'.$val.'%')
-                ->where('deleted_at', null);
+            return $query->where('ip', '<<', $val)
+                ->orWhere('ip', $val);
         });
     }
 
     public function requiresAppeal($val)
     {
         return $this->where('requires_appeal', '=', $val);
+    }
+
+    public function active($val)
+    {
+        if ($val === 'true' || $val === '1') {
+            return $this->whereNull('deleted_at')->where(function ($query) {
+                return $query->where('expires_at', '>', Carbon::now())
+                    ->orWhere('expires_at', null);
+            });
+        } else {
+            return $this->whereNotNull('deleted_at')->orWhere(function ($query) {
+                return $query->whereNotNull('expires_at')->where('expires_at', '<', Carbon::now());
+            });
+        }
+    }
+
+    public function permanent($val)
+    {
+        if ($val === 'true' || $val === '1') {
+            return $this->whereNull('expires_at');
+        } else {
+            return $this->whereNotNull('expires_at');
+        }
     }
 
     public function details($val)

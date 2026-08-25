@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Players\IndexRequest;
 use App\Models\Ban;
 use App\Models\BanDetail;
 use App\Models\CursedCompId;
@@ -19,6 +20,7 @@ class PlayersController extends Controller
     use ManagesBans;
 
     public function index(Request $request)
+    public function index(IndexRequest $request)
     {
         return Inertia::render('Admin/Players/Index', [
             'players' => Inertia::lazy(function () use ($request) {

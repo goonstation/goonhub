@@ -21,16 +21,15 @@
     </template>
 
     <template #delete-confirm="{ props }">
-      Deleting this medal will remove it from {{ props.item.earned_count }} players!
-      <br><br>
+      Deleting this medal will remove it from {{ props.item.earned_count }} players! <br /><br />
       Are you absolutely sure you want to do this?
     </template>
   </base-table>
 </template>
 
 <script>
-import BaseTable from '../BaseTable.vue'
 import MedalThumbnail from '@/Components/MedalThumbnail.vue'
+import BaseTable from '../BaseTable.vue'
 
 export default {
   components: {
@@ -41,12 +40,12 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/medals',
-        // view: '/admin/medals/_id',
-        create: '/admin/medals/create',
-        edit: '/admin/medals/edit/_id',
-        // delete: '/admin/medals/_id',
-        // deleteMulti: '/admin/medals',
+        fetch: 'admin.medals.index',
+        // view: 'admin.medals.show',
+        create: 'admin.medals.create',
+        edit: 'admin.medals.edit',
+        // delete: 'admin.medals.delete',
+        // deleteMulti: 'admin.medals.delete-multi',
       },
       columns: [
         // {

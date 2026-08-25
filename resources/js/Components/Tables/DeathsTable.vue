@@ -11,7 +11,7 @@
   >
     <template v-slot:item="props">
       <div class="q-table__grid-item col-xs-12">
-        <Link :href="`/events/deaths/${props.row.id}`" class="gh-link-card">
+        <Link :href="$route('web.events.deaths.show', props.row.id)" class="gh-link-card">
           <div class="row items-center q-col-gutter-md">
             <div class="col">
               <div>
@@ -98,7 +98,7 @@ export default {
   components: { BaseTable, VoteControl },
   data() {
     return {
-      routes: { fetch: '/events/deaths' },
+      routes: { fetch: 'web.events.deaths.index' },
       columns: [
         {
           name: 'id',

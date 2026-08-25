@@ -9,7 +9,7 @@
   >
     <template v-slot:item="props">
       <div class="q-table__grid-item col-12 q-pa-none">
-        <Link :href="route('players.show', props.row.id)" class="gh-link-card">
+        <Link :href="$route('web.players.show', props.row.id)" class="gh-link-card">
           <div class="flex items-center no-wrap">
             <player-avatar :player="props.row" class="q-mr-sm" size="md" />
             <div style="line-height: 1">
@@ -59,8 +59,8 @@
 </style>
 
 <script>
-import BaseTable from './BaseTable.vue'
 import PlayerAvatar from '@/Components/PlayerAvatar.vue'
+import BaseTable from './BaseTable.vue'
 
 export default {
   components: {
@@ -74,7 +74,12 @@ export default {
 
   data() {
     return {
-      routes: { fetch: route('medals.players', this.medalUuid) },
+      routes: {
+        fetch: {
+          route: 'web.medals.players',
+          params: () => this.medalUuid,
+        },
+      },
       columns: [
         {
           name: 'name',

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GameBuildTestMergeCreateRequest;
+use App\Http\Requests\GameBuildTestMerges\StoreRequest;
+use App\Http\Requests\GameBuildTestMerges\UpdateRequest;
 use App\Models\GameBuildTestMerge;
 use App\Traits\ManagesGameBuildTestMerges;
 use Github\ResultPager;
@@ -135,7 +136,7 @@ class GameBuildTestMergesController extends Controller
         ]);
     }
 
-    public function store(GameBuildTestMergeCreateRequest $request)
+    public function store(StoreRequest $request)
     {
         $request->merge([
             'game_admin_id' => $request->user()->gameAdmin->id,
@@ -158,12 +159,8 @@ class GameBuildTestMergesController extends Controller
         ]);
     }
 
-    public function updateCommit(Request $request, GameBuildTestMerge $testMerge)
+    public function updateCommit(UpdateRequest $request, GameBuildTestMerge $testMerge)
     {
-        $request->validate([
-            'commit' => 'required|string',
-        ]);
-
         if ($request['commit'] !== $testMerge->commit) {
             $testMerge->commit = $request['commit'];
             $testMerge->updatedBy()->associate($request->user()->gameAdmin);

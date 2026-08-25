@@ -30,7 +30,7 @@
 
         <div class="flex q-mt-sm">
           <q-btn
-            @click="$inertia.visit($route('login'))"
+            @click="$inertia.visit($route('web.login'))"
             label="Back to Login"
             color="primary"
             flat
@@ -77,7 +77,7 @@ export default {
 
   methods: {
     submit() {
-      this.form.post(route('password.email'))
+      this.form.post(route('web.password.email'))
     },
   },
 }

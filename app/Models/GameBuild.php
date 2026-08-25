@@ -27,7 +27,7 @@ use Illuminate\Support\Carbon;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\PlayerAdmin|null $cancelledBy
- * @property-read mixed $duration
+ * @property-read int|float $duration
  * @property-read \App\Models\GameServer $gameServer
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GameBuildLog> $logs
  * @property-read int|null $logs_count
@@ -35,7 +35,7 @@ use Illuminate\Support\Carbon;
  * @property-read \App\Models\PlayerAdmin|null $startedBy
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $limit = 15)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc')
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameBuild newQuery()
@@ -81,7 +81,7 @@ class GameBuild extends BaseModel
     protected function duration(): Attribute
     {
         return Attribute::make(
-            get: function (mixed $val, array $attrs) {
+            get: function (mixed $val, array $attrs): int|float {
                 if (! array_key_exists('ended_at', $attrs)) {
                     return 0;
                 }

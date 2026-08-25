@@ -36,7 +36,7 @@ class GameAuthController extends Controller
 
         $credentials['email'] = strtolower($credentials['email']);
         if (Auth::attempt($credentials, true)) {
-            return to_route('game-auth.authed');
+            return to_route('web.game-auth.authed');
         }
 
         return back()->withErrors([
@@ -63,7 +63,7 @@ class GameAuthController extends Controller
 
         Auth::login($user, true);
 
-        return to_route('game-auth.authed');
+        return to_route('web.game-auth.authed');
     }
 
     public function showForgot()
@@ -83,7 +83,7 @@ class GameAuthController extends Controller
             Auth::login($user, true);
         } else {
             if (! Auth::check()) {
-                return to_route('game-auth.show-login');
+                return to_route('web.game-auth.show-login');
             }
 
             $user = Auth::user();
@@ -148,7 +148,7 @@ class GameAuthController extends Controller
     {
         /** @var \SocialiteProviders\Discord\Provider */
         $driver = Socialite::driver('discord');
-        $driver = $driver->redirectUrl(route('game-auth.discord-callback'));
+        $driver = $driver->redirectUrl(route('web.game-auth.discord-callback'));
 
         return $driver->redirect();
     }
@@ -157,16 +157,16 @@ class GameAuthController extends Controller
     {
         $user = null;
         try {
-            $user = $this->handleDiscordCallback(route('game-auth.discord-callback'));
+            $user = $this->handleDiscordCallback(route('web.game-auth.discord-callback'));
         } catch (ValidationException $e) {
-            return to_route('game-auth.show-login')->withErrors($e->errors());
+            return to_route('web.game-auth.show-login')->withErrors($e->errors());
         } catch (\Throwable $e) {
-            return to_route('game-auth.show-login')->withErrors([$e->getMessage()]);
+            return to_route('web.game-auth.show-login')->withErrors([$e->getMessage()]);
         }
 
         Auth::login($user, true);
 
-        return to_route('game-auth.authed');
+        return to_route('web.game-auth.authed');
     }
 
     public function showError()

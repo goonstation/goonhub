@@ -50,10 +50,10 @@ export default {
   watch: {
     modelValue: {
       immediate: true,
-      handler(newFilters, oldFilters) {
+      handler(newFilters) {
         if (!newFilters) return
         Object.keys(this.fields).forEach((field) => {
-          if (newFilters.hasOwnProperty(field)) {
+          if (field in newFilters) {
             this.fields[field] = newFilters[field]
           }
         })

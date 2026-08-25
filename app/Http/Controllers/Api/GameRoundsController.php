@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GameRounds\StoreRequest;
 use App\Http\Resources\GameRoundResource;
 use App\Models\GameRound;
 use Dedoc\Scramble\Attributes\Group;
@@ -17,15 +18,9 @@ class GameRoundsController extends Controller
      *
      * Start a new game round
      */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $data = $request->validate([
-            'server_id' => 'required|string',
-            'map' => 'required|string',
-            'rp_mode' => 'nullable|boolean',
-            'test_merges' => 'nullable|array',
-            'test_merges.*' => 'sometimes|required|numeric',
-        ]);
+        $data = $request->validated();
 
         $gameRound = new GameRound;
         $gameRound->server_id = $data['server_id'];

@@ -23,7 +23,7 @@ export default {
   components: { BaseTable, RoundsTableItem },
   data() {
     return {
-      routes: { fetch: '/rounds' },
+      routes: { fetch: 'web.rounds.index' },
       columns: [
         {
           name: 'id',

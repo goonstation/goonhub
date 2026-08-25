@@ -1,6 +1,6 @@
 <template>
   <a
-    :href="$route('auth.discord-redirect')"
+    :href="$route('web.auth.discord-redirect')"
     class="discord-redirect-button q-mb-md rounded-borders"
   >
     <q-icon :name="ionLogoDiscord" size="30px" class="q-mr-sm" />

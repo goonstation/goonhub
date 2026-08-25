@@ -1,20 +1,20 @@
 <template>
-  <medals-table :initial="medals" />
+  <medals-table prop-key="medals" />
 </template>
 
 <script>
-import MedalsTable from '@/Components/Tables/Admin/MedalsTable.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import MedalsTable from '@/Components/Tables/Admin/MedalsTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {
-    MedalsTable
+    MedalsTable,
   },
 
   layout: (h, page) => h(DashboardLayout, { title: 'Medals' }, () => page),
 
   props: {
-    medals: Object
-  }
+    medals: Object,
+  },
 }
 </script>

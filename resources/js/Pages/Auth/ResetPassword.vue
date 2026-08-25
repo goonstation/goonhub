@@ -59,9 +59,9 @@
 </template>
 
 <script>
+import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { useForm } from '@inertiajs/vue3'
 import { ionHelpCircle } from '@quasar/extras/ionicons-v6'
-import AuthLayout from '@/Layouts/AuthLayout.vue'
 
 export default {
   layout: (h, page) => h(AuthLayout, { title: 'Reset Password' }, () => page),
@@ -90,7 +90,7 @@ export default {
 
   methods: {
     submit() {
-      this.form.post(route('password.update'), {
+      this.form.post(route('web.password.update'), {
         onFinish: () => this.form.reset('password', 'password_confirmation'),
       })
     },

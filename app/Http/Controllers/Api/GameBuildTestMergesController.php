@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
+use App\Attributes\HasServerFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GameBuildTestMergeCreateRequest;
-use App\Http\Requests\GameBuildTestMergeUpdateRequest;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\GameBuildTestMerges\IndexRequest;
+use App\Http\Requests\GameBuildTestMerges\StoreRequest;
+use App\Http\Requests\GameBuildTestMerges\UpdateRequest;
 use App\Http\Resources\GameBuildTestMergeResource;
 use App\Models\GameBuildTestMerge;
-use App\Rules\DateRange;
 use App\Traits\ManagesGameBuildTestMerges;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -26,29 +27,13 @@ class GameBuildTestMergesController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<GameBuildTestMergeResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasServerFilter,
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.pr' => 'int',
-            'filters.server' => 'string',
-            'filters.added_by' => 'string',
-            'filters.updated_by' => 'string',
-            'filters.commit' => 'string',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         return GameBuildTestMergeResource::collection(
             GameBuildTestMerge::with(['buildSettings', 'addedBy', 'updatedBy'])
                 ->indexFilterPaginate()
@@ -60,7 +45,7 @@ class GameBuildTestMergesController extends Controller
      *
      * Add one or multiple new game build test merges
      */
-    public function store(GameBuildTestMergeCreateRequest $request)
+    public function store(StoreRequest $request)
     {
         try {
             return $this->addTestMerge($request);
@@ -74,7 +59,7 @@ class GameBuildTestMergesController extends Controller
      *
      * Update an existing game build test merge
      */
-    public function update(GameBuildTestMergeUpdateRequest $request, GameBuildTestMerge $testMerge)
+    public function update(UpdateRequest $request, GameBuildTestMerge $testMerge)
     {
         try {
             return $this->updateTestMerge($request, $testMerge);

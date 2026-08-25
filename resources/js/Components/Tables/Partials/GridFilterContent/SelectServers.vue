@@ -32,7 +32,7 @@ export default {
 
   methods: {
     async getServer(serverId) {
-      const { data } = await axios.get('/game-servers', {
+      const { data } = await axios.get(this.$route('web.game-servers.index'), {
         params: {
           filters: {
             server: serverId,

@@ -30,7 +30,7 @@
               <tr>
                 <td><strong>Ckey</strong></td>
                 <td>
-                  <Link :href="route('admin.player.show-by-ckey', jobBan.ckey)">
+                  <Link :href="route('admin.players.show-by-ckey', jobBan.ckey)">
                     {{ jobBan.ckey }}
                   </Link>
                 </td>
@@ -82,7 +82,10 @@
                   <td><strong>Removed By</strong></td>
                   <td>
                     <template v-if="jobBan.deleted_by_game_admin">
-                      {{ jobBan.deleted_by_game_admin.alias || jobBan.deleted_by_game_admin.player?.ckey }}
+                      {{
+                        jobBan.deleted_by_game_admin.alias ||
+                        jobBan.deleted_by_game_admin.player?.ckey
+                      }}
                     </template>
                     <template v-else>Unknown</template>
                   </td>

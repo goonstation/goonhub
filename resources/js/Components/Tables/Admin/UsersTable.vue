@@ -22,9 +22,9 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/users',
-        create: '/admin/users/create',
-        edit: '/admin/users/edit/_id',
+        fetch: 'admin.users.index',
+        create: 'admin.users.create',
+        edit: 'admin.users.edit',
       },
       columns: [
         {
@@ -33,8 +33,15 @@ export default {
           field: 'id',
           sortable: true,
           filterable: false,
+          headerClasses: 'q-table--col-auto-width',
         },
-        { name: 'profile_photo_url', label: 'Avatar', field: 'profile_photo_url' },
+        {
+          name: 'profile_photo_url',
+          label: 'Avatar',
+          field: 'profile_photo_url',
+          filterable: false,
+          headerClasses: 'q-table--col-auto-width',
+        },
         { name: 'name', label: 'Name', field: 'name', sortable: true },
         { name: 'email', label: 'Email', field: 'email', sortable: true },
         {

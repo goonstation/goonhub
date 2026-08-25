@@ -119,7 +119,7 @@ class PlayersController extends Controller
             ->paginateFilter($request->input('per_page', 20));
 
         $this->setMeta(title: 'Player Search', description: 'Search for a specific player');
-        if ($this->wantsInertia($request)) {
+        if ($request->inertia()) {
             return Inertia::render('Players/Search', [
                 'players' => $players,
             ]);
@@ -218,6 +218,6 @@ class PlayersController extends Controller
     {
         $player = Player::where('ckey', ckey($ckey))->firstOrFail();
 
-        return redirect()->route('players.show', $player->id);
+        return redirect()->route('web.players.show', $player->id);
     }
 }

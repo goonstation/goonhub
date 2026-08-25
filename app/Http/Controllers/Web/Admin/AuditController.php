@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Audits\IndexRequest;
 use App\Models\Audit;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -10,6 +11,7 @@ use Inertia\Inertia;
 class AuditController extends Controller
 {
     public function index(Request $request)
+    public function index(IndexRequest $request)
     {
         return Inertia::render('Admin/Audit/Index', [
             // @phpstan-ignore larastan.relationExistence

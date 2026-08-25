@@ -6,13 +6,13 @@
     :pagination="{ sortBy: 'game_server_id', descending: false }"
     :skeleton-options="{ rows: 5 }"
     @row-click="onRowClick"
+    clickable-rows="edit"
     flat
-    clickable-rows
     grid-filters
   >
     <template #header-right>
       <q-btn
-        @click="router.visit(route('admin.builds.settings.create'))"
+        @click="$inertia.visit($route('admin.builds.settings.create'))"
         class="text-no-wrap q-mt-xs"
         color="primary"
         text-color="dark"
@@ -26,15 +26,13 @@
 </template>
 
 <script>
-import { router } from '@inertiajs/vue3'
-import { ionEllipseOutline, ionCheckmarkCircleOutline } from '@quasar/extras/ionicons-v6'
+import { ionCheckmarkCircleOutline, ionEllipseOutline } from '@quasar/extras/ionicons-v6'
 import BaseTable from '../BaseTable.vue'
 
 export default {
   components: { BaseTable },
   setup() {
     return {
-      router,
       ionEllipseOutline,
       ionCheckmarkCircleOutline,
     }
@@ -42,10 +40,10 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/builds/settings',
-        // create: '/admin/builds/settings/create',
-        edit: '/admin/builds/settings/_id',
-        delete: '/admin/builds/settings/_id',
+        fetch: 'admin.builds.settings.index',
+        // create: 'admin.builds.settings.create',
+        edit: 'admin.builds.settings.edit',
+        delete: 'admin.builds.settings.delete',
       },
       columns: [
         {
@@ -103,11 +101,6 @@ export default {
         },
       ],
     }
-  },
-  methods: {
-    onRowClick(row) {
-      router.visit(route('admin.builds.settings.edit', row.id))
-    },
   },
 }
 </script>

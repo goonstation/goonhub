@@ -1,20 +1,20 @@
 <template>
-  <redirects-table :initial="redirects" />
+  <redirects-table prop-key="redirects" />
 </template>
 
 <script>
-import RedirectsTable from '@/Components/Tables/Admin/RedirectsTable.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import RedirectsTable from '@/Components/Tables/Admin/RedirectsTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {
-    RedirectsTable
+    RedirectsTable,
   },
 
   layout: (h, page) => h(DashboardLayout, { title: 'Redirects' }, () => page),
 
   props: {
-    redirects: Object
-  }
+    redirects: Object,
+  },
 }
 </script>

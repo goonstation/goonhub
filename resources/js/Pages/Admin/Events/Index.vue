@@ -1,10 +1,10 @@
 <template>
-  <events-table :initial="events" :event-types="eventTypes" />
+  <events-table :event-types="eventTypes" prop-key="events" />
 </template>
 
 <script>
-import EventsTable from '@/Components/Tables/Admin/EventsTable.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import EventsTable from '@/Components/Tables/Admin/EventsTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
+use App\Attributes\HasServerFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GameBuildSettingCreateRequest;
-use App\Http\Requests\GameBuildSettingUpdateRequest;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\GameBuildSettings\IndexRequest;
+use App\Http\Requests\GameBuildSettings\StoreRequest;
+use App\Http\Requests\GameBuildSettings\UpdateRequest;
 use App\Http\Resources\GameBuildSettingResource;
 use App\Models\GameBuildSetting;
-use App\Rules\DateRange;
 use App\Traits\ManagesGameBuildSettings;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -26,31 +27,13 @@ class GameBuildSettingsController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<GameBuildSettingResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasServerFilter,
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.server' => 'string',
-            'filters.branch' => 'string',
-            'filters.byond_major' => 'int',
-            'filters.byond_minor' => 'int',
-            'filters.rustg_version' => 'string',
-            'filters.rp_mode' => 'boolean',
-            'filters.map_id' => 'string',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         return GameBuildSettingResource::collection(
             GameBuildSetting::indexFilterPaginate()
         );
@@ -61,7 +44,7 @@ class GameBuildSettingsController extends Controller
      *
      * Add a new game build setting
      */
-    public function store(GameBuildSettingCreateRequest $request)
+    public function store(StoreRequest $request)
     {
         return $this->addSetting($request);
     }
@@ -71,7 +54,7 @@ class GameBuildSettingsController extends Controller
      *
      * Update an existing game build setting
      */
-    public function update(GameBuildSettingUpdateRequest $request, GameBuildSetting $setting)
+    public function update(UpdateRequest $request, GameBuildSetting $setting)
     {
         return $this->updateSetting($request, $setting);
     }

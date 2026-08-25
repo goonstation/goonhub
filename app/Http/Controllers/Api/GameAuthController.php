@@ -16,6 +16,11 @@ class GameAuthController extends Controller
 
     const CACHE_PREFIX_EXPIRES = 'game_auth_state_expires_';
 
+    /**
+     * Begin
+     *
+     * Register a new game auth session for a player
+     */
     public function begin(Request $request)
     {
         $data = $request->validate([

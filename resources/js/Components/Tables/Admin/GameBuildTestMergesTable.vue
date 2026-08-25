@@ -5,13 +5,13 @@
     :columns="columns"
     :pagination="{ sortBy: 'pr_id' }"
     @row-click="onRowClick"
+    clickable-rows="edit"
     flat
-    clickable-rows
     grid-filters
   >
     <template #header-right>
       <q-btn
-        @click="router.visit(route('admin.builds.test-merges.create'))"
+        @click="$inertia.visit($route('admin.builds.test-merges.create'))"
         class="text-no-wrap q-mt-xs"
         color="primary"
         text-color="dark"
@@ -25,15 +25,13 @@
 </template>
 
 <script>
-import { router } from '@inertiajs/vue3'
-import { ionEllipseOutline, ionCheckmarkCircleOutline } from '@quasar/extras/ionicons-v6'
+import { ionCheckmarkCircleOutline, ionEllipseOutline } from '@quasar/extras/ionicons-v6'
 import BaseTable from '../BaseTable.vue'
 
 export default {
   components: { BaseTable },
   setup() {
     return {
-      router,
       ionEllipseOutline,
       ionCheckmarkCircleOutline,
     }
@@ -41,10 +39,10 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/builds/test-merges',
-        // create: '/admin/builds/test-merges/create',
-        edit: '/admin/builds/test-merges/_id',
-        delete: '/admin/builds/test-merges/_id',
+        fetch: 'admin.builds.test-merges.index',
+        // create: 'admin.builds.test-merges.create',
+        edit: 'admin.builds.test-merges.edit',
+        delete: 'admin.builds.test-merges.delete',
       },
       columns: [
         // {
@@ -102,11 +100,6 @@ export default {
         // },
       ],
     }
-  },
-  methods: {
-    onRowClick(row) {
-      router.visit(route('admin.builds.test-merges.edit', row.id))
-    },
   },
 }
 </script>

@@ -63,6 +63,7 @@
   top: 10px;
   right: 10px;
   z-index: 999;
+  background: white;
   padding: 5px 10px 5px 5px;
   border-radius: 2px;
   border: none;

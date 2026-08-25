@@ -5,7 +5,7 @@
       <span v-else>Not linked to Discord account.</span>
       <div>
         <q-btn
-          v-bind="{ ...(!linkedDiscord && { href: $route('link-discord.redirect') }) }"
+          v-bind="{ ...(!linkedDiscord && { href: $route('web.user.link.discord.redirect') }) }"
           :color="linkedDiscord ? 'positive' : 'warning'"
           :label="
             linkedDiscord ? linkedDiscord.name || linkedDiscord.discord_id : 'Link Discord Account'
@@ -16,7 +16,7 @@
         />
         <q-btn
           v-if="linkedDiscord"
-          @click="$inertia.visit($route('link-discord.unlink'))"
+          @click="$inertia.visit($route('web.user.link.discord.unlink'))"
           :icon="ionClose"
           class="text-sm q-px-xs q-py-xs q-ml-sm"
           color="negative"

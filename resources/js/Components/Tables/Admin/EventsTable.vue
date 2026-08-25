@@ -47,7 +47,7 @@ export default {
         type: null,
       },
       routes: {
-        fetch: '/admin/events',
+        fetch: 'admin.events.index',
       },
       columns: [
         {

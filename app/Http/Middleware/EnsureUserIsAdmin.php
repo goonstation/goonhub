@@ -21,7 +21,7 @@ class EnsureUserIsAdmin
         if (! Auth::user()?->isAdmin()) {
             return $request->expectsJson()
                 ? abort(403, 'You don\'t have permission to access this route.')
-                : Redirect::guest(URL::route('dashboard'));
+                : Redirect::guest(URL::route('web.dashboard'));
         }
 
         return $next($request);

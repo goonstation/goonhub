@@ -160,7 +160,7 @@ export default {
         this.form.photo = this.$refs.photoInput.files[0]
       }
 
-      this.form.post(route('user-profile-information.update'), {
+      this.form.post(route('web.user-profile-information.update'), {
         errorBag: 'updateProfileInformation',
         preserveScroll: true,
         onSuccess: () => this.clearPhotoFileInput(),
@@ -168,7 +168,7 @@ export default {
     },
 
     sendEmailVerification() {
-      router.post(route('verification.send'))
+      router.post(route('web.verification.send'))
       this.verificationLinkSent = true
     },
 
@@ -191,7 +191,7 @@ export default {
     },
 
     deletePhoto() {
-      router.delete(route('current-user-photo.destroy'), {
+      router.delete(route('web.current-user-photo.destroy'), {
         preserveScroll: true,
         onSuccess: () => {
           this.photoPreview = null

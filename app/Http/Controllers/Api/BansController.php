@@ -2,32 +2,33 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasCidrFilter;
+use App\Attributes\HasDateRangeFilter;
 use App\Attributes\HasGameAdminCkeyBody;
 use App\Attributes\HasGameAdminCkeyQuery;
 use App\Attributes\HasGameAdminIdBody;
 use App\Attributes\HasGameAdminIdQuery;
+use App\Attributes\HasRangeFilter;
+use App\Attributes\HasServerFilter;
 use App\Attributes\HasServerIdBody;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bans\AddDetailsRequest;
 use App\Http\Requests\Bans\CheckRequest;
 use App\Http\Requests\Bans\DestroyRequest;
+use App\Http\Requests\Bans\IndexRequest;
 use App\Http\Requests\Bans\StoreRequest;
-use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\BanDetailResource;
 use App\Http\Resources\BanResource;
 use App\Models\Ban;
 use App\Models\BanDetail;
 use App\Models\Player;
 use App\Models\PlayerNote;
-use App\Rules\DateRange;
-use App\Rules\Range;
 use App\Services\CommonRequest;
 use App\Traits\ManagesBans;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controllers\HasMiddleware;
-use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\DB;
 
 class BansController extends Controller implements HasMiddleware
@@ -55,51 +56,17 @@ class BansController extends Controller implements HasMiddleware
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<BanResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasServerFilter,
+        HasCidrFilter,
+        HasRangeFilter(name: 'details'),
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+        HasDateRangeFilter(name: 'expires_at'),
+        HasDateRangeFilter(name: 'deleted_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            /** @example main1 */
-            'filters.server' => 'string',
-            'filters.admin_ckey' => 'string',
-            'filters.reason' => 'string',
-            'filters.original_ban_ckey' => 'string',
-            'filters.ckey' => 'string',
-            'filters.comp_id' => 'string',
-            'filters.ip' => 'string',
-            'filters.requires_appeal' => 'boolean',
-            /**
-             * A value, comparison, or range
-             *
-             * @example 1 or >= 1 or 1-10
-             */
-            'filters.details' => new Range,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.expires_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.deleted_at' => new DateRange,
-        ]);
-
         return BanResource::collection(
             Ban::forApi()
                 ->withTrashed()

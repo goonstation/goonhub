@@ -11,7 +11,7 @@
   >
     <template v-slot:item="props">
       <div class="q-table__grid-item col-xs-12">
-        <Link :href="`/events/fines/${props.row.id}`" class="gh-link-card">
+        <Link :href="$route('web.events.fines.show', props.row.id)" class="gh-link-card">
           <div class="text-sm text-weight-medium">
             {{ props.row.target }}
             <span class="opacity-60 text-sm">fined by</span>
@@ -51,7 +51,7 @@ export default {
   components: { BaseTable, VoteControl },
   data() {
     return {
-      routes: { fetch: '/events/fines' },
+      routes: { fetch: 'web.events.fines.index' },
       columns: [
         {
           name: 'id',

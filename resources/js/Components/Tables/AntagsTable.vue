@@ -23,7 +23,7 @@ export default {
   components: { BaseTable, AntagsTableItem },
   data() {
     return {
-      routes: { fetch: '/events/antags' },
+      routes: { fetch: 'web.events.antags.index' },
       columns: [
         {
           name: 'id',

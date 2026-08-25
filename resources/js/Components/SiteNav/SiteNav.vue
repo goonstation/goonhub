@@ -190,7 +190,7 @@ export default {
   props: {
     home: {
       type: String,
-      default: route('home'),
+      default: route('web.home'),
     },
     items: Array,
     open: Boolean,

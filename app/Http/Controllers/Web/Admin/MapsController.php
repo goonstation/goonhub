@@ -55,16 +55,11 @@ class MapsController extends Controller
 
     public function index(IndexRequest $request)
     {
-        $maps = Map::with(['gameAdmin.player'])
-            ->indexFilterPaginate(sortBy: 'name', order: 'asc', perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Maps/Index', [
-                'maps' => $maps,
-            ]);
-        } else {
-            return $maps;
-        }
+        return Inertia::render('Admin/Maps/Index', [
+            'maps' => Inertia::lazy(fn () => Map::with(['gameAdmin.player'])
+                ->indexFilterPaginate(sortBy: 'name', order: 'asc', perPage: 30)
+            ),
+        ]);
     }
 
     public function showUpload()

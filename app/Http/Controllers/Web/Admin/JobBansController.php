@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\JobBans\IndexRequest;
 use App\Http\Requests\JobBans\StoreRequest;
 use App\Http\Requests\JobBans\UpdateRequest;
 use App\Models\JobBan;
@@ -15,20 +16,14 @@ class JobBansController extends Controller
 {
     use ManagesJobBans;
 
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $jobBans = JobBan::with([
-            'gameAdmin.player',
-            'gameServer:id,server_id,short_name',
-        ])->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/JobBans/Index', [
-                'jobBans' => $jobBans,
-            ]);
-        } else {
-            return $jobBans;
-        }
+        return Inertia::render('Admin/JobBans/Index', [
+            'jobBans' => Inertia::lazy(fn () => JobBan::with([
+                'gameAdmin.player',
+                'gameServer:id,server_id,short_name',
+            ])->indexFilterPaginate(perPage: 30)),
+        ]);
     }
 
     public function create()

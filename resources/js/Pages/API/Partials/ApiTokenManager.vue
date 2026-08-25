@@ -31,7 +31,7 @@ const managingPermissionsFor = ref(null)
 const apiTokenBeingDeleted = ref(null)
 
 const createApiToken = () => {
-  createApiTokenForm.post(route('api-tokens.store'), {
+  createApiTokenForm.post(route('web.api-tokens.store'), {
     preserveScroll: true,
     onSuccess: () => {
       displayingToken.value = true
@@ -47,7 +47,7 @@ const manageApiTokenPermissions = (token) => {
 }
 
 const updateApiToken = () => {
-  updateApiTokenForm.put(route('api-tokens.update', managingPermissionsFor.value), {
+  updateApiTokenForm.put(route('web.api-tokens.update', managingPermissionsFor.value), {
     preserveScroll: true,
     preserveState: true,
     onSuccess: () => (managingPermissionsFor.value = null),
@@ -59,7 +59,7 @@ const confirmApiTokenDeletion = (token) => {
 }
 
 const deleteApiToken = () => {
-  deleteApiTokenForm.delete(route('api-tokens.destroy', apiTokenBeingDeleted.value), {
+  deleteApiTokenForm.delete(route('web.api-tokens.destroy', apiTokenBeingDeleted.value), {
     preserveScroll: true,
     preserveState: true,
     onSuccess: () => (apiTokenBeingDeleted.value = null),
@@ -109,10 +109,7 @@ const deleteApiToken = () => {
               </div>
 
               <div v-if="isAdmin">
-                <q-checkbox
-                  v-model="createApiTokenForm.for_game_server"
-                  label="For Game Server"
-                />
+                <q-checkbox v-model="createApiTokenForm.for_game_server" label="For Game Server" />
               </div>
 
               <div class="flex items-center q-mt-md">
@@ -201,7 +198,7 @@ const deleteApiToken = () => {
             v-if="$page.props.jetstream.flash.token"
             class="bg-grey-1 q-px-md q-py-sm rounded-borders text-sm text-dark break-all"
           >
-          {{ $page.props.jetstream.flash.token }}
+            {{ $page.props.jetstream.flash.token }}
           </div>
         </q-card-section>
 
@@ -230,10 +227,7 @@ const deleteApiToken = () => {
           </div>
 
           <div v-if="isAdmin" class="q-mt-md">
-            <q-checkbox
-              v-model="updateApiTokenForm.for_game_server"
-              label="For Game Server"
-            />
+            <q-checkbox v-model="updateApiTokenForm.for_game_server" label="For Game Server" />
           </div>
         </q-card-section>
 
@@ -257,9 +251,7 @@ const deleteApiToken = () => {
       <q-card flat>
         <q-card-section>
           <div class="text-h6">Delete API Token</div>
-          <div>
-            Are you sure you would like to delete this API token?
-          </div>
+          <div>Are you sure you would like to delete this API token?</div>
         </q-card-section>
 
         <q-card-actions align="right">

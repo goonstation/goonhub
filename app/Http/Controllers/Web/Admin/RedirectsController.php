@@ -3,26 +3,21 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Redirects\IndexRequest;
 use App\Models\Redirect as ModelsRedirect;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class RedirectsController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $redirects = ModelsRedirect::with([
-            'createdByUser.gameAdmin.player',
-            'updatedByUser.gameAdmin.player',
-        ])->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Redirects/Index', [
-                'redirects' => $redirects,
-            ]);
-        } else {
-            return $redirects;
-        }
+        return Inertia::render('Admin/Redirects/Index', [
+            'redirects' => Inertia::lazy(fn () => ModelsRedirect::with([
+                'createdByUser.gameAdmin.player',
+                'updatedByUser.gameAdmin.player',
+            ])->indexFilterPaginate(perPage: 30)),
+        ]);
     }
 
     public function create()

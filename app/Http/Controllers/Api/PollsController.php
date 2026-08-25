@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\Polls\IndexRequest;
 use App\Http\Requests\Polls\StoreRequest;
 use App\Http\Resources\PollAnswerResource;
 use App\Http\Resources\PollOptionResource;
@@ -11,7 +12,6 @@ use App\Http\Resources\PollResource;
 use App\Models\Poll;
 use App\Models\PollAnswer;
 use App\Models\PollOption;
-use App\Rules\DateRange;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -54,35 +54,13 @@ class PollsController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<PollResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasDateRangeFilter(name: 'expires_at'),
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.game_admin' => 'string',
-            'filters.question' => 'string',
-            /** true or false */
-            'filters.active' => 'string',
-            'filters.servers' => 'nullable|array',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.expires_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         $pollsPaged = Poll::with([
             'gameAdmin.player',
             'options' => function ($query) {

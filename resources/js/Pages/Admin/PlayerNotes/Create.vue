@@ -1,18 +1,18 @@
 <template>
   <notes-form
     :fields="fields"
-    :submit-route="route('admin.notes.store')"
+    :submit-route="$route('admin.notes.store')"
     success-message="Note added"
   />
 </template>
 
 <script>
-import NotesForm from '@/Components/Forms/NotesForm.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import NotesForm from '@/Components/Forms/NotesForm.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {
-    NotesForm
+    NotesForm,
   },
 
   layout: (h, page) => h(DashboardLayout, { title: 'Add Note' }, () => page),
@@ -26,6 +26,6 @@ export default {
         note: null,
       },
     }
-  }
+  },
 }
 </script>

@@ -3,21 +3,21 @@
 namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
-use App\Services\Auth\ApiSanctumGuard;
 use Dedoc\Scramble\Scramble;
 use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityRequirement;
 use Dedoc\Scramble\Support\Generator\SecurityScheme;
-use Illuminate\Auth\RequestGuard;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Inertia\Inertia;
+use Inertia\ResponseFactory;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -46,19 +46,12 @@ class AppServiceProvider extends ServiceProvider
 
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
 
-        Auth::resolved(function ($auth) {
-            $auth->extend('api', function ($app, $name, array $config) use ($auth) {
-                return tap($this->createApiGuard($auth, $config), function ($guard) {
-                    app()->refresh('request', $guard, 'setRequest');
-                });
-            });
-        });
-
         RateLimiter::for('api', function (Request $request) {
             $user = $request->user();
 
             if ($user) {
-                if ($user->currentAccessToken()->for_game_server) {
+                $token = $user->currentAccessToken();
+                if ($token instanceof PersonalAccessToken && $token->for_game_server) {
                     return Limit::none();
                 }
 
@@ -70,9 +63,14 @@ class AppServiceProvider extends ServiceProvider
 
         Scramble::configure()
             ->withDocumentTransformers(function (OpenApi $openApi) {
-                $openApi->secure(
-                    SecurityScheme::http('bearer', 'JWT')
-                );
+                $openApi->components->securitySchemes['bearer'] = SecurityScheme::http('bearer', 'JWT');
+                $openApi->components->securitySchemes['server'] = SecurityScheme::apiKey('header', 'X-Server-Id')
+                    ->setDescription('The server ID to target.');
+
+                $openApi->security[] = new SecurityRequirement([
+                    'bearer' => [],
+                    'server' => [],
+                ]);
             });
 
         Scramble::routes(function (Route $route) {
@@ -103,6 +101,11 @@ class AppServiceProvider extends ServiceProvider
                 ]
             );
         });
+
+        // Inertia::macro('render', function (string $component, $props = []) {
+        //     request()->headers->set('X-Inertia-Partial-Component', $component);
+        //     return app(ResponseFactory::class)->render($component, $props);
+        // });
     }
 
     protected function loadHelpers()
@@ -110,14 +113,5 @@ class AppServiceProvider extends ServiceProvider
         foreach (glob(__DIR__.'/../Helpers/*.php') as $filename) {
             require_once $filename;
         }
-    }
-
-    protected function createApiGuard($auth, $config)
-    {
-        return new RequestGuard(
-            new ApiSanctumGuard($auth, config('sanctum.expiration'), $config['provider']),
-            request(),
-            $auth->createUserProvider($config['provider'] ?? null)
-        );
     }
 }

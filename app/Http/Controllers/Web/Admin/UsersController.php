@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\UserPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Users\IndexRequest;
 use App\Models\PlayerAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class UsersController extends Controller
+class UsersController extends Controller implements HasMiddleware
 {
-    public function index(Request $request)
+    public static function middleware(): array
     {
-        $users = User::with('teams')->indexFilterPaginate(perPage: 30);
+        return [
+            HasPermission::using(UserPermissions::VIEW, only: ['index']),
+            HasPermission::using(UserPermissions::ADD, only: ['create', 'store']),
+            HasPermission::using(UserPermissions::UPDATE, only: ['edit', 'update']),
+            HasPermission::using(UserPermissions::DELETE, only: ['destroy']),
+        ];
+    }
 
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Users/Index', [
-                'users' => $users,
-            ]);
-        } else {
-            return $users;
-        }
+    public function index(IndexRequest $request)
+    {
+        return Inertia::render('Admin/Users/Index', [
+            'users' => Inertia::lazy(fn () => User::indexFilterPaginate(perPage: 30)),
+        ]);
     }
 
     public function create()
@@ -68,6 +76,7 @@ class UsersController extends Controller
                 'profile_photo_url',
                 'is_admin',
                 'game_admin_id',
+                'roles',
             ]),
         ]);
     }

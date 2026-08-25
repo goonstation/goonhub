@@ -10,7 +10,7 @@
     </q-card-section>
   </q-card>
   <search-bans v-model="search" />
-  <bans-removed-table :initial="bans" :search="search" @loaded="onTableLoaded" />
+  <bans-removed-table :search="search" @loaded="onTableLoaded" prop-key="bans" />
 </template>
 
 <script>
@@ -32,14 +32,14 @@ export default {
 
   data() {
     return {
-      search: null
+      search: null,
     }
   },
 
   methods: {
     onTableLoaded({ filters }) {
       this.search = filters
-    }
-  }
+    },
+  },
 }
 </script>

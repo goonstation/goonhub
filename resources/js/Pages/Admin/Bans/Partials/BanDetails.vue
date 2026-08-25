@@ -29,7 +29,7 @@
             />
             <Link
               v-else-if="props.row.ckey"
-              :href="route('admin.player.show-by-ckey', props.row.ckey)"
+              :href="route('admin.players.show-by-ckey', props.row.ckey)"
             >
               {{ props.row.ckey }}
             </Link>
@@ -166,12 +166,12 @@
 
 <script>
 import {
-  ionInformationCircleOutline,
-  ionClose,
   ionAdd,
-  ionRemove,
   ionCheckmark,
+  ionClose,
+  ionInformationCircleOutline,
   ionPencil,
+  ionRemove,
 } from '@quasar/extras/ionicons-v6'
 
 export default {
@@ -340,7 +340,7 @@ export default {
       }
 
       this.editingItem = null
-    }
+    },
   },
 }
 </script>

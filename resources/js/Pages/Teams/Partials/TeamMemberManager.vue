@@ -1,7 +1,7 @@
 <script setup>
-import { ref } from 'vue'
-import { router, useForm, usePage } from '@inertiajs/vue3'
 import ActionMessage from '@/Components/ActionMessage.vue'
+import { router, useForm, usePage } from '@inertiajs/vue3'
+import { ref } from 'vue'
 
 const props = defineProps({
   team: Object,
@@ -27,7 +27,7 @@ const confirmingLeavingTeam = ref(false)
 const teamMemberBeingRemoved = ref(null)
 
 const addTeamMember = () => {
-  addTeamMemberForm.post(route('team-members.store', props.team), {
+  addTeamMemberForm.post(route('web.team-members.store', props.team), {
     errorBag: 'addTeamMember',
     preserveScroll: true,
     onSuccess: () => addTeamMemberForm.reset(),
@@ -35,7 +35,7 @@ const addTeamMember = () => {
 }
 
 const cancelTeamInvitation = (invitation) => {
-  router.delete(route('team-invitations.destroy', invitation), {
+  router.delete(route('web.team-invitations.destroy', invitation), {
     preserveScroll: true,
   })
 }
@@ -47,7 +47,7 @@ const manageRole = (teamMember) => {
 }
 
 const updateRole = () => {
-  updateRoleForm.put(route('team-members.update', [props.team, managingRoleFor.value]), {
+  updateRoleForm.put(route('web.team-members.update', [props.team, managingRoleFor.value]), {
     preserveScroll: true,
     onSuccess: () => (currentlyManagingRole.value = false),
   })
@@ -58,7 +58,7 @@ const confirmLeavingTeam = () => {
 }
 
 const leaveTeam = () => {
-  leaveTeamForm.delete(route('team-members.destroy', [props.team, usePage().props.auth.user]))
+  leaveTeamForm.delete(route('web.team-members.destroy', [props.team, usePage().props.auth.user]))
 }
 
 const confirmTeamMemberRemoval = (teamMember) => {
@@ -67,7 +67,7 @@ const confirmTeamMemberRemoval = (teamMember) => {
 
 const removeTeamMember = () => {
   removeTeamMemberForm.delete(
-    route('team-members.destroy', [props.team, teamMemberBeingRemoved.value]),
+    route('web.team-members.destroy', [props.team, teamMemberBeingRemoved.value]),
     {
       errorBag: 'removeTeamMember',
       preserveScroll: true,
@@ -306,9 +306,7 @@ const displayableRole = (role) => {
       <q-card flat>
         <q-card-section>
           <div class="text-h6">Leave Team</div>
-          <div>
-            Are you sure you would like to leave this team?
-          </div>
+          <div>Are you sure you would like to leave this team?</div>
         </q-card-section>
 
         <q-card-actions align="right">
@@ -331,9 +329,7 @@ const displayableRole = (role) => {
       <q-card flat>
         <q-card-section>
           <div class="text-h6">Remove Team Member</div>
-          <div>
-            Are you sure you would like to remove this person from the team?
-          </div>
+          <div>Are you sure you would like to remove this person from the team?</div>
         </q-card-section>
 
         <q-card-actions align="right">

@@ -134,6 +134,28 @@
               </q-menu>
             </q-btn>
           </div>
+          <div v-else>
+            <q-btn
+              v-if="hasMultiEdit && selectedModel.length"
+              :to="getRoute(routes.editMulti, { selected: selectedModel })"
+              color="primary"
+              outline
+            >
+              Edit {{ selectedModel.length }} item<template v-if="selectedModel.length !== 1"
+                >s</template
+              >
+            </q-btn>
+            <q-btn
+              v-if="hasMultiDelete && selectedModel.length"
+              @click="confirmMultiDelete = true"
+              color="negative"
+              outline
+            >
+              Delete {{ selectedModel.length }} item<template v-if="selectedModel.length !== 1"
+                >s</template
+              >
+            </q-btn>
+          </div>
 
           <q-space />
 
@@ -224,20 +246,18 @@
             {{ col.label }}
           </q-th>
         </q-tr>
-        <q-tr v-if="canSelect || !gridFilters" no-hover>
+        <q-tr v-if="!gridFilters" no-hover>
           <q-th v-if="canSelect" />
-          <template v-if="!gridFilters">
-            <q-th v-for="col in props.cols" :key="col.name">
-              <table-filter
-                v-if="col.filterable !== false"
-                v-bind="col.filter?.options || {}"
-                :model-value="filters[col.name]"
-                @update:modelValue="onFilterInput(col.name, $event)"
-                @clear="filters[col.name] = null"
-                :filter-type="col.filter?.type || 'text'"
-              />
-            </q-th>
-          </template>
+          <q-th v-for="col in props.cols" :key="col.name">
+            <table-filter
+              v-if="col.filterable !== false"
+              v-bind="col.filter?.options || {}"
+              :model-value="filters[col.name]"
+              @update:modelValue="onFilterInput(col.name, $event)"
+              @clear="filters[col.name] = null"
+              :filter-type="col.filter?.type || 'text'"
+            />
+          </q-th>
         </q-tr>
       </template>
 
@@ -308,7 +328,11 @@
                 <template v-else>{{ col.value }}</template>
               </template>
               <template v-else-if="col.cell?.format">
-                <table-format :model-value="col.value" :format-type="col.cell.format || 'text'" />
+                <table-format
+                  :model-value="col.value"
+                  :format-type="col.cell.format || 'text'"
+                  :row="props.row"
+                />
               </template>
               <template v-else>
                 {{ col.value }}
@@ -624,7 +648,7 @@ export default {
       default: false,
     },
     clickableRows: {
-      type: Boolean,
+      type: [Boolean, String],
       default: false,
     },
     skeletonOptions: {
@@ -793,7 +817,7 @@ export default {
         }
       }
 
-      const res = await axios.get(this.routes.fetch, options)
+      const res = await axios.get(this.getRoute(this.routes.fetch), options)
       return this.propKey ? { data: res.data.props[this.propKey] } : res
     },
 
@@ -947,8 +971,15 @@ export default {
     },
 
     getRoute(goToRoute, row) {
-      if (!row) return goToRoute
-      return goToRoute?.replace('_id', row.id) || ''
+      const routeKey =
+        typeof goToRoute === 'object' && 'route' in goToRoute ? goToRoute.route : goToRoute
+      const routeParams =
+        typeof goToRoute === 'object' && typeof goToRoute.params === 'function'
+          ? goToRoute.params(row)
+          : row
+          ? row.id
+          : null
+      return this.$route(routeKey, routeParams)
     },
 
     reset() {
@@ -1068,8 +1099,12 @@ export default {
       this.$refs.tableRef.requestServerInteraction()
     },
 
-    onRowClick(props) {
-      this.$emit('row-click', props.row)
+    onRowClick({ row }) {
+      if (!this.clickableRows) return
+      this.$emit('row-click', row)
+      const routeKey = typeof this.clickableRows === 'string' ? this.clickableRows : 'view'
+      const route = this.getRoute(this.routes[routeKey], row)
+      if (route) this.$inertia.visit(route)
     },
 
     onTableMounted() {

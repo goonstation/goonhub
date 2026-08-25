@@ -45,7 +45,7 @@ provide('errors', errors)
 window.GoonhubAuth = {
   onError: (error) => {
     sessionStorage.setItem('game-auth-error', error)
-    window.location.href = route('game-auth.error')
+    window.location.href = route('web.game-auth.error')
   },
 }
 </script>

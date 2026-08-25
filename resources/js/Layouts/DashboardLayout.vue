@@ -4,13 +4,13 @@
     <q-header class="bg-transparent">
       <q-toolbar class="q-pt-md">
         <q-btn dense flat round :icon="ionMenu" @click="siteNavOpen = !siteNavOpen" />
-        <q-toolbar-title>
+        <q-toolbar-title class="flex items-center">
           <page-back class="q-mr-sm" />
           <slot v-if="$slots.header" name="header" />
           <template v-else>{{ title }}</template>
         </q-toolbar-title>
         <div>
-          <q-btn
+          <!-- <q-btn
             v-if="$page.props.jetstream.hasTeamFeatures && $page.props.auth.user.current_team"
             :label="$page.props.auth.user.current_team.name"
             class="q-px-sm q-mr-md"
@@ -23,7 +23,9 @@
                 <q-item-label header>Manage Team</q-item-label>
                 <q-item
                   clickable
-                  @click="router.visit($route('teams.show', $page.props.auth.user.current_team))"
+                  @click="
+                    router.visit($route('web.teams.show', $page.props.auth.user.current_team))
+                  "
                   v-close-popup
                 >
                   <q-item-section>Team Settings</q-item-section>
@@ -31,7 +33,7 @@
                 <q-item
                   v-if="$page.props.jetstream.canCreateTeams"
                   clickable
-                  @click="router.visit($route('teams.create'))"
+                  @click="router.visit($route('web.teams.create'))"
                   v-close-popup
                 >
                   <q-item-section>Create New Team</q-item-section>
@@ -54,19 +56,19 @@
                 </template>
               </q-list>
             </q-menu>
-          </q-btn>
+          </q-btn> -->
 
           <q-btn round flat>
-            <user-avatar :user="$page.props.auth.user" />
+            <user-avatar :user="$auth.user" />
             <q-menu>
               <q-list style="min-width: 150px">
-                <q-item clickable @click="router.visit($route('profile.show'))" v-close-popup>
+                <q-item clickable @click="$inertia.visit($route('web.profile.show'))" v-close-popup>
                   <q-item-section>Profile</q-item-section>
                 </q-item>
                 <q-item
-                  v-if="$page.props.jetstream.hasApiFeatures && user.is_admin"
+                  v-if="$page.props.jetstream.hasApiFeatures"
                   clickable
-                  @click="router.visit($route('api-tokens.index'))"
+                  @click="$inertia.visit($route('web.api-tokens.index'))"
                   v-close-popup
                 >
                   <q-item-section>API Tokens</q-item-section>
@@ -74,12 +76,13 @@
 
                 <q-separator />
 
-                <template v-if="user.is_admin">
+                <template v-if="hasAdminTools">
                   <q-item-label header>Admin Tools</q-item-label>
 
                   <q-item
+                    v-if="$auth.can(UserPermissions.VIEW)"
                     clickable
-                    @click="router.visit($route('admin.users.index'))"
+                    @click="$inertia.visit($route('admin.users.index'))"
                     v-close-popup
                   >
                     <q-item-section>Users</q-item-section>
@@ -98,11 +101,11 @@
       </q-toolbar>
     </q-header>
 
-    <site-nav v-model:open="siteNavOpen" :home="$route('dashboard')" :items="siteNavItems">
+    <site-nav v-model:open="siteNavOpen" :home="$route('web.user.dashboard')" :items="siteNavItems">
       <template #bottom>
         <q-separator />
         <div class="site-nav__item">
-          <Link :href="$route('home')" class="back-to-site site-nav__item q-pa-sm">
+          <Link :href="$route('web.home')" class="back-to-site site-nav__item q-pa-sm">
             <div class="site-nav__label">
               <q-icon :name="ionArrowBackCircleOutline" size="2em" />
               Back To Site
@@ -135,11 +138,11 @@
 </style>
 
 <script>
+import UserPermissions from '@/Access/Permissions/User'
 import AppHead from '@/Components/AppHead.vue'
 import PageBack from '@/Components/PageBack.vue'
 import SiteNav from '@/Components/SiteNav/SiteNav.vue'
 import UserAvatar from '@/Components/UserAvatar.vue'
-import { router } from '@inertiajs/vue3'
 import {
   ionArrowBackCircleOutline,
   ionCheckmarkCircleOutline,
@@ -161,11 +164,11 @@ export default {
 
   setup() {
     return {
-      router,
       ionMenu,
       ionChevronDown,
       ionCheckmarkCircleOutline,
       ionArrowBackCircleOutline,
+      UserPermissions,
     }
   },
 
@@ -180,26 +183,32 @@ export default {
     user() {
       return this.$page.props.auth.user
     },
+
+    hasAdminTools() {
+      return this.$auth.can(UserPermissions.VIEW)
+    },
   },
 
   created() {
     this.siteNavItems = this.buildSiteNavItems()
+
+    console.log(this.$auth)
   },
 
   methods: {
-    switchToTeam(team) {
-      router.put(route('current-team.update'), { team_id: team.id }, { preserveState: false })
-    },
+    // switchToTeam(team) {
+    //   router.put(route('web.current-team.update'), { team_id: team.id }, { preserveState: false })
+    // },
 
     logout() {
-      router.post(route('logout'))
+      this.$inertia.post(route('web.logout'))
     },
 
     buildSiteNavItems() {
       const items = [
         {
           label: 'Dashboard',
-          href: route('dashboard'),
+          href: route('web.user.dashboard'),
           separator: true,
         },
       ]
@@ -227,7 +236,6 @@ export default {
               route('admin.bans.index'),
               route('admin.job-bans.index'),
               route('admin.notes.index'),
-              route('admin.mentors.index'),
             ],
             children: [
               {
@@ -245,10 +253,6 @@ export default {
               {
                 label: 'Notes',
                 href: route('admin.notes.index'),
-              },
-              {
-                label: 'Mentors',
-                href: route('admin.mentors.index'),
               },
             ],
           },

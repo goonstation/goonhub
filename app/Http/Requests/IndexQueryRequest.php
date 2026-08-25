@@ -28,7 +28,7 @@ class IndexQueryRequest extends FormRequest
     {
         return [
             /**
-             * Filter the results by column and value pairs. (Note: Unsupported in web documentation)
+             * Filter the results by column and value pairs
              *
              * @example filters[id]=1
              */
@@ -40,7 +40,7 @@ class IndexQueryRequest extends FormRequest
              */
             'sort_by' => 'string',
             /**
-             * true or false
+             * Which direction to sort the results by
              *
              * @example true
              */

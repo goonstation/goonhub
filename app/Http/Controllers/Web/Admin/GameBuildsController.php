@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GameBuildCancelRequest;
-use App\Http\Requests\GameBuildCreateRequest;
+use App\Http\Requests\GameBuilds\CancelRequest;
+use App\Http\Requests\GameBuilds\IndexRequest;
+use App\Http\Requests\GameBuilds\StoreRequest;
 use App\Models\GameBuild;
 use App\Models\PlayerAdmin;
 use App\Traits\ManagesGameBuilds;
@@ -55,7 +56,7 @@ class GameBuildsController extends Controller
         ])->whereNotNull('ended_at')->indexFilterPaginate();
     }
 
-    public function index()
+    public function index(IndexRequest $request)
     {
         return Inertia::render('Admin/GameBuilds/Index', [
             'builds' => Inertia::lazy(fn () => $this->getBuilds()),
@@ -101,7 +102,7 @@ class GameBuildsController extends Controller
         ]);
     }
 
-    public function store(GameBuildCreateRequest $request)
+    public function store(StoreRequest $request)
     {
         $request = $request->merge([
             'game_admin_id' => $request->user()->gameAdmin->id,
@@ -116,7 +117,7 @@ class GameBuildsController extends Controller
         return back();
     }
 
-    public function cancel(GameBuildCancelRequest $request)
+    public function cancel(CancelRequest $request)
     {
         $request = $request->merge([
             'game_admin_id' => $request->user()->gameAdmin->id,

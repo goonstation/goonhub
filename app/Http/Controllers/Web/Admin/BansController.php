@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Facades\GameBridge;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Bans\IndexRequest;
 use App\Http\Requests\Bans\StoreRequest;
 use App\Libraries\DiscordBot;
 use App\Models\Ban;
@@ -18,43 +19,16 @@ class BansController extends Controller
 {
     use ManagesBans;
 
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $bans = Ban::withCount(['details'])
-            ->with(['originalBanDetail', 'gameAdmin.player', 'gameServer'])
-            ->where('expires_at', '>', Carbon::now())
-            ->orWhere('expires_at', null)
-            ->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Bans/Index', [
-                'bans' => $bans,
-            ]);
-        } else {
-            return $bans;
-        }
-    }
-
-    public function indexRemoved(Request $request)
-    {
-        $bans = Ban::withTrashed()
-            ->withCount(['details'])
-            ->with([
-                'originalBanDetail',
-                'gameAdmin.player',
-                'gameServer',
-            ])
-            ->where('deleted_at', '!=', null)
-            ->orWhere('expires_at', '<=', Carbon::now())
-            ->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Bans/IndexRemoved', [
-                'bans' => $bans,
-            ]);
-        } else {
-            return $bans;
-        }
+        return Inertia::render('Admin/Bans/Index', [
+            'bans' => Inertia::lazy(function () {
+                return Ban::withTrashed()
+                    ->withCount(['details'])
+                    ->with(['originalBanDetail', 'gameAdmin.player', 'gameServer', 'gameServerGroup'])
+                    ->indexFilterPaginate(perPage: 30);
+            }),
+        ]);
     }
 
     public function create()

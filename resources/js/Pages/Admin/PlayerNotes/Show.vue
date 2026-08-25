@@ -1,18 +1,26 @@
 <template>
-  <div class="text-right q-mb-md">
-    <Link :href="route('admin.notes.edit', note.id)">
-      <q-btn color="primary" outline> Edit Note </q-btn>
-    </Link>
-    <q-btn @click="openConfirmDelete" color="negative" class="q-ml-md" outline>
-      Delete Note
-    </q-btn>
-  </div>
-
   <div class="row q-col-gutter-md">
     <div class="col-12 col-md-6">
       <q-card class="gh-card q-mb-md" flat>
         <div class="gh-card__header q-pa-md bordered">
           <span>Note Details</span>
+          <q-space />
+          <div class="flex items-center gap-xs-sm">
+            <Link
+              :href="$route('admin.notes.edit', note.id)"
+              :as="QBtn"
+              color="primary"
+              size="12px"
+              outline
+            >
+              <q-icon :name="ionPencil" class="q-mr-sm" />
+              Edit
+            </Link>
+            <q-btn @click="openConfirmDelete" color="negative" size="12px" outline>
+              <q-icon :name="ionTrash" class="q-mr-sm" />
+              Delete
+            </q-btn>
+          </div>
         </div>
         <q-card-section>
           <q-markup-table flat bordered wrap-cells>
@@ -20,7 +28,9 @@
               <tr>
                 <td><strong>Player</strong></td>
                 <td>
-                  <Link :href="route('admin.player.show-by-ckey', note.player?.ckey || note.ckey)">
+                  <Link
+                    :href="$route('admin.players.show-by-ckey', note.player?.ckey || note.ckey)"
+                  >
                     {{ note.player?.ckey || note.ckey }}
                   </Link>
                 </td>
@@ -77,10 +87,10 @@ tbody {
 
 <script>
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
-import { router } from '@inertiajs/vue3'
-import { ionInformationCircleOutline } from '@quasar/extras/ionicons-v6'
+import { ionInformationCircleOutline, ionPencil, ionTrash } from '@quasar/extras/ionicons-v7'
 import axios from 'axios'
 import dayjs from 'dayjs'
+import { QBtn } from 'quasar'
 
 export default {
   layout: (h, page) =>
@@ -95,8 +105,10 @@ export default {
   setup() {
     return {
       dayjs,
-      router,
       ionInformationCircleOutline,
+      ionPencil,
+      ionTrash,
+      QBtn,
     }
   },
 
@@ -122,7 +134,7 @@ export default {
           message: response.data.message || 'Item successfully deleted.',
           color: 'positive',
         })
-        router.visit(route('admin.notes.index'))
+        this.$inertia.visit(route('admin.notes.index'))
       } catch {
         this.$q.notify({
           message: 'Failed to delete note, please try again.',
@@ -132,6 +144,6 @@ export default {
 
       this.confirmDelete = false
     },
-  }
+  },
 }
 </script>

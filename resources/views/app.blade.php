@@ -47,7 +47,7 @@
   @endif
 
   <!-- Scripts -->
-  @routes
+  @routes('web')
   @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"], 'build')
   @if (config('broadcasting.connections.reverb.key'))
     <script type="module">

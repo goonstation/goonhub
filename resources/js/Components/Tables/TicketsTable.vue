@@ -11,7 +11,7 @@
   >
     <template v-slot:item="props">
       <div class="q-table__grid-item col-xs-12">
-        <Link :href="`/events/tickets/${props.row.id}`" class="gh-link-card">
+        <Link :href="$route('web.events.tickets.show', props.row.id)" class="gh-link-card">
           <div class="text-sm text-weight-medium">
             {{ props.row.target }}
             <span class="opacity-60 text-sm">ticketed by</span>
@@ -49,7 +49,7 @@ export default {
   components: { BaseTable, VoteControl },
   data() {
     return {
-      routes: { fetch: '/events/tickets' },
+      routes: { fetch: 'web.events.tickets.index' },
       columns: [
         {
           name: 'id',

@@ -35,24 +35,21 @@ ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/relea
 
 RUN dpkg --add-architecture i386; \
     apt-get update; \
-    apt-get upgrade -yqq; \
-    apt-get install -yqq --no-install-recommends --show-progress \
-    apt-utils \
+    apt-get install -yqq --no-install-recommends \
     curl \
     wget \
-    vim \
     git \
     ncdu \
     procps \
     ca-certificates \
     supervisor \
-    libsodium-dev \
-    libbrotli-dev \
     locales \
     # Custom packages
-    nano unzip gnupg software-properties-common rsync \
-    ffmpeg automake build-essential libasound2-dev libpulse-dev lame \
+    nano unzip rsync \
+    ffmpeg libasound2-dev libpulse-dev lame \
     jpegoptim optipng pngquant gifsicle webp libavif-bin \
+    libstdc++6 libstdc++6:i386 libcurl4:i386 \
+    libsodium23 libbrotli1 \
     # Stuff for building with Byond
     gcc-multilib lib32stdc++6 zlib1g-dev:i386 libssl-dev:i386 pkg-config:i386 libstdc++6 libstdc++6:i386 libcurl4:i386 \
     # Install PHP extensions
@@ -83,9 +80,10 @@ RUN dpkg --add-architecture i386; \
     && apt-get clean \
     && docker-php-source delete \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm /var/log/lastlog /var/log/faillog \
-    # Supercronic
-    && arch="$(uname -m)" \
+    && rm -f /var/log/lastlog /var/log/faillog
+
+# Supercronic
+RUN arch="$(uname -m)" \
     && case "$arch" in \
     armhf) _cronic_fname='supercronic-linux-arm' ;; \
     aarch64) _cronic_fname='supercronic-linux-arm64' ;; \
@@ -101,7 +99,7 @@ RUN dpkg --add-architecture i386; \
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen
-ENV LANG=en_US.UTF-8 \ LANGUAGE=en_US \ LC_ALL=en_US.UTF-8
+ENV LANG=en_US.UTF-8 LANGUAGE=en_US LC_ALL=en_US.UTF-8
 
 # Create user
 RUN groupadd --force -g ${WWWGROUP} ${USER} \
@@ -111,7 +109,7 @@ RUN groupadd --force -g ${WWWGROUP} ${USER} \
     && cp ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
 ###########################################
-# Custom root packages
+# Custom runtime packages
 ##########################################
 
 # Youtube-DLP
@@ -142,17 +140,21 @@ USER ${USER}
 
 ENV NODE_ENV=production
 
-RUN chmod -R a+rw storage \
-    && composer install \
+RUN composer install \
     --classmap-authoritative \
     --no-interaction \
     --no-ansi \
     --no-dev \
     && composer clear-cache \
+    && php artisan gh:generate-frontend-permissions \
     && bun install --frozen-lockfile \
     && bun run build \
     && bun run build:game-auth \
     && rm -rf node_modules
+
+# Clean up vendor documentation and tests (can save 50-200 MB)
+RUN find vendor -type d -name "test" -o -name "tests" -o -name "Tests" -o -name "doc" -o -name "docs" -o -name ".git*" | xargs rm -rf && \
+    find vendor -name "*.md" -o -name "*.txt" -o -name "composer.json" -o -name "composer.lock" -o -name ".git*" | xargs rm -f
 
 COPY --link --chown=${WWWUSER}:${WWWGROUP} docker/deploy/supervisord.conf /etc/
 COPY --link --chown=${WWWUSER}:${WWWGROUP} docker/deploy/supervisord.app.conf /etc/supervisor/conf.d/

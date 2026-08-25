@@ -3,23 +3,18 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GameAdminRanks\IndexRequest;
 use App\Models\GameAdminRank;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class GameAdminRanksController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $gameAdminRanks = GameAdminRank::withCount('admins')->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/GameAdminRanks/Index', [
-                'gameAdminRanks' => $gameAdminRanks,
-            ]);
-        } else {
-            return $gameAdminRanks;
-        }
+        return Inertia::render('Admin/GameAdminRanks/Index', [
+            'gameAdminRanks' => Inertia::lazy(fn () => GameAdminRank::withCount('admins')->indexFilterPaginate(perPage: 30)),
+        ]);
     }
 
     public function create(Request $request)

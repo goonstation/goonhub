@@ -1,7 +1,7 @@
 <template>
   <q-card
     tag="a"
-    :href="$route('play', server.server_id)"
+    :href="$route('web.play', server.server_id)"
     :class="mapId && `server-status--map-${mapId}`"
     target="_blank"
     class="server-status"

@@ -18,7 +18,7 @@
       lazy-rules
       emit-value
       map-options
-      :load-route="$route('maps.index')"
+      :load-route="$route('web.maps.index')"
       :error="!!form.errors.map"
       :error-message="form.errors.map"
     />

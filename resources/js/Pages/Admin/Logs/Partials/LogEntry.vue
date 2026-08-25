@@ -1,9 +1,29 @@
 <template>
-  <tr class="log-type-row" :class="`log-type-${log.type}`">
+  <tr
+    :id="`log-${log.id}`"
+    class="log-type-row"
+    :class="[
+      `log-type-${log.type}`,
+      { 'log-highlighted': highlighted, 'log-row-clickable': showRoundColumn },
+    ]"
+    @click="onRowClick"
+  >
     <td>{{ createdAt }}</td>
     <td>
       <q-chip class="log-type-label" :class="`log-type-label-${log.type}`" square dense>
         <div class="content">{{ log.type }}</div>
+      </q-chip>
+    </td>
+    <td v-if="showRoundColumn">
+      <q-chip class="log-server" square dense>
+        <div v-if="log.game_round?.server" class="content">
+          {{ log.game_round.server.short_name || log.game_round.server.name }}
+        </div>
+      </q-chip>
+    </td>
+    <td v-if="showRoundColumn">
+      <q-chip class="log-round" square dense>
+        <div class="content">#{{ log.round_id }}</div>
       </q-chip>
     </td>
     <td class="log-message" style="white-space: pre-wrap">
@@ -97,9 +117,29 @@
   padding: 0 5px;
   background: red;
 }
+
+.log-server {
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+}
+
+.log-round {
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.log-row-clickable {
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+}
 </style>
 
 <script>
+import { router } from '@inertiajs/vue3'
 import { date } from 'quasar'
 
 export default {
@@ -108,18 +148,35 @@ export default {
     relativeTimestamps: Boolean,
     roundStartedAt: String,
     searchTerms: Array,
+    showRoundColumn: {
+      type: Boolean,
+      default: false,
+    },
+    highlighted: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   computed: {
     createdAt() {
       let dateToFormat
-      if (this.relativeTimestamps) {
+      if (this.relativeTimestamps && this.roundStartedAt) {
         const msDiff = new Date(this.log.created_at) - new Date(this.roundStartedAt)
         dateToFormat = date.addToDate(new Date('2000-01-1'), { milliseconds: msDiff })
+        return date.formatDate(dateToFormat, 'HH:mm:ss.SSS')
       } else {
         dateToFormat = new Date(this.log.created_at)
+        // For cross-round search, show full date
+        if (this.showRoundColumn) {
+          return date.formatDate(dateToFormat, 'YYYY-MM-DD HH:mm:ss')
+        }
+        return date.formatDate(dateToFormat, 'HH:mm:ss.SSS')
       }
-      return date.formatDate(dateToFormat, 'HH:mm:ss.SSS')
+    },
+
+    roundLink() {
+      return this.route('admin.logs.show', this.log.round_id) + `?log=${this.log.id}`
     },
 
     message() {
@@ -183,6 +240,15 @@ export default {
   },
 
   methods: {
+    onRowClick(event) {
+      if (!this.showRoundColumn) return
+
+      // Don't navigate if clicking on a link or selecting text
+      if (event.target.closest('a') || window.getSelection()?.toString()) return
+
+      router.visit(this.roundLink)
+    },
+
     escapeRegExp(string) {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     },

@@ -2,14 +2,14 @@
 
 namespace App\Traits;
 
-use App\Http\Requests\GameBuildSettingCreateRequest;
-use App\Http\Requests\GameBuildSettingUpdateRequest;
+use App\Http\Requests\GameBuildSettings\StoreRequest;
+use App\Http\Requests\GameBuildSettings\UpdateRequest;
 use App\Http\Resources\GameBuildSettingResource;
 use App\Models\GameBuildSetting;
 
 trait ManagesGameBuildSettings
 {
-    private function addSetting(GameBuildSettingCreateRequest $request)
+    private function addSetting(StoreRequest $request)
     {
         $setting = new GameBuildSetting;
         $setting->server_id = $request['server_id'];
@@ -24,7 +24,7 @@ trait ManagesGameBuildSettings
         return new GameBuildSettingResource($setting);
     }
 
-    private function updateSetting(GameBuildSettingUpdateRequest $request, GameBuildSetting $setting)
+    private function updateSetting(UpdateRequest $request, GameBuildSetting $setting)
     {
         foreach ($request->all() as $key => $val) {
             $setting[$key] = $val;

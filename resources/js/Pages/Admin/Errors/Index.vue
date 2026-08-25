@@ -1,10 +1,10 @@
 <template>
-  <error-rounds-table :initial="rounds" />
+  <error-rounds-table prop-key="rounds" />
 </template>
 
 <script>
-import ErrorRoundsTable from '@/Components/Tables/Admin/ErrorRoundsTable.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import ErrorRoundsTable from '@/Components/Tables/Admin/ErrorRoundsTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {

@@ -1,20 +1,20 @@
 <template>
-  <users-table :initial="users" />
+  <users-table prop-key="users" />
 </template>
 
 <script>
-import UsersTable from '@/Components/Tables/Admin/UsersTable.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import UsersTable from '@/Components/Tables/Admin/UsersTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {
-    UsersTable
+    UsersTable,
   },
 
   layout: (h, page) => h(DashboardLayout, { title: 'Users' }, () => page),
 
   props: {
-    users: Object
-  }
+    users: Object,
+  },
 }
 </script>

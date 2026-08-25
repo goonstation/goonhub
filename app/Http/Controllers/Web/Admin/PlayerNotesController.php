@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PlayerNotes\IndexRequest;
 use App\Http\Requests\PlayerNotes\StoreRequest;
 use App\Models\PlayerNote;
 use App\Traits\ManagesPlayerNotes;
@@ -14,21 +15,15 @@ class PlayerNotesController extends Controller
 {
     use ManagesPlayerNotes;
 
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $playerNotes = PlayerNote::with([
-            'player:id,ckey',
-            'gameAdmin.player',
-            'gameServer:id,server_id,short_name',
-        ])->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/PlayerNotes/Index', [
-                'playerNotes' => $playerNotes,
-            ]);
-        } else {
-            return $playerNotes;
-        }
+        return Inertia::render('Admin/PlayerNotes/Index', [
+            'playerNotes' => Inertia::lazy(fn () => PlayerNote::with([
+                'player:id,ckey',
+                'gameAdmin.player',
+                'gameServer:id,server_id,short_name',
+            ])->indexFilterPaginate(perPage: 30)),
+        ]);
     }
 
     public function create()
@@ -53,7 +48,7 @@ class PlayerNotesController extends Controller
 
     public function edit(PlayerNote $note)
     {
-        $note->load('player');
+        $note->load('player:id,ckey', 'gameServer:id,server_id');
 
         return Inertia::render('Admin/PlayerNotes/Edit', [
             'note' => $note,

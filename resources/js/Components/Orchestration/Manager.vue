@@ -83,7 +83,7 @@ export default {
       this.loadingServers = true
       try {
         const { data } = await axios.get(
-          route('game-servers.index', {
+          route('web.game-servers.index', {
             filters: {
               active: true,
             },

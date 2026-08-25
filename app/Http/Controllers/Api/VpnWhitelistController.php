@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\VpnWhitelist\IndexRequest;
 use App\Http\Requests\VpnWhitelist\StoreRequest;
 use App\Http\Resources\VpnWhitelistResource;
 use App\Models\VpnWhitelist;
-use App\Rules\DateRange;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -23,25 +23,12 @@ class VpnWhitelistController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<VpnWhitelistResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.ckey' => 'string',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         return VpnWhitelistResource::collection(
             VpnWhitelist::with(['gameAdmin.player'])
                 ->indexFilterPaginate()

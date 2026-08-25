@@ -29,7 +29,10 @@
               <tr>
                 <td><strong>Ckey</strong></td>
                 <td>
-                  <Link v-if="ban.original_ban_detail.ckey" :href="route('admin.player.show-by-ckey', ban.original_ban_detail.ckey)">
+                  <Link
+                    v-if="ban.original_ban_detail.ckey"
+                    :href="route('admin.players.show-by-ckey', ban.original_ban_detail.ckey)"
+                  >
                     {{ ban.original_ban_detail.ckey }}
                   </Link>
                 </td>
@@ -94,7 +97,9 @@
                   <td><strong>Removed By</strong></td>
                   <td>
                     <template v-if="ban.deleted_by_game_admin">
-                      {{ ban.deleted_by_game_admin.alias || ban.deleted_by_game_admin.player?.ckey }}
+                      {{
+                        ban.deleted_by_game_admin.alias || ban.deleted_by_game_admin.player?.ckey
+                      }}
                     </template>
                     <template v-else>Unknown</template>
                   </td>

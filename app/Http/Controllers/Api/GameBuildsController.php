@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
+use App\Attributes\HasServerFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GameBuildCancelRequest;
-use App\Http\Requests\GameBuildCreateRequest;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\GameBuilds\CancelRequest;
+use App\Http\Requests\GameBuilds\IndexRequest;
+use App\Http\Requests\GameBuilds\StoreRequest;
 use App\Http\Resources\GameBuildResource;
 use App\Http\Resources\GameBuildStatusResource;
 use App\Models\GameBuild;
-use App\Rules\DateRange;
 use App\Traits\ManagesGameBuilds;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -27,40 +28,14 @@ class GameBuildsController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<GameBuildResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasServerFilter,
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+        HasDateRangeFilter(name: 'ended_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            /** @example main1 */
-            'filters.server' => 'string',
-            'filters.started_by' => 'string',
-            'filters.branch' => 'string',
-            'filters.commit' => 'string',
-            'filters.map_id' => 'string',
-            'filters.failed' => 'boolean',
-            'filters.cancelled' => 'boolean',
-            'filters.map_switch' => 'boolean',
-            'filters.cancelled_by' => 'string',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.ended_at' => new DateRange,
-        ]);
-
         return GameBuildResource::collection(
             GameBuild::indexFilterPaginate()
         );
@@ -83,7 +58,7 @@ class GameBuildsController extends Controller
      *
      * Run a game build
      */
-    public function build(GameBuildCreateRequest $request)
+    public function build(StoreRequest $request)
     {
         try {
             $this->addBuild($request);
@@ -99,7 +74,7 @@ class GameBuildsController extends Controller
      *
      * Cancel a build
      */
-    public function cancel(GameBuildCancelRequest $request)
+    public function cancel(CancelRequest $request)
     {
         $this->cancelBuild($request);
 

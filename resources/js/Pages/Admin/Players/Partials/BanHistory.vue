@@ -22,7 +22,7 @@
       <q-td :props="props">
         <Link
           v-if="props.row.original_ban_detail.ckey"
-          :href="$route('admin.player.show-by-ckey', props.row.original_ban_detail.ckey)"
+          :href="$route('admin.players.show-by-ckey', props.row.original_ban_detail.ckey)"
         >
           {{ props.row.original_ban_detail.ckey }}
         </Link>

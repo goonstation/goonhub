@@ -1,6 +1,6 @@
 <template>
   <div class="q-table__grid-item col-xs-12">
-    <Link :href="`/events/antags/${item.row.id}`" class="gh-link-card">
+    <Link :href="$route('web.events.antags.show', item.row.id)" class="gh-link-card">
       <div class="row items-center q-col-gutter-md">
         <div class="col">
           <span>{{ item.row.mob_name }}</span>

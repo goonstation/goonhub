@@ -3,54 +3,12 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Mentors\StoreMentorRequest;
+use App\Models\Player;
 use App\Models\PlayerMentor;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class MentorsController extends Controller
 {
-    public function index(Request $request)
-    {
-        $mentors = PlayerMentor::with([
-            'player:id,ckey,key',
-        ])->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Mentors/Index', [
-                'mentors' => $mentors,
-            ]);
-        } else {
-            return $mentors;
-        }
-    }
-
-    public function create()
-    {
-        return Inertia::render('Admin/Mentors/Create');
-    }
-
-    public function store(StoreMentorRequest $request)
-    {
-        $data = $request->validated();
-
-        foreach ($data['player_ids'] as $playerId) {
-            PlayerMentor::firstOrCreate([
-                'player_id' => $playerId,
-            ]);
-        }
-
-        return redirect()->route('admin.mentors.index')
-            ->with('success', count($data['player_ids']).' mentor(s) added successfully');
-    }
-
-    public function destroy(PlayerMentor $mentor)
-    {
-        $mentor->delete();
-
-        return ['message' => 'Mentor removed successfully'];
-    }
-
     public function destroyMulti(Request $request)
     {
         $data = $request->validate([
@@ -60,6 +18,19 @@ class MentorsController extends Controller
         PlayerMentor::whereIn('id', $data['ids'])->delete();
 
         return ['message' => 'Mentors removed successfully'];
+    }
+
+    public function toggle(Request $request, Player $player)
+    {
+        if ($player->is_mentor) {
+            $player->mentor()->delete();
+
+            return ['message' => 'Mentor removed successfully'];
+        }
+
+        $player->mentor()->create(['player_id' => $player->id]);
+
+        return ['message' => 'Mentor added successfully'];
     }
 
     public function bulkToggle(Request $request)

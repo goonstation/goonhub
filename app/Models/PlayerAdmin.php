@@ -22,8 +22,8 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $alias
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $ckey
- * @property-read mixed $name
+ * @property-read string $ckey
+ * @property-read string|null $name
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Spatie\Permission\Models\Permission> $permissions
@@ -40,7 +40,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property-read int|null $servers_via_groups_count
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAdmin filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAdmin indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $limit = 15)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAdmin indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc')
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAdmin newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\PlayerAdmin newQuery()
@@ -96,16 +96,14 @@ class PlayerAdmin extends Authenticatable
     protected function ckey(): Attribute
     {
         return Attribute::make(
-            get: function (mixed $val, array $attrs) {
-                return $this->player->ckey;
-            },
+            get: fn (): string => $this->player->ckey
         );
     }
 
     protected function name(): Attribute
     {
         return Attribute::make(
-            get: function (mixed $val, array $attrs) {
+            get: function (mixed $val, array $attrs): ?string {
                 return $attrs['alias'];
             },
         );

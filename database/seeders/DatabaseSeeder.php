@@ -28,6 +28,7 @@ class DatabaseSeeder extends SeederOnce
             ...$production,
             GameRoundSeeder::class,
             PlayerSeeder::class,
+            EventLogSeeder::class,
         ];
 
         $seeders = app()->isProduction() ? $production : $development;

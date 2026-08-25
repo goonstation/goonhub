@@ -12,6 +12,11 @@ class UsersController extends Controller
 {
     use ManagesUsers;
 
+    /**
+     * Discord Link
+     *
+     * Link a Discord user to a BYOND user
+     */
     public function discordLink(Request $request)
     {
         $data = $request->validate([
@@ -28,6 +33,11 @@ class UsersController extends Controller
         return response()->json(['success' => 'User linked'], 200);
     }
 
+    /**
+     * Discord Unlink
+     *
+     * Unlink a Discord user from a BYOND user
+     */
     public function discordUnlink(Request $request)
     {
         $data = $request->validate([

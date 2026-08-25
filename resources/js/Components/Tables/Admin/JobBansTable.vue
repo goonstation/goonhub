@@ -9,7 +9,7 @@
     dense
     flat
   >
-    <template v-slot:cell-content-expires_at="{ props, col }">
+    <template v-slot:cell-content-expires_at="{ col }">
       <template v-if="col.value">{{ col.value }}</template>
       <q-badge v-else color="negative">Permanent</q-badge>
     </template>
@@ -27,12 +27,12 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/job-bans',
-        view: '/admin/job-bans/_id',
-        create: '/admin/job-bans/create',
-        edit: '/admin/job-bans/edit/_id',
-        delete: '/admin/job-bans/_id',
-        deleteMulti: '/admin/job-bans',
+        fetch: 'admin.job-bans.index',
+        view: 'admin.job-bans.show',
+        create: 'admin.job-bans.create',
+        edit: 'admin.job-bans.edit',
+        delete: 'admin.job-bans.delete',
+        deleteMulti: 'admin.job-bans.delete-multi',
       },
       columns: [
         {

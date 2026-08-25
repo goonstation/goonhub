@@ -10,32 +10,24 @@ use Inertia\Inertia;
 
 class RoundsController extends Controller
 {
-    private function getRounds()
-    {
-        return GameRound::with([
-            'server:server_id,name',
-            'mapRecord:id,map_id,name',
-            'latestStationName:id,round_id,name',
-        ])
-            ->where('ended_at', '!=', null)
-            ->whereRelation('server', 'invisible', '!=', true)
-            ->indexFilterPaginate(perPage: 30);
-    }
-
     public function index(IndexRequest $request)
     {
-        if ($this->wantsInertia()) {
-            $this->setMeta(
-                title: 'Rounds',
-                description: 'Search through all the game rounds that have ever happened'
-            );
+        $this->setMeta(
+            title: 'Rounds',
+            description: 'Search through all the game rounds that have ever happened'
+        );
 
-            return Inertia::render('Rounds/Index', [
-                'rounds' => Inertia::lazy(fn () => $this->getRounds()),
-            ]);
-        }
-
-        return $this->getRounds();
+        return Inertia::render('Rounds/Index', [
+            'rounds' => Inertia::lazy(fn () => GameRound::with([
+                'server:server_id,name',
+                'mapRecord:id,map_id,name',
+                'latestStationName:id,round_id,name',
+            ])
+                ->where('ended_at', '!=', null)
+                ->whereRelation('server', 'invisible', '!=', true)
+                ->indexFilterPaginate(perPage: 30)
+            ),
+        ]);
     }
 
     public function show(Request $request, int $round)

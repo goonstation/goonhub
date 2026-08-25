@@ -1,4 +1,3 @@
-// https://aka.ms/devcontainer.json
 {
   "name": "Goonhub",
   "dockerComposeFile": [
@@ -29,7 +28,8 @@
         "Zignd.html-css-class-completion",
         "GitHub.vscode-github-actions",
         "shufo.vscode-blade-formatter",
-        "Gruntfuggly.todo-tree"
+        "Gruntfuggly.todo-tree",
+        "sanderronde.phpstan-vscode"
       ],
       "settings": {
         "extensions.verifySignature": false

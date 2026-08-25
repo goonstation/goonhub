@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use App\Http\Requests\GameBuildCancelRequest;
-use App\Http\Requests\GameBuildCreateRequest;
+use App\Http\Requests\GameBuilds\CancelRequest;
+use App\Http\Requests\GameBuilds\StoreRequest;
 use App\Http\Resources\GameBuildStatusCurrentResource;
 use App\Http\Resources\GameBuildStatusQueuedResource;
 use App\Jobs\GameBuild as GameBuildJob;
@@ -60,7 +60,7 @@ trait ManagesGameBuilds
         return $res;
     }
 
-    private function addBuild(GameBuildCreateRequest $request)
+    private function addBuild(StoreRequest $request)
     {
         $admin = $request->getGameAdmin();
         $server = $request->getGameServer();
@@ -90,7 +90,7 @@ trait ManagesGameBuilds
         GameBuildJob::dispatch($admin, $server, $switchMap);
     }
 
-    private function cancelBuild(GameBuildCancelRequest $request)
+    private function cancelBuild(CancelRequest $request)
     {
         $type = $request->input('type', 'current');
         $admin = $request->getGameAdmin();

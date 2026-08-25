@@ -11,7 +11,7 @@ use Inertia\Inertia;
 
 class ErrorsController extends Controller
 {
-    public function index(ErrorsIndexRequest $request)
+    private function getErrors(ErrorsIndexRequest $request)
     {
         $filters = $request->input('filters', []);
 
@@ -87,16 +87,15 @@ class ErrorsController extends Controller
                 sortBy: 'overview_count',
             );
 
-        $errors = $errors->simplePaginateFilter(987654321);
+        return $errors->simplePaginateFilter(987654321);
+    }
 
-        if ($this->wantsInertia($request)) {
-            $this->setMeta(title: 'Errors', description: 'Review recent errors that occurred ingame');
+    public function index(ErrorsIndexRequest $request)
+    {
+        $this->setMeta(title: 'Errors', description: 'Review recent errors that occurred ingame');
 
-            return Inertia::render('Events/Errors/Index', [
-                'errors' => $errors,
-            ]);
-        } else {
-            return $errors;
-        }
+        return Inertia::render('Events/Errors/Index', [
+            'errors' => Inertia::lazy(fn () => $this->getErrors($request)),
+        ]);
     }
 }

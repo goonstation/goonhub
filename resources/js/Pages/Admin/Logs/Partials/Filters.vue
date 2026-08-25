@@ -8,22 +8,23 @@
     <div :class="[sidebar ? 'col-12' : 'col']">
       <q-form @submit="search">
         <q-input
-          v-model="modelValue.searchInput"
+          :model-value="modelValue.searchInput"
           class="q-mb-xs"
           :class="{ 'text-sm': sidebar }"
           type="textarea"
           placeholder="One term per line&#10;Term: Match must match any&#10;!Term: Match must include&#10;-Term: Match must not include"
           filled
           dense
+          @update:model-value="updateSearchInput"
         />
         <div class="flex gap-xs-xs">
           <q-btn
             v-if="hasSearchFilters"
-            @click="clearSearch"
             :class="{ 'full-width': sidebar }"
             color="grey"
             text-color="dark"
             size="sm"
+            @click="clearSearch"
             >Clear Filters</q-btn
           >
           <q-space />
@@ -43,23 +44,30 @@
         <div class="log-type-filter">
           <q-checkbox v-model="logTypesAll" val="all" label="All" dense />
         </div>
-        <template v-for="logType in logTypes">
-          <div class="log-type-filter" :class="`log-type-${logType.value}`">
-            <q-checkbox
-              v-model="modelValue.logTypesToShow"
-              :val="logType.value"
-              :label="logType.label"
-              dense
-            />
-          </div>
-        </template>
+        <div
+          v-for="logType in logTypes"
+          :key="logType.value"
+          class="log-type-filter"
+          :class="`log-type-${logType.value}`"
+        >
+          <q-checkbox
+            :model-value="modelValue.logTypesToShow"
+            :val="logType.value"
+            :label="logType.label"
+            dense
+            @update:model-value="updateLogTypesToShow"
+          />
+        </div>
       </div>
-      <hr class="q-mt-md" style="border-color: grey" />
-      <q-checkbox
-        v-model="modelValue.relativeTimestamps"
-        label="Relative Timestamps"
-        :dense="sidebar"
-      />
+      <template v-if="showRelativeTimestamps">
+        <hr class="q-mt-md" style="border-color: grey" />
+        <q-checkbox
+          :model-value="modelValue.relativeTimestamps"
+          label="Relative Timestamps"
+          :dense="sidebar"
+          @update:model-value="updateRelativeTimestamps"
+        />
+      </template>
     </div>
   </div>
 </template>
@@ -85,7 +93,13 @@ export default {
     sidebar: Boolean,
     logTypes: Array,
     hasSearchFilters: Boolean,
+    showRelativeTimestamps: {
+      type: Boolean,
+      default: true,
+    },
   },
+
+  emits: ['update:modelValue', 'search', 'clear-search'],
 
   computed: {
     logTypesAll: {
@@ -99,12 +113,28 @@ export default {
             newLogTypes.push(logType.value)
           }
         }
-        this.modelValue.logTypesToShow = newLogTypes
+        this.updateLogTypesToShow(newLogTypes)
       },
     },
   },
 
   methods: {
+    emitUpdate(updates) {
+      this.$emit('update:modelValue', { ...this.modelValue, ...updates })
+    },
+
+    updateSearchInput(value) {
+      this.emitUpdate({ searchInput: value })
+    },
+
+    updateLogTypesToShow(value) {
+      this.emitUpdate({ logTypesToShow: value })
+    },
+
+    updateRelativeTimestamps(value) {
+      this.emitUpdate({ relativeTimestamps: value })
+    },
+
     search() {
       const terms = this.modelValue.searchInput.split('\n')
       const filters = { and: [], or: [], not: [] }
@@ -124,7 +154,7 @@ export default {
     },
 
     clearSearch() {
-      this.modelValue.searchInput = ''
+      this.emitUpdate({ searchInput: '' })
       this.$emit('clear-search')
     },
   },

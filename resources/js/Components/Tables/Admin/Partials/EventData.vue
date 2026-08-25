@@ -2,6 +2,7 @@
   <div style="white-space: pre-wrap">
     <q-chip
       v-for="[key, value] in Object.entries(eventSpecificData)"
+      :key="key"
       style="font-size: 13px"
       square
     >

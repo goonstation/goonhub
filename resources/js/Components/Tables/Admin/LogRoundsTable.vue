@@ -9,7 +9,20 @@
     dense
     no-timestamp-toggle
   >
-    <template v-slot:cell-content-ended_at="{ props, col }">
+    <template v-slot:header-right>
+      <Link :href="route('admin.logs.search')">
+        <q-btn
+          color="grey-9"
+          text-color="grey-4"
+          :icon="ionSearch"
+          label="Search All Logs"
+          padding="xs md"
+          no-caps
+          unelevated
+        />
+      </Link>
+    </template>
+    <template v-slot:cell-content-ended_at="{ col }">
       <template v-if="col.value">{{ col.value }}</template>
       <q-badge v-else color="primary" text-color="dark">Round in progress</q-badge>
     </template>
@@ -17,15 +30,21 @@
 </template>
 
 <script>
+import { ionSearch } from '@quasar/extras/ionicons-v6'
 import BaseTable from '../BaseTable.vue'
 
 export default {
   components: { BaseTable },
+
+  setup() {
+    return { ionSearch }
+  },
+
   data() {
     return {
       routes: {
-        fetch: '/admin/logs',
-        view: '/admin/logs/_id',
+        fetch: 'admin.logs.index',
+        view: 'admin.logs.show',
       },
       columns: [
         {

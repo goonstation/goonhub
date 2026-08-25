@@ -1,6 +1,6 @@
 <template>
   <Button
-    :href="route('game-auth.discord-redirect')"
+    :href="route('web.game-auth.discord-redirect')"
     icon="logo-discord"
     bg-color="#222539"
     bg-line-color="#191b2b"
@@ -47,9 +47,9 @@
       <Button :disabled="form.processing" icon="log-in" type="submit">Login</Button>
 
       <div class="links">
-        <Link :href="route('game-auth.show-forgot')">Forgot password?</Link>
+        <Link :href="route('web.game-auth.show-forgot')">Forgot password?</Link>
         <Button
-          :href="route('game-auth.show-register')"
+          :href="route('web.game-auth.show-register')"
           icon="arrow-redo"
           class="register"
           bg-color="var(--color-secondary-dark)"
@@ -111,7 +111,7 @@ const form = useForm({
 })
 
 const submit = () => {
-  form.post(route('game-auth.login'), {
+  form.post(route('web.game-auth.login'), {
     onFinish: () => form.reset('password'),
   })
 }

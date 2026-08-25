@@ -9,7 +9,7 @@
     dense
     no-timestamp-toggle
   >
-    <template v-slot:cell-content-ended_at="{ props, col }">
+    <template v-slot:cell-content-ended_at="{ col }">
       <template v-if="col.value">{{ col.value }}</template>
       <q-badge v-else color="primary" text-color="dark">Round in progress</q-badge>
     </template>
@@ -24,8 +24,8 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/rounds',
-        view: '/admin/rounds/_id',
+        fetch: 'admin.rounds.index',
+        view: 'admin.rounds.show',
       },
       columns: [
         {

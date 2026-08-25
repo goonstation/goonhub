@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GameRounds\IndexRequest;
 use App\Models\Events\EventError;
 use App\Models\GameRound;
 use Illuminate\Http\Request;
@@ -11,21 +12,18 @@ use Inertia\Inertia;
 class ErrorsController extends Controller
 {
     public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $rounds = GameRound::with([
-            'server:server_id,name,short_name',
-        ])
-            ->withCount('errors')
-            ->has('errors')
-            ->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Errors/Index', [
-                'rounds' => $rounds,
-            ]);
-        } else {
-            return $rounds;
-        }
+        return Inertia::render('Admin/Errors/Index', [
+            'rounds' => Inertia::lazy(function () {
+                return GameRound::with([
+                    'server:server_id,name,short_name',
+                ])
+                    ->withCount('errors')
+                    ->has('errors')
+                    ->indexFilterPaginate(perPage: 30);
+            }),
+        ]);
     }
 
     public function show(Request $request, GameRound $gameRound)

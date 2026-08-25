@@ -41,13 +41,9 @@ class EventsController extends Controller
             $events = $filteringEvent->indexFilterPaginate(perPage: 30);
         }
 
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Events/Index', [
-                'eventTypes' => $eventTypes,
-                'events' => $events,
-            ]);
-        } else {
-            return $events;
-        }
+        return Inertia::render('Admin/Events/Index', [
+            'eventTypes' => $eventTypes,
+            'events' => Inertia::lazy(fn () => $events),
+        ]);
     }
 }

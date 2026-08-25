@@ -3,23 +3,18 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GameRounds\IndexRequest;
 use App\Models\GameRound;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class RoundsController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        $rounds = GameRound::with(['server', 'mapRecord'])->indexFilterPaginate(perPage: 30);
-
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Rounds/Index', [
-                'rounds' => $rounds,
-            ]);
-        } else {
-            return $rounds;
-        }
+        return Inertia::render('Admin/Rounds/Index', [
+            'rounds' => Inertia::lazy(fn () => GameRound::with(['server', 'mapRecord'])->indexFilterPaginate(perPage: 30)),
+        ]);
     }
 
     public function show(Request $request, GameRound $round)

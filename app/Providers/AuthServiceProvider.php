@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Models\Team;
 use App\Models\User;
 use App\Policies\TeamPolicy;
-use App\Policies\TestPolicy;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -40,7 +39,5 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('viewPulse', function (AuthUser $user) {
             return $user instanceof User && $user->isGameAdmin();
         });
-
-        Gate::define('view-test', [TestPolicy::class, 'view']);
     }
 }

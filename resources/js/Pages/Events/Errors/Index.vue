@@ -1,6 +1,6 @@
 <template>
   <div>
-    <error-summary-table :initial="errors" />
+    <error-summary-table prop-key="errors" />
   </div>
 </template>
 

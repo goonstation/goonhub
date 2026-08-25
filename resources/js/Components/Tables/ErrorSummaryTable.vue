@@ -31,7 +31,7 @@
             :clearable="false"
             style="min-width: 200px"
             label="Server"
-            load-route="/game-servers"
+            :load-route="$route('web.game-servers.index')"
             option-value="server_id"
             option-label="name"
             filled
@@ -169,7 +169,7 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/events/errors',
+        fetch: 'web.events.errors.index',
       },
       columns: [
         {

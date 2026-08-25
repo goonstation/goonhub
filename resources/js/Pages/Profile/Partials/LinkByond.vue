@@ -8,7 +8,7 @@
           :href="
             linkedByond
               ? `https://www.byond.com/members/${linkedByond.ckey}`
-              : $route('link-byond.redirect')
+              : $route('web.user.link.byond.redirect')
           "
           :target="linkedByond ? '_blank' : '_self'"
           :color="linkedByond ? 'positive' : 'warning'"
@@ -19,7 +19,7 @@
         />
         <q-btn
           v-if="linkedByond"
-          @click="$inertia.visit($route('link-byond.unlink'))"
+          @click="$inertia.visit($route('web.user.link.byond.unlink'))"
           :icon="ionClose"
           class="text-sm q-px-xs q-py-xs q-ml-sm"
           color="negative"

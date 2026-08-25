@@ -27,7 +27,7 @@ class TicketsController extends Controller
 
     public function index(TicketsIndexRequest $request)
     {
-        if ($this->wantsInertia()) {
+        if ($request->inertia()) {
             $this->setMeta(title: 'Tickets', description: 'All tickets');
 
             return Inertia::render('Events/Tickets/Index', [

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Medals\IndexRequest;
 use App\Models\Medal;
 use App\Models\PlayerMedal;
 use Illuminate\Http\Request;
@@ -12,28 +13,26 @@ use Inertia\Inertia;
 
 class MedalsController extends Controller
 {
-    public function index(Request $request)
+    public function index(IndexRequest $request)
     {
-        /** @var \Illuminate\Pagination\LengthAwarePaginator */
-        $medals = Medal::select([
-            '*',
-            DB::raw('COALESCE(pm.earned_count, 0) AS earned_count'),
-        ])
-            ->joinSub(
-                'SELECT medal_id, COUNT(*) AS earned_count FROM player_medals GROUP BY medal_id',
-                'pm', 'medals.id', '=', 'pm.medal_id', 'left'
-            )
-            ->indexFilterPaginate(perPage: 30, sortBy: 'title', order: 'asc');
+        return Inertia::render('Admin/Medals/Index', [
+            'medals' => Inertia::lazy(function () {
+                /** @var \Illuminate\Pagination\LengthAwarePaginator */
+                $medals = Medal::select([
+                    '*',
+                    DB::raw('COALESCE(pm.earned_count, 0) AS earned_count'),
+                ])
+                    ->joinSub(
+                        'SELECT medal_id, COUNT(*) AS earned_count FROM player_medals GROUP BY medal_id',
+                        'pm', 'medals.id', '=', 'pm.medal_id', 'left'
+                    )
+                    ->indexFilterPaginate(perPage: 30, sortBy: 'title', order: 'asc');
 
-        $medals->through(fn (Medal $medal) => $medal->makeVisible(['id']));
+                $medals->through(fn (Medal $medal) => $medal->makeVisible(['id']));
 
-        if ($this->wantsInertia($request)) {
-            return Inertia::render('Admin/Medals/Index', [
-                'medals' => $medals,
-            ]);
-        } else {
-            return $medals;
-        }
+                return $medals;
+            }),
+        ]);
     }
 
     public function medalsPlayerDoesntHave(Request $request, int $player)

@@ -106,11 +106,13 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        if ($request->user()) {
-            $request->user()->load('gameAdmin.player');
+        /** @var \App\Models\User|null */
+        $user = $request->user();
+        if ($user) {
+            $user->load(['gameAdmin.player']);
         }
 
-        return array_merge(parent::share($request), [
+        $response = array_merge(parent::share($request), [
             'csrf_token' => csrf_token(),
             'breadcrumbs' => fn () => Breadcrumbs::current(),
             'env' => [],
@@ -122,5 +124,7 @@ class HandleInertiaRequests extends Middleware
             'meta' => fn () => $this->getMetaData($request),
             'schema' => fn () => $this->getSchema($request),
         ]);
+
+        return $response;
     }
 }

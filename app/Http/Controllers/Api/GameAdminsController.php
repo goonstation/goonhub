@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexQueryRequest;
+use App\Http\Requests\GameAdmins\IndexRequest;
 use App\Http\Resources\PlayerAdminResource;
 use App\Models\PlayerAdmin;
-use App\Rules\DateRange;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -21,30 +21,14 @@ class GameAdminsController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<PlayerAdminResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.ckey' => 'string',
-            'filters.key' => 'string',
-            'filters.alias' => 'string',
-            'filters.rank' => 'string',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         return PlayerAdminResource::collection(
-            PlayerAdmin::indexFilterPaginate()
+            PlayerAdmin::with(['player', 'rank'])->indexFilterPaginate()
         );
     }
 

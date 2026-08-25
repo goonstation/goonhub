@@ -1,0 +1,79 @@
+# Dependencies
+/.phpunit.cache
+/node_modules
+/vendor
+
+# Build output
+/public/build
+/public/hot
+/public/storage
+
+# Storage
+/storage/*.key
+/storage/app/public
+/storage/debugbar
+/storage/ssr
+/storage/clockwork
+/storage/logs
+/storage/pail
+
+# IDE
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+/.idea/sonarlint
+.phpstorm.meta.php
+_ide_helper_models.php
+_ide_helper.php
+/.vscode
+
+# Package manager logs
+npm-debug.log
+yarn-error.log
+
+# Misc
+.env.backup
+.php-cs-fixer.cache
+.husky
+**/.DS_Store
+/public/page-cache
+.phpunit.database.checksum
+.phpunit.cache
+rr
+.rr.yaml
+frankenphp
+.config
+.data
+.git
+.gitignore
+.editorconfig
+
+# Docker and CI/CD
+docker-compose*.yml
+/.github
+/docker/develop
+Dockerfile*
+.dockerignore
+
+# Documentation
+README.md
+LICENSE
+TODO.md
+/docs
+
+# Test files
+/tests
+phpunit.xml
+phpstan.neon
+
+# Cache directories
+/tmp
+/.cache
+/.bun
+
+# Development config files
+.eslintrc*
+.prettierrc*
+eslint.config.js
+pint.json
+postcss.config.js

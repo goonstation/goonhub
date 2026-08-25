@@ -10,12 +10,12 @@
     no-timestamp-toggle
   >
     <template #top-left>
-      <q-btn :href="route('admin.errors.summary')" type="a" color="primary" outline>
+      <q-btn :href="$route('admin.errors.summary')" type="a" color="primary" outline>
         Error Summary
       </q-btn>
     </template>
 
-    <template v-slot:cell-content-ended_at="{ props, col }">
+    <template v-slot:cell-content-ended_at="{ col }">
       <template v-if="col.value">{{ col.value }}</template>
       <q-badge v-else color="primary" text-color="dark">Round in progress</q-badge>
     </template>
@@ -30,8 +30,8 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/errors',
-        view: '/admin/errors/_id',
+        fetch: 'admin.errors.index',
+        view: 'admin.errors.show',
       },
       columns: [
         {

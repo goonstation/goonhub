@@ -1,29 +1,27 @@
 import type { Axios } from 'axios'
 import type Echo from 'laravel-echo'
 import type Pusher from 'pusher-js'
-import type { route as routeFn } from '../../../vendor/tightenco/ziggy'
-import formatsPlugin from '../Plugins/formats'
-import helpersPlugin from '../Plugins/helpers'
-import storePlugin from '../Plugins/store'
+import type { Config, route as routeFn } from '../../../vendor/tightenco/ziggy'
+import type useAuth from '../Composables/auth'
+import type useFormats from '../Composables/formats'
+import type useHelpers from '../Composables/helpers'
+import type useStore from '../Composables/store'
 
 declare global {
   var route: typeof routeFn
   var axios: Axios
   var Pusher: Pusher
   var Echo: Echo<"reverb">
-  var Ziggy: Object
+  var Ziggy: Config
 }
 
 declare module 'vue' {
-  type helpers = typeof helpersPlugin.install
-  type formats = typeof formatsPlugin.install
-  type store = typeof storePlugin.install
-
   interface ComponentCustomProperties {
     $route: typeof routeFn
-    $helpers: ReturnType<helpers>
-    $formats: ReturnType<formats>
-    $store: ReturnType<store>
+    $helpers: ReturnType<typeof useHelpers>
+    $formats: ReturnType<typeof useFormats>
+    $store: ReturnType<typeof useStore>
+    $auth: ReturnType<typeof useAuth>
   }
 }
 

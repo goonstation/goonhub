@@ -1,9 +1,11 @@
 <template>
   <q-field
     ref="field"
+    v-bind="$attrs"
     :model-value="multiple ? [...modelGroups, ...modelServers] : [modelGroups, modelServers]"
     :error="!!error && showServerError"
     :error-message="error"
+    @clear="onClear"
     class="q-pa-none"
     lazy-rules
     dense
@@ -248,7 +250,7 @@ export default {
         const params = { filters: {} }
         if (!this.withInactive) params.filters.active = true
         if (this.withInvisible) params.filters.with_invisible = true
-        const { data } = await axios.get(route('game-servers.index', params))
+        const { data } = await axios.get(route('web.game-servers.index', params))
 
         const groups = []
 
@@ -289,6 +291,11 @@ export default {
           this.modelServers = id
         }
       }
+    },
+
+    onClear() {
+      this.modelServers = null
+      this.modelGroups = null
     },
   },
 

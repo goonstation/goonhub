@@ -12,7 +12,7 @@
   >
     <template v-slot:item="props">
       <div class="q-table__grid-item col-xs-12 col-sm-6 col-md-4 col-lg-3">
-        <Link :href="`/players/${props.row.id}`" class="gh-link-card">
+        <Link :href="$route('web.players.show', props.row.id)" class="gh-link-card">
           <div class="flex items-center no-wrap">
             <player-avatar :player="props.row" class="q-mr-sm" size="md" />
             <div>
@@ -62,7 +62,7 @@ export default {
 
   data() {
     return {
-      routes: { fetch: '/players/search' },
+      routes: { fetch: 'web.players.search' },
       columns: [
         { name: 'ckey', label: 'Ckey', field: 'ckey', sortable: true },
         { name: 'key', label: 'Key', field: 'key', sortable: true },

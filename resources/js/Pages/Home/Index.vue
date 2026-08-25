@@ -63,8 +63,8 @@
         color="grey-9"
         size="sm"
         type="link"
-        :href="$route('changelog')"
-        @click.prevent="$inertia.visit($route('changelog'))"
+        :href="$route('web.changelog')"
+        @click.prevent="$inertia.visit($route('web.changelog'))"
         label="View the full changelog"
       />
     </div>

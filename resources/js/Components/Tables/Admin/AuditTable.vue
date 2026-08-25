@@ -6,7 +6,6 @@
     :show-columns="['created_at']"
     :pagination="{ sortBy: 'created_at', rowsPerPage: 50 }"
     :skeleton-options="{ rows: 15 }"
-    @row-click="onRowClick"
     flat
     dense
     no-row-actions
@@ -39,8 +38,8 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/audit',
-        view: '/admin/audit/_id',
+        fetch: 'admin.audit.index',
+        view: 'admin.audit.show',
       },
       columns: [
         {
@@ -73,11 +72,6 @@ export default {
         },
       ],
     }
-  },
-  methods: {
-    onRowClick(row) {
-      this.$inertia.visit(route('admin.audit.show', row.id))
-    },
   },
 }
 </script>

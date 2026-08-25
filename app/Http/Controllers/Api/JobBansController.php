@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
+use App\Attributes\HasServerFilter;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\IndexQueryRequest;
 use App\Http\Requests\JobBans\DestroyRequest;
+use App\Http\Requests\JobBans\IndexRequest;
 use App\Http\Requests\JobBans\StoreRequest;
 use App\Http\Requests\JobBans\UpdateRequest;
 use App\Http\Resources\JobBanResource;
 use App\Models\JobBan;
-use App\Rules\DateRange;
 use App\Services\CommonRequest;
 use App\Traits\ManagesJobBans;
 use Carbon\Carbon;
@@ -31,31 +32,13 @@ class JobBansController extends Controller
      *
      * @return AnonymousResourceCollection<LengthAwarePaginator<JobBanResource>>
      */
-    public function index(IndexQueryRequest $request)
+    #[
+        HasServerFilter,
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
     {
-        $request->validate([
-            'filters.id' => 'int',
-            'filters.round' => 'int',
-            'filters.game_admin' => 'string',
-            /** @example main1 */
-            'filters.server' => 'string',
-            'filters.ckey' => 'string',
-            'filters.banned_from_job' => 'string',
-            'filters.reason' => 'string',
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.created_at' => new DateRange,
-            /**
-             * A date or date range
-             *
-             * @example 2023/01/30 12:00:00 - 2023/02/01 12:00:00
-             */
-            'filters.updated_at' => new DateRange,
-        ]);
-
         return JobBanResource::collection(
             JobBan::forApi()->with(['gameAdmin.player'])
                 ->indexFilterPaginate()

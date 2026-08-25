@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Attributes\HasDateRangeFilter;
+use App\Attributes\HasRangeFilter;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Players\IndexRequest;
 use App\Http\Resources\PlayerCompIdsResource;
 use App\Http\Resources\PlayerIpsResource;
 use App\Http\Resources\PlayerResource;
@@ -15,11 +18,40 @@ use App\Models\PlayerConnection;
 use App\Traits\ManagesPlayers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class PlayersController extends Controller
 {
     use ManagesPlayers;
+
+    /**
+     * List
+     *
+     * List paginated and filtered players
+     *
+     * @return AnonymousResourceCollection<LengthAwarePaginator<PlayerResource>>
+     */
+    #[
+        HasRangeFilter(name: 'connections_count'),
+        HasRangeFilter(name: 'participations_count'),
+        HasDateRangeFilter(name: 'created_at'),
+        HasDateRangeFilter(name: 'updated_at'),
+    ]
+    public function index(IndexRequest $request)
+    {
+        return PlayerResource::collection(
+            Player::withCount(['connections', 'participations'])->with([
+                'mentor:id,player_id',
+                'hos:id,player_id',
+                'whitelist.servers',
+                'whitelist.serverGroups',
+                'bypassCap.servers',
+                'bypassCap.serverGroups',
+            ])->indexFilterPaginate()
+        );
+    }
 
     /**
      * Login

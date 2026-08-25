@@ -1,20 +1,20 @@
 <template>
-  <maps-table :initial="maps" />
+  <maps-table prop-key="maps" />
 </template>
 
 <script>
-import MapsTable from '@/Components/Tables/Admin/MapsTable.vue';
-import DashboardLayout from '@/Layouts/DashboardLayout.vue';
+import MapsTable from '@/Components/Tables/Admin/MapsTable.vue'
+import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 
 export default {
   components: {
-    MapsTable
+    MapsTable,
   },
 
   layout: (h, page) => h(DashboardLayout, { title: 'Maps' }, () => page),
 
   props: {
-    maps: Object
-  }
+    maps: Object,
+  },
 }
 </script>

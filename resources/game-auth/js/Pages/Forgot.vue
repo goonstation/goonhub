@@ -22,7 +22,7 @@
       <Button :disabled="form.processing" icon="refresh" type="submit">Reset Password</Button>
 
       <div class="links" style="justify-content: center">
-        <Link :href="route('game-auth.show-login')">Remembered your password?</Link>
+        <Link :href="route('web.game-auth.show-login')">Remembered your password?</Link>
       </div>
     </div>
   </form>
@@ -47,7 +47,7 @@ const form = useForm({
 })
 
 const submit = () => {
-  form.post(route('password.email'), {
+  form.post(route('web.password.email'), {
     onFinish: () => form.reset('email'),
   })
 }

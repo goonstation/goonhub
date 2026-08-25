@@ -53,12 +53,7 @@
         <div class="flex">
           <q-space />
 
-          <q-btn
-            type="button"
-            color="grey-6"
-            flat
-            @click="toggleRecovery"
-          >
+          <q-btn type="button" color="grey-6" flat @click="toggleRecovery">
             <template v-if="!recovery"> Use a recovery code </template>
 
             <template v-else> Use an authentication code </template>
@@ -79,10 +74,10 @@
 </template>
 
 <script>
-import { nextTick } from 'vue'
+import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { useForm } from '@inertiajs/vue3'
 import { ionLockClosed } from '@quasar/extras/ionicons-v6'
-import AuthLayout from '@/Layouts/AuthLayout.vue'
+import { nextTick } from 'vue'
 
 export default {
   layout: (h, page) => h(AuthLayout, { title: 'Two-factor Confirmation' }, () => page),
@@ -124,7 +119,7 @@ export default {
     },
 
     submit() {
-      this.form.post(route('two-factor.login'))
+      this.form.post(route('web.two-factor.login'))
     },
   },
 }

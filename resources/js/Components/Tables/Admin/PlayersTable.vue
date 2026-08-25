@@ -10,7 +10,6 @@
     :show-columns="['created_at']"
     :hide-columns="['mentor', 'hos', 'whitelist', 'bypass_cap']"
     :skeleton-options="{ rows: 15 }"
-    @row-click="$inertia.visit(route('admin.players.show', $event.id))"
     selection="multiple"
     no-timestamp-toggle
     no-row-actions
@@ -170,8 +169,8 @@ export default {
       toggleWhitelistedDialog: false,
       toggleBypassCapDialog: false,
       routes: {
-        fetch: '/admin/players',
-        view: '/admin/players/_id',
+        fetch: 'admin.players.index',
+        view: 'admin.players.show',
       },
       columns: [
         {
@@ -179,7 +178,6 @@ export default {
           label: 'ID',
           field: 'id',
           sortable: true,
-          filterable: false,
           style: 'width: 1px;',
         },
         { name: 'ckey', label: 'Key', field: 'ckey', sortable: true },

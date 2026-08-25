@@ -15,6 +15,11 @@ class PlayerFilter extends BaseModelFilter
      */
     public $relations = [];
 
+    public function id($val)
+    {
+        return $this->where('id', $val);
+    }
+
     public function ckey($val)
     {
         return $this->where('ckey', 'ILIKE', '%'.$val.'%');

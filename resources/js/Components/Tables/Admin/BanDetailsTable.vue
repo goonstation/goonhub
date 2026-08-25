@@ -63,7 +63,7 @@ export default {
 
   methods: {
     async getDetails(banId) {
-      return await axios.get('/admin/bans/details', { params: { ban_id: banId } })
+      return await axios.get(this.$route('admin.bans.get-details'), { params: { ban_id: banId } })
     },
 
     async showDetails() {

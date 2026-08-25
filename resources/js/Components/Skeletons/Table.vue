@@ -15,6 +15,9 @@
     </thead>
     <thead v-else>
       <tr>
+        <th colspan="100%" style="height: 68px"></th>
+      </tr>
+      <tr>
         <th
           v-for="column in columns"
           :key="`header-${column.name}`"

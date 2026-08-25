@@ -105,7 +105,7 @@
 
         <span v-if="build.map" class="text-opacity-80 build-header__map">
           Map
-          <a :href="$route('maps.show', build.map_id.toLowerCase())" target="_blank">
+          <a :href="$route('web.maps.show', build.map_id.toLowerCase())" target="_blank">
             {{ build.map.name }}
           </a>
           <img :src="`/storage/maps/${build.map_id.toLowerCase()}/thumb.png`" class="gh-sprite" />

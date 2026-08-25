@@ -158,9 +158,8 @@ trait ManagesBans
 
         // If the ban isn't targeting a specific server, the user wants it to apply to all servers
         // So we get the originating server group and apply it to the ban
-        if ($newBan->has('server_id') && is_null($newBan['server_id'])) {
-            $gameServerGroup = app(CommonRequest::class)->fromServerGroup();
-
+        $gameServerGroup = app(CommonRequest::class)->fromServerGroup();
+        if ($newBan->has('server_id') && is_null($newBan['server_id']) && $gameServerGroup) {
             $newBan['server_group'] = $gameServerGroup->id;
         } else {
             $newBan['server_group'] = null;

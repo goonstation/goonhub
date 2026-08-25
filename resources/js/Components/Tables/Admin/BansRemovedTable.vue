@@ -61,8 +61,8 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/bans/removed',
-        view: '/admin/bans/_id',
+        fetch: 'admin.bans.index-removed',
+        view: 'admin.bans.show',
       },
       columns: [
         {

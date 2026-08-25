@@ -4,7 +4,7 @@
       <Link
         v-for="medal in medals"
         :key="medal.uuid"
-        :href="$route('medals.show', medal.uuid)"
+        :href="$route('web.medals.show', medal.uuid)"
         class="gh-link-card"
         style="padding: 0"
       >

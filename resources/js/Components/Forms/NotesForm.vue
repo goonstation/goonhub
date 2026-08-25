@@ -4,43 +4,20 @@
       <q-form @submit="submit">
         <q-card class="gh-card q-mb-md" flat>
           <q-card-section>
-            <base-select
+            <player-select
               v-model="form.ckey"
               class="q-mb-md"
               label="Player"
-              load-route="/admin/players"
+              search-key="name"
               option-value="ckey"
-              option-label="ckey"
-              search-key="ckey"
               filled
               lazy-rules
-              dense
-              emit-value
-              map-options
               hide-bottom-space
               use-input
               :error="!!form.errors.ckey"
               :error-message="form.errors.ckey"
               :default-items="defaultPlayers"
               @new-value="createNewPlayer"
-            />
-            <base-select
-              v-model="form.server_id"
-              class="q-mb-md"
-              label="Server"
-              load-route="/game-servers"
-              option-value="server_id"
-              option-label="name"
-              filled
-              lazy-rules
-              dense
-              emit-value
-              map-options
-              hide-bottom-space
-              :filters="{ with_invisible: true }"
-              :error="!!form.errors.server_id"
-              :error-message="form.errors.server_id"
-              :default-items="[{ name: 'All', server_id: 'all' }]"
             />
             <q-input
               v-model="form.note"
@@ -53,6 +30,14 @@
               hide-bottom-space
               :error="!!form.errors.note"
               :error-message="form.errors.note"
+            />
+            <game-servers-select
+              v-model:server="form.server_id"
+              :error="form.errors.server_id"
+              label="Server"
+              with-invisible
+              servers-only
+              clearable
             />
           </q-card-section>
         </q-card>
@@ -73,25 +58,21 @@
 </template>
 
 <script>
-import BaseSelect from '@/Components/Selects/BaseSelect.vue'
+import GameServersSelect from '@/Components/Selects/GameServers.vue'
+import PlayerSelect from '@/Components/Selects/Players.vue'
 import BaseForm from './BaseForm.vue'
 
 export default {
   extends: BaseForm,
 
   components: {
-    BaseSelect,
+    PlayerSelect,
+    GameServersSelect,
   },
 
   data() {
     return {
       defaultPlayers: [],
-    }
-  },
-
-  created() {
-    if (this.form.ckey) {
-      this.defaultPlayers = [{ ckey: this.form.ckey }]
     }
   },
 

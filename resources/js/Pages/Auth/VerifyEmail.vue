@@ -31,7 +31,7 @@
       </q-form>
 
       <div class="flex items-center justify-between text-sm">
-        <Link :href="route('profile.show')">Edit Profile</Link>
+        <Link :href="route('web.profile.show')">Edit Profile</Link>
         <a href="" @click.prevent="logout">Log Out</a>
       </div>
     </q-card-section>
@@ -39,9 +39,9 @@
 </template>
 
 <script>
-import { useForm, router } from '@inertiajs/vue3'
-import { ionMail } from '@quasar/extras/ionicons-v6'
 import AuthLayout from '@/Layouts/AuthLayout.vue'
+import { router, useForm } from '@inertiajs/vue3'
+import { ionMail } from '@quasar/extras/ionicons-v6'
 
 export default {
   layout: (h, page) => h(AuthLayout, { title: 'Email Verification' }, () => page),
@@ -70,11 +70,11 @@ export default {
 
   methods: {
     submit() {
-      this.form.post(route('verification.send'))
+      this.form.post(route('web.verification.send'))
     },
 
     logout() {
-      router.post(route('logout'))
+      router.post(route('web.logout'))
     },
   },
 }

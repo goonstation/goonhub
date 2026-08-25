@@ -12,9 +12,9 @@ use Inertia\Inertia;
 
 class MapsController extends Controller
 {
-    public function index(IndexRequest $request)
+    private function getMaps(IndexRequest $request)
     {
-        $query = Map::select('id', 'map_id', 'name', 'last_built_at', 'admin_only')
+        $maps = Map::select('id', 'map_id', 'name', 'last_built_at', 'admin_only')
             ->with([
                 'latestGameRound' => function ($q) {
                     $q->where('ended_at', '!=', null)
@@ -27,18 +27,19 @@ class MapsController extends Controller
 
         $user = $request->user();
         if (! $user || ! $user->isGameAdmin()) {
-            $query = $query->where('admin_only', false);
+            $maps->where('admin_only', false);
         }
 
-        if ($this->wantsInertia($request)) {
-            $this->setMeta(title: 'Maps', description: 'All the maps that players might encounter on their space travels');
+        return $maps->indexFilterPaginate(perPage: 30, sortBy: 'name', order: 'asc');
+    }
 
-            return Inertia::render('Maps/Index', [
-                'maps' => $query->get(),
-            ]);
-        } else {
-            return $query->indexFilterPaginate(perPage: 30, sortBy: 'name', order: 'asc');
-        }
+    public function index(IndexRequest $request)
+    {
+        $this->setMeta(title: 'Maps', description: 'All the maps that players might encounter on their space travels');
+
+        return Inertia::render('Maps/Index', [
+            'maps' => Inertia::defer(fn () => $this->getMaps($request)),
+        ]);
     }
 
     public function show(Request $request, string $map)

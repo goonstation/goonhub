@@ -1,5 +1,5 @@
 <template>
-  <component :is="formatType" v-bind="$attrs" />
+  <component :is="formatType" v-bind="$attrs" :row="row" />
 </template>
 
 <script>
@@ -19,6 +19,10 @@ export default {
     formatType: {
       type: String,
       required: true,
+    },
+    row: {
+      type: Object,
+      required: false,
     },
   },
 }

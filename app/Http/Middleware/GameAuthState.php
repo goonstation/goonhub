@@ -27,7 +27,7 @@ class GameAuthState
         }
 
         if (! $token || Cache::missing(GameAuthController::CACHE_PREFIX.$token)) {
-            return Redirect::route('game-auth.error')->withErrors([
+            return Redirect::route('web.game-auth.error')->withErrors([
                 'Unable to verify your authentication session, please try again.',
             ]);
         }

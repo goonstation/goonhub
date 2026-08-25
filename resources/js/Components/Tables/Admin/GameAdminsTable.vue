@@ -17,8 +17,8 @@ export default {
   data() {
     return {
       routes: {
-        fetch: '/admin/game-admins',
-        view: '/admin/game-admins/_id',
+        fetch: 'admin.game-admins.index',
+        view: 'admin.game-admins.show',
       },
       columns: [
         {

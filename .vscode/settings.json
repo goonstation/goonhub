@@ -44,5 +44,6 @@
   "phpstan.checkValidity": true,
   "bladeFormatter.format.wrapLineLength": 100,
   "bladeFormatter.format.indentSize": 2,
-  "phpstan.memoryLimit": "2G"
+  "phpstan.memoryLimit": "2G",
+  "intelephense.environment.phpVersion": "8.4.0"
 }

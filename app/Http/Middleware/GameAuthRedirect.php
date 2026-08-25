@@ -18,7 +18,7 @@ class GameAuthRedirect
     public function handle(Request $request, Closure $next)
     {
         if (Auth::check()) {
-            return Redirect::route('game-auth.authed');
+            return Redirect::route('web.game-auth.authed');
         }
 
         return $next($request);
