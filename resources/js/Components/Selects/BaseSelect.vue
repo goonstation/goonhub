@@ -9,14 +9,15 @@
     :option-value="optionValue"
     :option-label="optionLabel"
     :option-disable="optionDisable"
-    map-options
-    emit-value
     @virtual-scroll="onScroll"
     @filter="filterFn"
+    map-options
+    emit-value
   >
     <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
       <slot :name="name" v-bind="slotData" />
     </template>
+
     <template #selected-item="{ index, opt, removeAtIndex }">
       <q-chip
         v-if="Object.keys($attrs).includes('use-chips')"
@@ -24,14 +25,37 @@
         removable
         dense
       >
-        {{ getSelectedLabel(opt) }}
+        <slot name="selected-item-label" v-bind="{ index, opt }">
+          {{ getSelectedLabel(opt) }}
+        </slot>
       </q-chip>
-      <template v-else>{{ getSelectedLabel(opt) }}</template>
+      <template v-else>
+        <slot name="selected-item-label" v-bind="{ index, opt }">
+          {{ getSelectedLabel(opt) }}
+        </slot>
+      </template>
+    </template>
+
+    <template #no-option>
+      <q-item v-if="!hasAccess">
+        <q-item-section avatar>
+          <q-icon :name="ionBan" color="negative" />
+        </q-item-section>
+        <q-item-section>
+          <q-item-label>You do not have access to this resource</q-item-label>
+        </q-item-section>
+      </q-item>
+      <q-item v-else-if="!loading">
+        <q-item-section>
+          <q-item-label>No items found</q-item-label>
+        </q-item-section>
+      </q-item>
     </template>
   </q-select>
 </template>
 
 <script>
+import { ionBan } from '@quasar/extras/ionicons-v7'
 import axios from 'axios'
 
 export default {
@@ -58,6 +82,12 @@ export default {
     },
   },
 
+  setup() {
+    return {
+      ionBan,
+    }
+  },
+
   computed: {
     model: {
       get() {
@@ -76,12 +106,29 @@ export default {
 
     visibleModel: {
       get() {
-        if (this.firstLoad) return
+        if (this.firstLoad && this.hasAccess) return
         return this.model
       },
       set(val) {
         this.model = val
       },
+    },
+
+    namedLoadRoute() {
+      if (!this.loadRoute) return false
+      return (
+        !this.loadRoute.startsWith('http') &&
+        !this.loadRoute.startsWith('www') &&
+        !this.loadRoute.startsWith('/')
+      )
+    },
+
+    hasAccess() {
+      if (this.loadRoute && this.namedLoadRoute) {
+        return this.$auth.canVisit(this.loadRoute)
+      }
+
+      return true
     },
   },
 
@@ -102,24 +149,25 @@ export default {
     }
   },
 
-  created() {
+  async created() {
     // Handle an existing item being selected
     if (this.model) {
       if (this.searchKey) this.search = this.model
       this.ourFilters[this.optionValue] = this.model
-      this.load().then(() => {
-        // Reset state so future calls can correctly query the rest of the resources
-        this.pagination.currentPage = 0
-        this.pagination.lastPage = 1
-        this.pagination.perPage = 50
-        delete this.ourFilters[this.optionValue]
-        this.loadedDefaultItem = true
-      })
+      await this.$nextTick() // wait for hasAccess to be resolved
+      await this.load()
+      // Reset state so future calls can correctly query the rest of the resources
+      this.pagination.currentPage = 0
+      this.pagination.lastPage = 1
+      this.pagination.perPage = 50
+      delete this.ourFilters[this.optionValue]
+      this.loadedDefaultItem = true
     }
   },
 
   methods: {
     async load(newSearch = false) {
+      if (!this.hasAccess) return
       if (this.pagination.currentPage >= this.pagination.lastPage) return
 
       this.loading = true
@@ -140,19 +188,23 @@ export default {
           filters = { ...filters, [this.searchKey]: this.search }
         }
 
-        const response = await axios.get(this.loadRoute, {
-          params: {
-            page: this.pagination.currentPage + 1,
-            per_page: this.pagination.perPage,
-            filters,
-          },
-        })
+        const response = await axios.get(
+          this.namedLoadRoute ? this.$route(this.loadRoute) : this.loadRoute,
+          {
+            params: {
+              page: this.pagination.currentPage + 1,
+              per_page: this.pagination.perPage,
+              filters,
+            },
+          }
+        )
+        const data = this.propKey ? response.data.props[this.propKey] : response.data
 
-        this.pagination.currentPage = response.data.current_page
-        this.pagination.lastPage = response.data.last_page
-        this.pagination.perPage = response.data.per_page
+        this.pagination.currentPage = (data.meta?.current_page ?? data.current_page) || 0
+        this.pagination.lastPage = (data.meta?.last_page ?? data.last_page) || 1
+        this.pagination.perPage = (data.meta?.per_page ?? data.per_page) || 50
 
-        newOptions = response.data.data
+        newOptions = data.data
       }
 
       // Ensure we don't have duplicate items if we already loaded a default item
@@ -230,7 +282,7 @@ export default {
       }
 
       return option[this.optionLabel]
-    }
+    },
   },
 
   watch: {

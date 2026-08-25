@@ -1,7 +1,6 @@
-import type { Axios } from 'axios'
 import type Echo from 'laravel-echo'
 import type Pusher from 'pusher-js'
-import type { route as routeFn } from '../../../vendor/tightenco/ziggy'
+import type { Config, route as routeFn } from '../../../vendor/tightenco/ziggy'
 import formatsPlugin from '../Plugins/formats'
 import helpersPlugin from '../Plugins/helpers'
 import storePlugin from '../Plugins/store'
@@ -11,7 +10,7 @@ declare global {
   var axios: Axios
   var Pusher: Pusher
   var Echo: Echo<"reverb">
-  var Ziggy: Object
+  var Ziggy: Config
 }
 
 declare module 'vue' {

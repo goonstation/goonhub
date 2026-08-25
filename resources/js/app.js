@@ -38,6 +38,7 @@ import 'quasar/src/css/index.sass'
 import '../css/app.scss'
 
 // Plugins!
+import auth from './Plugins/auth'
 import formats from './Plugins/formats'
 import globals from './Plugins/globals'
 import helpers from './Plugins/helpers'
@@ -69,6 +70,7 @@ createInertiaApp({
       .use(helpers)
       .use(formats)
       .use(globals)
+      .use(auth)
       .use(VueApexCharts)
       .use(VueDOMPurifyHTML)
       .mount(el)

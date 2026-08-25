@@ -25,13 +25,13 @@ use Illuminate\Support\Facades\Cache;
  * @property-read \App\Models\PlayersOnline|null $currentPlayersOnline
  * @property-read \App\Models\GameRound|null $currentRound
  * @property-read \App\Models\GameBuildSetting|null $gameBuildSetting
+ * @property-read mixed $byond_link
  * @property-read int|null $gamestate
  * @property-read int|null $round_duration
  * @property-read int|null $shuttle_direction
  * @property-read float|null $shuttle_location
  * @property-read int|null $shuttle_online
  * @property-read int|null $shuttle_timer
- * @property-read mixed $byond_link
  * @property-read \App\Models\GameServerGroup|null $group
  *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer filter(array $input = [], $filter = null)
