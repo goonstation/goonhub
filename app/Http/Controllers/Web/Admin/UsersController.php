@@ -2,29 +2,16 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
-use App\Enums\Permissions\UserPermissions;
-use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\IndexRequest;
 use App\Models\PlayerAdmin;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
-class UsersController extends Controller implements HasMiddleware
+class UsersController extends Controller
 {
-    public static function middleware(): array
-    {
-        return [
-            HasPermission::using(UserPermissions::VIEW, only: ['index']),
-            HasPermission::using(UserPermissions::ADD, only: ['create', 'store']),
-            HasPermission::using(UserPermissions::UPDATE, only: ['edit', 'update']),
-            HasPermission::using(UserPermissions::DELETE, only: ['destroy']),
-        ];
-    }
-
     public function index(IndexRequest $request)
     {
         return Inertia::render('Admin/Users/Index', [

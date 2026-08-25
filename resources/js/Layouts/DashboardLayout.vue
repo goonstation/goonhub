@@ -59,14 +59,14 @@
           </q-btn> -->
 
           <q-btn round flat>
-            <user-avatar :user="$auth.user" />
+            <user-avatar :user="user" />
             <q-menu>
               <q-list style="min-width: 150px">
                 <q-item clickable @click="$inertia.visit($route('web.profile.show'))" v-close-popup>
                   <q-item-section>Profile</q-item-section>
                 </q-item>
                 <q-item
-                  v-if="$page.props.jetstream.hasApiFeatures"
+                  v-if="$page.props.jetstream.hasApiFeatures && user.is_admin"
                   clickable
                   @click="$inertia.visit($route('web.api-tokens.index'))"
                   v-close-popup
@@ -76,11 +76,10 @@
 
                 <q-separator />
 
-                <template v-if="hasAdminTools">
+                <template v-if="user.is_admin">
                   <q-item-label header>Admin Tools</q-item-label>
 
                   <q-item
-                    v-if="$auth.can(UserPermissions.VIEW)"
                     clickable
                     @click="$inertia.visit($route('admin.users.index'))"
                     v-close-popup
@@ -138,7 +137,6 @@
 </style>
 
 <script>
-import UserPermissions from '@/Access/Permissions/User'
 import AppHead from '@/Components/AppHead.vue'
 import PageBack from '@/Components/PageBack.vue'
 import SiteNav from '@/Components/SiteNav/SiteNav.vue'
@@ -168,7 +166,6 @@ export default {
       ionChevronDown,
       ionCheckmarkCircleOutline,
       ionArrowBackCircleOutline,
-      UserPermissions,
     }
   },
 
@@ -183,16 +180,10 @@ export default {
     user() {
       return this.$page.props.auth.user
     },
-
-    hasAdminTools() {
-      return this.$auth.can(UserPermissions.VIEW)
-    },
   },
 
   created() {
     this.siteNavItems = this.buildSiteNavItems()
-
-    console.log(this.$auth)
   },
 
   methods: {

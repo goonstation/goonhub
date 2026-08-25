@@ -37,15 +37,7 @@
     </template>
 
     <template #no-option>
-      <q-item v-if="!hasAccess">
-        <q-item-section avatar>
-          <q-icon :name="ionBan" color="negative" />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>You do not have access to this resource</q-item-label>
-        </q-item-section>
-      </q-item>
-      <q-item v-else-if="!loading">
+      <q-item v-if="!loading">
         <q-item-section>
           <q-item-label>No items found</q-item-label>
         </q-item-section>
@@ -106,7 +98,7 @@ export default {
 
     visibleModel: {
       get() {
-        if (this.firstLoad && this.hasAccess) return
+        if (this.firstLoad) return
         return this.model
       },
       set(val) {
@@ -121,14 +113,6 @@ export default {
         !this.loadRoute.startsWith('www') &&
         !this.loadRoute.startsWith('/')
       )
-    },
-
-    hasAccess() {
-      if (this.loadRoute && this.namedLoadRoute) {
-        return this.$auth.canVisit(this.loadRoute)
-      }
-
-      return true
     },
   },
 
@@ -154,7 +138,6 @@ export default {
     if (this.model) {
       if (this.searchKey) this.search = this.model
       this.ourFilters[this.optionValue] = this.model
-      await this.$nextTick() // wait for hasAccess to be resolved
       await this.load()
       // Reset state so future calls can correctly query the rest of the resources
       this.pagination.currentPage = 0
@@ -167,7 +150,6 @@ export default {
 
   methods: {
     async load(newSearch = false) {
-      if (!this.hasAccess) return
       if (this.pagination.currentPage >= this.pagination.lastPage) return
 
       this.loading = true

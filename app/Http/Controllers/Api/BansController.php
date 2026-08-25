@@ -28,26 +28,15 @@ use App\Traits\ManagesBans;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 
-class BansController extends Controller implements HasMiddleware
+class BansController extends Controller
 {
     use ManagesBans;
 
     public function __construct(
         private readonly CommonRequest $commonRequest,
     ) {}
-
-    public static function middleware(): array
-    {
-        return [
-            new Middleware('ability:view bans', only: ['index', 'check']),
-            new Middleware('ability:add bans', only: ['store', 'addDetails']),
-            new Middleware('ability:update bans', only: ['update']),
-            new Middleware('ability:delete bans', only: ['destroy', 'destroyDetail']),
-        ];
-    }
 
     /**
      * List

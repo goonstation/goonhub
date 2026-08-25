@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
  * @property-read \App\Models\GameRound $gameRound
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventLog filter(array $input = [], $filter = null)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventLog indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc')
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
@@ -40,6 +41,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventLog whereSource($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventLog whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\Events\EventLog whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class EventLog extends BaseEventModel

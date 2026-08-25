@@ -19,7 +19,6 @@ class PlayersController extends Controller
 {
     use ManagesBans;
 
-    public function index(Request $request)
     public function index(IndexRequest $request)
     {
         return Inertia::render('Admin/Players/Index', [
