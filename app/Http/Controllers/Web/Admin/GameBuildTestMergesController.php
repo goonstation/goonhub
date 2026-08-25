@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\GameBuildTestMergePermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameBuildTestMergeCreateRequest;
 use App\Models\GameBuildTestMerge;
@@ -10,12 +12,23 @@ use Github\ResultPager;
 use GrahamCampbell\GitHub\Facades\GitHub;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
-class GameBuildTestMergesController extends Controller
+class GameBuildTestMergesController extends Controller implements HasMiddleware
 {
     use ManagesGameBuildTestMerges;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(GameBuildTestMergePermissions::VIEW, only: ['index', 'pullRequests', 'pullRequestDetails']),
+            HasPermission::using(GameBuildTestMergePermissions::ADD, only: ['create', 'store']),
+            HasPermission::using(GameBuildTestMergePermissions::UPDATE, only: ['edit', 'update', 'editCommit', 'updateCommit', 'updateCommits']),
+            HasPermission::using(GameBuildTestMergePermissions::DELETE, only: ['destroy', 'destroyMulti']),
+        ];
+    }
 
     private function getTestMergeGroups()
     {

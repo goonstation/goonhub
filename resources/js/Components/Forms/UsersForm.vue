@@ -75,11 +75,9 @@
               :error="!!form.errors.game_admin_id"
               :error-message="form.errors.game_admin_id"
             />
-            <q-toggle
-              v-model="form.is_admin"
-              :disable="!canSetIsAdmin"
-              label="Super Admin"
-            />
+            <!-- roles -->
+            <q-select v-model="form.roles" :options="$auth.roles" />
+            <q-toggle v-model="form.is_admin" :disable="!canSetIsAdmin" label="Super Admin" />
             <div class="text-caption q-px-sm">
               Super Admins can perform any action without additional permission checks.
             </div>

@@ -7,6 +7,8 @@ use App\Attributes\HasGameAdminCkeyQuery;
 use App\Attributes\HasGameAdminIdBody;
 use App\Attributes\HasGameAdminIdQuery;
 use App\Attributes\HasServerIdBody;
+use App\Enums\Permissions\BanPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bans\AddDetailsRequest;
 use App\Http\Requests\Bans\CheckRequest;
@@ -41,10 +43,10 @@ class BansController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
-            new Middleware('ability:view bans', only: ['index', 'check']),
-            new Middleware('ability:add bans', only: ['store', 'addDetails']),
-            new Middleware('ability:update bans', only: ['update']),
-            new Middleware('ability:delete bans', only: ['destroy', 'destroyDetail']),
+            HasAnyAbility::using(BanPermissions::VIEW, only: ['index', 'check']),
+            HasAnyAbility::using(BanPermissions::ADD, only: ['store', 'addDetails']),
+            HasAnyAbility::using(BanPermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(BanPermissions::DELETE, only: ['destroy', 'destroyDetail']),
         ];
     }
 

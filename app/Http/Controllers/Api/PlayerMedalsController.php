@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PlayerMedalPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\PlayerMedalResource;
@@ -14,10 +16,21 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Player Medals')]
-class PlayerMedalsController extends Controller
+class PlayerMedalsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PlayerMedalPermissions::VIEW, only: ['index', 'has']),
+            HasAnyAbility::using(PlayerMedalPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(PlayerMedalPermissions::DELETE, only: ['destroy']),
+            HasAnyAbility::using(PlayerMedalPermissions::TRANSFER, only: ['transfer']),
+        ];
+    }
+
     /**
      * List
      *

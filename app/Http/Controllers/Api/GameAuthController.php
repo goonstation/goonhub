@@ -2,20 +2,35 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameAuthPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BeginAuthResource;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 #[Group('Game Auth')]
-class GameAuthController extends Controller
+class GameAuthController extends Controller implements HasMiddleware
 {
     const CACHE_PREFIX = 'game_auth_state_';
 
     const CACHE_PREFIX_EXPIRES = 'game_auth_state_expires_';
 
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameAuthPermissions::BEGIN, only: ['begin']),
+        ];
+    }
+
+    /**
+     * Begin
+     *
+     * Register a new game auth session for a player
+     */
     public function begin(Request $request)
     {
         $data = $request->validate([

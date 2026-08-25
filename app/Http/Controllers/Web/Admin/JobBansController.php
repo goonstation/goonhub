@@ -2,18 +2,31 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\JobBanPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobBans\StoreRequest;
 use App\Http\Requests\JobBans\UpdateRequest;
 use App\Models\JobBan;
 use App\Traits\ManagesJobBans;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
-class JobBansController extends Controller
+class JobBansController extends Controller implements HasMiddleware
 {
     use ManagesJobBans;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(JobBanPermissions::VIEW, only: ['index', 'show']),
+            HasPermission::using(JobBanPermissions::ADD, only: ['create', 'store']),
+            HasPermission::using(JobBanPermissions::UPDATE, only: ['edit', 'update']),
+            HasPermission::using(JobBanPermissions::DELETE, only: ['destroy', 'destroyMulti']),
+        ];
+    }
 
     public function index(Request $request)
     {

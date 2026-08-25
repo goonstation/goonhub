@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\VpnWhitelistPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Requests\VpnWhitelist\StoreRequest;
@@ -12,10 +14,20 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('VPN Whitelist')]
-class VpnWhitelistController extends Controller
+class VpnWhitelistController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(VpnWhitelistPermissions::VIEW, only: ['index', 'search']),
+            HasAnyAbility::using(VpnWhitelistPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(VpnWhitelistPermissions::DELETE, only: ['destroy']),
+        ];
+    }
+
     /**
      * List
      *

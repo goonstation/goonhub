@@ -2,16 +2,26 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\DectalkPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Models\DectalkPhrase;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class DectalkController extends Controller
+class DectalkController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(DectalkPermissions::ADD, only: ['play']),
+        ];
+    }
+
     /**
      * Play
      *

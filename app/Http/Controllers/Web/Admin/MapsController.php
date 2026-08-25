@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\MapPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Maps\IndexRequest;
 use App\Jobs\BuildMap;
@@ -10,6 +12,7 @@ use App\Models\MapLayer;
 use App\Traits\ManagesFileUploads;
 use Illuminate\Http\File;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
@@ -17,9 +20,19 @@ use Pion\Laravel\ChunkUpload\Handler\AbstractHandler;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 use ZipArchive;
 
-class MapsController extends Controller
+class MapsController extends Controller implements HasMiddleware
 {
     use ManagesFileUploads;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(MapPermissions::VIEW, only: ['index']),
+            HasPermission::using(MapPermissions::ADD, only: ['create', 'store', 'showUpload', 'upload', 'uploadFile']),
+            HasPermission::using(MapPermissions::UPDATE, only: ['edit', 'update']),
+            HasPermission::using(MapPermissions::DELETE, only: ['destroy']),
+        ];
+    }
 
     private function associateMapLayers(Map $map, ?array $layers)
     {

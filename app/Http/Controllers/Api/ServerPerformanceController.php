@@ -2,18 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\ServerPerformancePermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ServerPerformanceMetricsResource;
 use App\Http\Resources\ServerPerformanceResource;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 #[Group('Server Performance')]
-class ServerPerformanceController extends Controller
+class ServerPerformanceController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(ServerPerformancePermissions::VIEW, only: ['index']),
+        ];
+    }
+
     private function getPerformance(string $address)
     {
         if (! config('goonhub.server_performance.key')) {

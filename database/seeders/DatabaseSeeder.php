@@ -16,6 +16,8 @@ class DatabaseSeeder extends SeederOnce
     public function run()
     {
         $production = [
+            RolesAndPermissionsSeeder::class,
+            GrantDefaultPermissionsSeeder::class,
             DiscordSettingSeeder::class,
             TomatoSeeder::class,
             GameServerGroupSeeder::class,

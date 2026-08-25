@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 12.28.1.
+ * Generated for Laravel 12.44.0.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1217,8 +1217,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Define a contextual binding based on an attribute.
          *
-         * @param string $attribute
-         * @param \Closure $handler
          * @return void
          * @static
          */
@@ -1237,7 +1235,6 @@ namespace Illuminate\Support\Facades {
          * `has($id)` returning true does not mean that `get($id)` will not throw an exception.
          * It does however mean that `get($id)` will not throw a `NotFoundExceptionInterface`.
          *
-         * @return bool
          * @param string $id Identifier of the entry to look for.
          * @return bool
          * @static
@@ -1449,7 +1446,6 @@ namespace Illuminate\Support\Facades {
          * "Extend" an abstract type in the container.
          *
          * @param string $abstract
-         * @param \Closure $closure
          * @return void
          * @throws \InvalidArgumentException
          * @static
@@ -1526,7 +1522,6 @@ namespace Illuminate\Support\Facades {
          * Bind a new callback to an abstract's rebind event.
          *
          * @param string $abstract
-         * @param \Closure $callback
          * @return mixed
          * @static
          */
@@ -1556,8 +1551,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Wrap the given closure such that its dependencies will be injected when executed.
          *
-         * @param \Closure $callback
-         * @param array $parameters
          * @return \Closure
          * @static
          */
@@ -1605,7 +1598,6 @@ namespace Illuminate\Support\Facades {
          *
          * @template TClass of object
          * @param string|class-string<TClass>|callable $abstract
-         * @param array $parameters
          * @return ($abstract is class-string<TClass> ? TClass : mixed)
          * @throws \Illuminate\Contracts\Container\BindingResolutionException
          * @static
@@ -1652,7 +1644,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Resolve a dependency based on an attribute.
          *
-         * @param \ReflectionAttribute $attribute
          * @return mixed
          * @static
          */
@@ -1667,7 +1658,6 @@ namespace Illuminate\Support\Facades {
          * Register a new before resolving callback for all types.
          *
          * @param \Closure|string $abstract
-         * @param \Closure|null $callback
          * @return void
          * @static
          */
@@ -1682,7 +1672,6 @@ namespace Illuminate\Support\Facades {
          * Register a new resolving callback.
          *
          * @param \Closure|string $abstract
-         * @param \Closure|null $callback
          * @return void
          * @static
          */
@@ -1697,7 +1686,6 @@ namespace Illuminate\Support\Facades {
          * Register a new after resolving callback for all types.
          *
          * @param \Closure|string $abstract
-         * @param \Closure|null $callback
          * @return void
          * @static
          */
@@ -1711,8 +1699,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a new after resolving attribute callback for all types.
          *
-         * @param string $attribute
-         * @param \Closure $callback
          * @return void
          * @static
          */
@@ -1875,7 +1861,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the shared instance of the container.
          *
-         * @param \Illuminate\Contracts\Container\Container|null $container
          * @return \Illuminate\Contracts\Container\Container|static
          * @static
          */
@@ -1889,7 +1874,6 @@ namespace Illuminate\Support\Facades {
          * Determine if a given offset exists.
          *
          * @param string $key
-         * @return bool
          * @static
          */
         public static function offsetExists($key)
@@ -1903,7 +1887,6 @@ namespace Illuminate\Support\Facades {
          * Get the value at a given offset.
          *
          * @param string $key
-         * @return mixed
          * @static
          */
         public static function offsetGet($key)
@@ -1918,28 +1901,26 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $value
-         * @return void
          * @static
          */
         public static function offsetSet($key, $value)
         {
             //Method inherited from \Illuminate\Container\Container 
             /** @var \Illuminate\Foundation\Application $instance */
-            $instance->offsetSet($key, $value);
+            return $instance->offsetSet($key, $value);
         }
 
         /**
          * Unset the value at a given offset.
          *
          * @param string $key
-         * @return void
          * @static
          */
         public static function offsetUnset($key)
         {
             //Method inherited from \Illuminate\Container\Container 
             /** @var \Illuminate\Foundation\Application $instance */
-            $instance->offsetUnset($key);
+            return $instance->offsetUnset($key);
         }
 
         /**
@@ -3772,7 +3753,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Disconnect the given disk and remove from local cache.
+         * Disconnect the given driver / connection and remove it from local cache.
          *
          * @param string|null $name
          * @return void
@@ -3887,7 +3868,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Attempt to find the batch with the given ID.
          *
-         * @param string $batchId
          * @return \Illuminate\Bus\Batch|null
          * @static
          */
@@ -3980,7 +3960,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the pipes through which commands should be piped before dispatching.
          *
-         * @param array $pipes
          * @return \Illuminate\Bus\Dispatcher
          * @static
          */
@@ -3993,7 +3972,6 @@ namespace Illuminate\Support\Facades {
         /**
          * Map a command to a handler.
          *
-         * @param array $map
          * @return \Illuminate\Bus\Dispatcher
          * @static
          */
@@ -4234,7 +4212,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Create a new assertion about a chained batch.
          *
-         * @param \Closure $callback
+         * @param \Closure(\Illuminate\Bus\PendingBatch):  bool  $callback
          * @return \Illuminate\Support\Testing\Fakes\ChainedBatchTruthTest
          * @static
          */
@@ -4247,7 +4225,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Assert if a batch was dispatched based on a truth-test callback.
          *
-         * @param callable $callback
+         * @param callable(\Illuminate\Bus\PendingBatch):  bool  $callback
          * @return void
          * @static
          */
@@ -4339,8 +4317,8 @@ namespace Illuminate\Support\Facades {
         /**
          * Get all of the pending batches matching a truth-test callback.
          *
-         * @param callable $callback
-         * @return \Illuminate\Support\Collection
+         * @param callable(\Illuminate\Bus\PendingBatch):  bool  $callback
+         * @return \Illuminate\Support\Collection<int, \Illuminate\Bus\PendingBatch>
          * @static
          */
         public static function batched($callback)
@@ -5545,6 +5523,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(string|null))|string|null $default
          * @return string
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function string($key, $default = null)
@@ -5559,6 +5538,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(int|null))|int|null $default
          * @return int
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function integer($key, $default = null)
@@ -5573,6 +5553,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(float|null))|float|null $default
          * @return float
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function float($key, $default = null)
@@ -5587,6 +5568,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(bool|null))|bool|null $default
          * @return bool
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function boolean($key, $default = null)
@@ -5601,6 +5583,7 @@ namespace Illuminate\Support\Facades {
          * @param string $key
          * @param (\Closure():(array<array-key, mixed>|null))|array<array-key, mixed>|null $default
          * @return array<array-key, mixed>
+         * @throws \InvalidArgumentException
          * @static
          */
         public static function array($key, $default = null)
@@ -6199,12 +6182,13 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * @template TReturn of mixed
+         * 
          * Run the callback function with the given context values and restore the original context state when complete.
-         *
-         * @param callable $callback
+         * @param (callable(): TReturn) $callback
          * @param array<string, mixed> $data
          * @param array<string, mixed> $hidden
-         * @return mixed
+         * @return TReturn
          * @throws \Throwable
          * @static
          */
@@ -6755,6 +6739,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param array $keys
          * @return \Illuminate\Encryption\Encrypter
+         * @throws \RuntimeException
          * @static
          */
         public static function previousKeys($keys)
@@ -6942,7 +6927,7 @@ namespace Illuminate\Support\Facades {
          * Build a database connection instance from the given configuration.
          *
          * @param array $config
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function build($config)
@@ -6969,7 +6954,7 @@ namespace Illuminate\Support\Facades {
          * @param \UnitEnum|string $name
          * @param array $config
          * @param bool $force
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function connectUsing($name, $config, $force = false)
@@ -7212,6 +7197,83 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Get the query grammar used by the connection.
+         *
+         * @static
+         */
+        public static function getQueryGrammar()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            return $instance->getQueryGrammar();
+        }
+
+        /**
+         * Get a schema builder instance for the connection.
+         *
+         * @static
+         */
+        public static function getSchemaBuilder()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            return $instance->getSchemaBuilder();
+        }
+
+        /**
+         * Get the schema grammar used by the connection.
+         *
+         * @static
+         */
+        public static function getSchemaGrammar()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            return $instance->getSchemaGrammar();
+        }
+
+        /**
+         * Get a new query builder instance.
+         *
+         * @static
+         */
+        public static function query()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            return $instance->query();
+        }
+
+        /**
+         * Execute an SQL statement and return the results.
+         *
+         * @static
+         */
+        public static function returningStatement($query, $bindings = [])
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            return $instance->returningStatement($query, $bindings);
+        }
+
+        /**
+         * Run a query with additional bindings (used for CTEs).
+         *
+         * @static
+         */
+        public static function runWithAdditionalBindings($callback, $prepend = [], $append = [])
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            return $instance->runWithAdditionalBindings($callback, $prepend, $append);
+        }
+
+        /**
+         * Return the version of the PostgreSQL database server.
+         *
+         * @static
+         */
+        public static function serverVersion()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            return $instance->serverVersion();
+        }
+
+        /**
          * Get a human-readable name for the given connection driver.
          *
          * @return string
@@ -7219,20 +7281,9 @@ namespace Illuminate\Support\Facades {
          */
         public static function getDriverTitle()
         {
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            //Method inherited from \Illuminate\Database\PostgresConnection 
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getDriverTitle();
-        }
-
-        /**
-         * Get a schema builder instance for the connection.
-         *
-         * @return \Illuminate\Database\Schema\PostgresBuilder
-         * @static
-         */
-        public static function getSchemaBuilder()
-        {
-            /** @var \Illuminate\Database\PostgresConnection $instance */
-            return $instance->getSchemaBuilder();
         }
 
         /**
@@ -7245,7 +7296,8 @@ namespace Illuminate\Support\Facades {
          */
         public static function getSchemaState($files = null, $processFactory = null)
         {
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            //Method inherited from \Illuminate\Database\PostgresConnection 
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getSchemaState($files, $processFactory);
         }
 
@@ -7258,7 +7310,7 @@ namespace Illuminate\Support\Facades {
         public static function useDefaultQueryGrammar()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->useDefaultQueryGrammar();
         }
 
@@ -7271,7 +7323,7 @@ namespace Illuminate\Support\Facades {
         public static function useDefaultSchemaGrammar()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->useDefaultSchemaGrammar();
         }
 
@@ -7284,7 +7336,7 @@ namespace Illuminate\Support\Facades {
         public static function useDefaultPostProcessor()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->useDefaultPostProcessor();
         }
 
@@ -7299,21 +7351,8 @@ namespace Illuminate\Support\Facades {
         public static function table($table, $as = null)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->table($table, $as);
-        }
-
-        /**
-         * Get a new query builder instance.
-         *
-         * @return \Illuminate\Database\Query\Builder
-         * @static
-         */
-        public static function query()
-        {
-            //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
-            return $instance->query();
         }
 
         /**
@@ -7328,7 +7367,7 @@ namespace Illuminate\Support\Facades {
         public static function selectOne($query, $bindings = [], $useReadPdo = true)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->selectOne($query, $bindings, $useReadPdo);
         }
 
@@ -7345,7 +7384,7 @@ namespace Illuminate\Support\Facades {
         public static function scalar($query, $bindings = [], $useReadPdo = true)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->scalar($query, $bindings, $useReadPdo);
         }
 
@@ -7360,7 +7399,7 @@ namespace Illuminate\Support\Facades {
         public static function selectFromWriteConnection($query, $bindings = [])
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->selectFromWriteConnection($query, $bindings);
         }
 
@@ -7376,7 +7415,7 @@ namespace Illuminate\Support\Facades {
         public static function select($query, $bindings = [], $useReadPdo = true)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->select($query, $bindings, $useReadPdo);
         }
 
@@ -7392,7 +7431,7 @@ namespace Illuminate\Support\Facades {
         public static function selectResultSets($query, $bindings = [], $useReadPdo = true)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->selectResultSets($query, $bindings, $useReadPdo);
         }
 
@@ -7408,7 +7447,7 @@ namespace Illuminate\Support\Facades {
         public static function cursor($query, $bindings = [], $useReadPdo = true)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->cursor($query, $bindings, $useReadPdo);
         }
 
@@ -7423,7 +7462,7 @@ namespace Illuminate\Support\Facades {
         public static function insert($query, $bindings = [])
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->insert($query, $bindings);
         }
 
@@ -7438,7 +7477,7 @@ namespace Illuminate\Support\Facades {
         public static function update($query, $bindings = [])
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->update($query, $bindings);
         }
 
@@ -7453,7 +7492,7 @@ namespace Illuminate\Support\Facades {
         public static function delete($query, $bindings = [])
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->delete($query, $bindings);
         }
 
@@ -7468,7 +7507,7 @@ namespace Illuminate\Support\Facades {
         public static function statement($query, $bindings = [])
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->statement($query, $bindings);
         }
 
@@ -7483,7 +7522,7 @@ namespace Illuminate\Support\Facades {
         public static function affectingStatement($query, $bindings = [])
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->affectingStatement($query, $bindings);
         }
 
@@ -7497,7 +7536,7 @@ namespace Illuminate\Support\Facades {
         public static function unprepared($query)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->unprepared($query);
         }
 
@@ -7510,7 +7549,7 @@ namespace Illuminate\Support\Facades {
         public static function threadCount()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->threadCount();
         }
 
@@ -7524,7 +7563,7 @@ namespace Illuminate\Support\Facades {
         public static function pretend($callback)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->pretend($callback);
         }
 
@@ -7538,7 +7577,7 @@ namespace Illuminate\Support\Facades {
         public static function withoutPretending($callback)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->withoutPretending($callback);
         }
 
@@ -7553,7 +7592,7 @@ namespace Illuminate\Support\Facades {
         public static function bindValues($statement, $bindings)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->bindValues($statement, $bindings);
         }
 
@@ -7567,7 +7606,7 @@ namespace Illuminate\Support\Facades {
         public static function prepareBindings($bindings)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->prepareBindings($bindings);
         }
 
@@ -7583,7 +7622,7 @@ namespace Illuminate\Support\Facades {
         public static function logQuery($query, $bindings, $time = null)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->logQuery($query, $bindings, $time);
         }
 
@@ -7591,14 +7630,14 @@ namespace Illuminate\Support\Facades {
          * Register a callback to be invoked when the connection queries for longer than a given amount of time.
          *
          * @param \DateTimeInterface|\Carbon\CarbonInterval|float|int $threshold
-         * @param (callable(\Illuminate\Database\Connection, class-string<\Illuminate\Database\Events\QueryExecuted>): mixed) $handler
+         * @param (callable(\Illuminate\Database\Connection, \Illuminate\Database\Events\QueryExecuted): mixed) $handler
          * @return void
          * @static
          */
         public static function whenQueryingForLongerThan($threshold, $handler)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->whenQueryingForLongerThan($threshold, $handler);
         }
 
@@ -7611,7 +7650,7 @@ namespace Illuminate\Support\Facades {
         public static function allowQueryDurationHandlersToRunAgain()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->allowQueryDurationHandlersToRunAgain();
         }
 
@@ -7624,7 +7663,7 @@ namespace Illuminate\Support\Facades {
         public static function totalQueryDuration()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->totalQueryDuration();
         }
 
@@ -7637,7 +7676,7 @@ namespace Illuminate\Support\Facades {
         public static function resetTotalQueryDuration()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->resetTotalQueryDuration();
         }
 
@@ -7650,7 +7689,7 @@ namespace Illuminate\Support\Facades {
         public static function reconnectIfMissingConnection()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->reconnectIfMissingConnection();
         }
 
@@ -7658,41 +7697,38 @@ namespace Illuminate\Support\Facades {
          * Register a hook to be run just before a database transaction is started.
          *
          * @param \Closure $callback
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function beforeStartingTransaction($callback)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->beforeStartingTransaction($callback);
         }
 
         /**
          * Register a hook to be run just before a database query is executed.
          *
-         * @param \Closure $callback
-         * @return \Illuminate\Database\PostgresConnection
          * @static
          */
         public static function beforeExecuting($callback)
         {
-            //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->beforeExecuting($callback);
         }
 
         /**
          * Register a database query listener with the connection.
          *
-         * @param \Closure $callback
+         * @param \Closure(\Illuminate\Database\Events\QueryExecuted) $callback
          * @return void
          * @static
          */
         public static function listen($callback)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->listen($callback);
         }
 
@@ -7706,7 +7742,7 @@ namespace Illuminate\Support\Facades {
         public static function raw($value)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->raw($value);
         }
 
@@ -7715,13 +7751,11 @@ namespace Illuminate\Support\Facades {
          *
          * @param string|float|int|bool|null $value
          * @param bool $binary
-         * @return string
          * @static
          */
         public static function escape($value, $binary = false)
         {
-            //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->escape($value, $binary);
         }
 
@@ -7734,7 +7768,7 @@ namespace Illuminate\Support\Facades {
         public static function hasModifiedRecords()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->hasModifiedRecords();
         }
 
@@ -7748,7 +7782,7 @@ namespace Illuminate\Support\Facades {
         public static function recordsHaveBeenModified($value = true)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->recordsHaveBeenModified($value);
         }
 
@@ -7756,13 +7790,13 @@ namespace Illuminate\Support\Facades {
          * Set the record modification state.
          *
          * @param bool $value
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setRecordModificationState($value)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setRecordModificationState($value);
         }
 
@@ -7775,7 +7809,7 @@ namespace Illuminate\Support\Facades {
         public static function forgetRecordModificationState()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->forgetRecordModificationState();
         }
 
@@ -7783,13 +7817,13 @@ namespace Illuminate\Support\Facades {
          * Indicate that the connection should use the write PDO connection for reads.
          *
          * @param bool $value
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function useWriteConnectionWhenReading($value = true)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->useWriteConnectionWhenReading($value);
         }
 
@@ -7802,7 +7836,7 @@ namespace Illuminate\Support\Facades {
         public static function getPdo()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getPdo();
         }
 
@@ -7815,7 +7849,7 @@ namespace Illuminate\Support\Facades {
         public static function getRawPdo()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getRawPdo();
         }
 
@@ -7828,7 +7862,7 @@ namespace Illuminate\Support\Facades {
         public static function getReadPdo()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getReadPdo();
         }
 
@@ -7841,7 +7875,7 @@ namespace Illuminate\Support\Facades {
         public static function getRawReadPdo()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getRawReadPdo();
         }
 
@@ -7849,13 +7883,13 @@ namespace Illuminate\Support\Facades {
          * Set the PDO connection.
          *
          * @param \PDO|\Closure|null $pdo
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setPdo($pdo)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setPdo($pdo);
         }
 
@@ -7863,13 +7897,13 @@ namespace Illuminate\Support\Facades {
          * Set the PDO connection used for reading.
          *
          * @param \PDO|\Closure|null $pdo
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setReadPdo($pdo)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setReadPdo($pdo);
         }
 
@@ -7882,7 +7916,7 @@ namespace Illuminate\Support\Facades {
         public static function getName()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getName();
         }
 
@@ -7895,7 +7929,7 @@ namespace Illuminate\Support\Facades {
         public static function getNameWithReadWriteType()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getNameWithReadWriteType();
         }
 
@@ -7909,7 +7943,7 @@ namespace Illuminate\Support\Facades {
         public static function getConfig($option = null)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getConfig($option);
         }
 
@@ -7922,61 +7956,35 @@ namespace Illuminate\Support\Facades {
         public static function getDriverName()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getDriverName();
-        }
-
-        /**
-         * Get the query grammar used by the connection.
-         *
-         * @return \Illuminate\Database\Query\Grammars\Grammar
-         * @static
-         */
-        public static function getQueryGrammar()
-        {
-            //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
-            return $instance->getQueryGrammar();
         }
 
         /**
          * Set the query grammar used by the connection.
          *
          * @param \Illuminate\Database\Query\Grammars\Grammar $grammar
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setQueryGrammar($grammar)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setQueryGrammar($grammar);
-        }
-
-        /**
-         * Get the schema grammar used by the connection.
-         *
-         * @return \Illuminate\Database\Schema\Grammars\Grammar
-         * @static
-         */
-        public static function getSchemaGrammar()
-        {
-            //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
-            return $instance->getSchemaGrammar();
         }
 
         /**
          * Set the schema grammar used by the connection.
          *
          * @param \Illuminate\Database\Schema\Grammars\Grammar $grammar
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setSchemaGrammar($grammar)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setSchemaGrammar($grammar);
         }
 
@@ -7989,7 +7997,7 @@ namespace Illuminate\Support\Facades {
         public static function getPostProcessor()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getPostProcessor();
         }
 
@@ -7997,13 +8005,13 @@ namespace Illuminate\Support\Facades {
          * Set the query post processor used by the connection.
          *
          * @param \Illuminate\Database\Query\Processors\Processor $processor
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setPostProcessor($processor)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setPostProcessor($processor);
         }
 
@@ -8016,7 +8024,7 @@ namespace Illuminate\Support\Facades {
         public static function getEventDispatcher()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getEventDispatcher();
         }
 
@@ -8024,13 +8032,13 @@ namespace Illuminate\Support\Facades {
          * Set the event dispatcher instance on the connection.
          *
          * @param \Illuminate\Contracts\Events\Dispatcher $events
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setEventDispatcher($events)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setEventDispatcher($events);
         }
 
@@ -8043,7 +8051,7 @@ namespace Illuminate\Support\Facades {
         public static function unsetEventDispatcher()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->unsetEventDispatcher();
         }
 
@@ -8051,13 +8059,13 @@ namespace Illuminate\Support\Facades {
          * Set the transaction manager instance on the connection.
          *
          * @param \Illuminate\Database\DatabaseTransactionsManager $manager
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setTransactionManager($manager)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setTransactionManager($manager);
         }
 
@@ -8070,7 +8078,7 @@ namespace Illuminate\Support\Facades {
         public static function unsetTransactionManager()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->unsetTransactionManager();
         }
 
@@ -8083,7 +8091,7 @@ namespace Illuminate\Support\Facades {
         public static function pretending()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->pretending();
         }
 
@@ -8096,7 +8104,7 @@ namespace Illuminate\Support\Facades {
         public static function getQueryLog()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getQueryLog();
         }
 
@@ -8109,7 +8117,7 @@ namespace Illuminate\Support\Facades {
         public static function getRawQueryLog()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getRawQueryLog();
         }
 
@@ -8122,7 +8130,7 @@ namespace Illuminate\Support\Facades {
         public static function flushQueryLog()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->flushQueryLog();
         }
 
@@ -8135,7 +8143,7 @@ namespace Illuminate\Support\Facades {
         public static function enableQueryLog()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->enableQueryLog();
         }
 
@@ -8148,7 +8156,7 @@ namespace Illuminate\Support\Facades {
         public static function disableQueryLog()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->disableQueryLog();
         }
 
@@ -8161,7 +8169,7 @@ namespace Illuminate\Support\Facades {
         public static function logging()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->logging();
         }
 
@@ -8174,7 +8182,7 @@ namespace Illuminate\Support\Facades {
         public static function getDatabaseName()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getDatabaseName();
         }
 
@@ -8182,13 +8190,13 @@ namespace Illuminate\Support\Facades {
          * Set the name of the connected database.
          *
          * @param string $database
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setDatabaseName($database)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setDatabaseName($database);
         }
 
@@ -8196,13 +8204,13 @@ namespace Illuminate\Support\Facades {
          * Set the read / write type of the connection.
          *
          * @param string|null $readWriteType
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setReadWriteType($readWriteType)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setReadWriteType($readWriteType);
         }
 
@@ -8215,7 +8223,7 @@ namespace Illuminate\Support\Facades {
         public static function getTablePrefix()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getTablePrefix();
         }
 
@@ -8223,13 +8231,13 @@ namespace Illuminate\Support\Facades {
          * Set the table prefix in use by the connection.
          *
          * @param string $prefix
-         * @return \Illuminate\Database\PostgresConnection
+         * @return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection
          * @static
          */
         public static function setTablePrefix($prefix)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->setTablePrefix($prefix);
         }
 
@@ -8243,7 +8251,7 @@ namespace Illuminate\Support\Facades {
         public static function withoutTablePrefix($callback)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->withoutTablePrefix($callback);
         }
 
@@ -8256,7 +8264,7 @@ namespace Illuminate\Support\Facades {
         public static function getServerVersion()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->getServerVersion();
         }
 
@@ -8271,7 +8279,7 @@ namespace Illuminate\Support\Facades {
         public static function resolverFor($driver, $callback)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            \Illuminate\Database\PostgresConnection::resolverFor($driver, $callback);
+            \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection::resolverFor($driver, $callback);
         }
 
         /**
@@ -8284,7 +8292,7 @@ namespace Illuminate\Support\Facades {
         public static function getResolver($driver)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            return \Illuminate\Database\PostgresConnection::getResolver($driver);
+            return \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection::getResolver($driver);
         }
 
         /**
@@ -8300,7 +8308,7 @@ namespace Illuminate\Support\Facades {
         public static function transaction($callback, $attempts = 1)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->transaction($callback, $attempts);
         }
 
@@ -8314,7 +8322,7 @@ namespace Illuminate\Support\Facades {
         public static function beginTransaction()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->beginTransaction();
         }
 
@@ -8328,7 +8336,7 @@ namespace Illuminate\Support\Facades {
         public static function commit()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->commit();
         }
 
@@ -8343,7 +8351,7 @@ namespace Illuminate\Support\Facades {
         public static function rollBack($toLevel = null)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->rollBack($toLevel);
         }
 
@@ -8356,7 +8364,7 @@ namespace Illuminate\Support\Facades {
         public static function transactionLevel()
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             return $instance->transactionLevel();
         }
 
@@ -8371,8 +8379,23 @@ namespace Illuminate\Support\Facades {
         public static function afterCommit($callback)
         {
             //Method inherited from \Illuminate\Database\Connection 
-            /** @var \Illuminate\Database\PostgresConnection $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
             $instance->afterCommit($callback);
+        }
+
+        /**
+         * Execute the callback after a transaction rolls back.
+         *
+         * @param callable $callback
+         * @return void
+         * @throws \RuntimeException
+         * @static
+         */
+        public static function afterRollBack($callback)
+        {
+            //Method inherited from \Illuminate\Database\Connection 
+            /** @var \Tpetry\PostgresqlEnhanced\PostgresEnhancedConnection $instance */
+            $instance->afterRollBack($callback);
         }
 
             }
@@ -8466,7 +8489,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string|object $event
          * @param mixed $payload
-         * @return mixed
+         * @return array|null
          * @static
          */
         public static function until($event, $payload = [])
@@ -8506,7 +8529,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register an event listener with the dispatcher.
          *
-         * @param \Closure|string|array $listener
+         * @param \Closure|string|array{class-string, string} $listener
          * @param bool $wildcard
          * @return \Closure
          * @static
@@ -8559,7 +8582,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the queue resolver implementation.
          *
-         * @param callable $resolver
+         * @param callable():  \Illuminate\Contracts\Queue\Queue  $resolver
          * @return \Illuminate\Events\Dispatcher
          * @static
          */
@@ -8572,7 +8595,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the database transaction manager resolver implementation.
          *
-         * @param callable $resolver
+         * @param (callable(): \Illuminate\Database\DatabaseTransactionsManager|null) $resolver
          * @return \Illuminate\Events\Dispatcher
          * @static
          */
@@ -8585,9 +8608,10 @@ namespace Illuminate\Support\Facades {
         /**
          * Execute the given callback while deferring events, then dispatch all deferred events.
          *
-         * @param callable $callback
-         * @param array|null $events
-         * @return mixed
+         * @template TResult
+         * @param callable():  TResult  $callback
+         * @param string[]|null $events
+         * @return TResult
          * @static
          */
         public static function defer($callback, $events = null)
@@ -9137,7 +9161,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Guess the file extension from the mime-type of a given file.
+         * Guess the file extension from the MIME type of a given file.
          *
          * @param string $path
          * @return string|null
@@ -9164,7 +9188,7 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
-         * Get the mime-type of a given file.
+         * Get the MIME type of a given file.
          *
          * @param string $path
          * @return string|false
@@ -9304,10 +9328,10 @@ namespace Illuminate\Support\Facades {
          * @return \Symfony\Component\Finder\SplFileInfo[]
          * @static
          */
-        public static function files($directory, $hidden = false)
+        public static function files($directory, $hidden = false, $depth = 0)
         {
             /** @var \Illuminate\Filesystem\Filesystem $instance */
-            return $instance->files($directory, $hidden);
+            return $instance->files($directory, $hidden, $depth);
         }
 
         /**
@@ -9331,10 +9355,22 @@ namespace Illuminate\Support\Facades {
          * @return array
          * @static
          */
-        public static function directories($directory)
+        public static function directories($directory, $depth = 0)
         {
             /** @var \Illuminate\Filesystem\Filesystem $instance */
-            return $instance->directories($directory);
+            return $instance->directories($directory, $depth);
+        }
+
+        /**
+         * Get all the directories within a given directory (recursive).
+         *
+         * @return array
+         * @static
+         */
+        public static function allDirectories($directory)
+        {
+            /** @var \Illuminate\Filesystem\Filesystem $instance */
+            return $instance->allDirectories($directory);
         }
 
         /**
@@ -10145,20 +10181,23 @@ namespace Illuminate\Support\Facades {
      * @method static \Illuminate\Http\Client\PendingRequest withMiddleware(callable $middleware)
      * @method static \Illuminate\Http\Client\PendingRequest withRequestMiddleware(callable $middleware)
      * @method static \Illuminate\Http\Client\PendingRequest withResponseMiddleware(callable $middleware)
+     * @method static \Illuminate\Http\Client\PendingRequest withAttributes(array $attributes)
      * @method static \Illuminate\Http\Client\PendingRequest beforeSending(callable $callback)
+     * @method static \Illuminate\Http\Client\PendingRequest afterResponse(callable|null $callback)
      * @method static \Illuminate\Http\Client\PendingRequest throw(callable|null $callback = null)
      * @method static \Illuminate\Http\Client\PendingRequest throwIf(callable|bool $condition)
      * @method static \Illuminate\Http\Client\PendingRequest throwUnless(callable|bool $condition)
      * @method static \Illuminate\Http\Client\PendingRequest dump()
      * @method static \Illuminate\Http\Client\PendingRequest dd()
-     * @method static \Illuminate\Http\Client\Response get(string $url, array|string|null $query = null)
-     * @method static \Illuminate\Http\Client\Response head(string $url, array|string|null $query = null)
-     * @method static \Illuminate\Http\Client\Response post(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
-     * @method static \Illuminate\Http\Client\Response patch(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
-     * @method static \Illuminate\Http\Client\Response put(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
-     * @method static \Illuminate\Http\Client\Response delete(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
-     * @method static array pool(callable $callback)
-     * @method static \Illuminate\Http\Client\Response send(string $method, string $url, array $options = [])
+     * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface get(string $url, array|string|null $query = null)
+     * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface head(string $url, array|string|null $query = null)
+     * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface post(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+     * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface patch(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+     * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface put(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+     * @method static \Illuminate\Http\Client\Response|\GuzzleHttp\Promise\PromiseInterface delete(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+     * @method static array pool(callable $callback, int|null $concurrency = null)
+     * @method static \Illuminate\Http\Client\Batch batch(callable $callback)
+     * @method static \Illuminate\Http\Client\Response|\Illuminate\Http\Client\Promises\LazyPromise send(string $method, string $url, array $options = [])
      * @method static \GuzzleHttp\Client buildClient()
      * @method static \GuzzleHttp\Client createClient(\GuzzleHttp\HandlerStack $handlerStack)
      * @method static \GuzzleHttp\HandlerStack buildHandlerStack()
@@ -10166,7 +10205,7 @@ namespace Illuminate\Support\Facades {
      * @method static \Closure buildBeforeSendingHandler()
      * @method static \Closure buildRecorderHandler()
      * @method static \Closure buildStubHandler()
-     * @method static \GuzzleHttp\Psr7\RequestInterface runBeforeSendingCallbacks(\GuzzleHttp\Psr7\RequestInterface $request, array $options)
+     * @method static \Psr\Http\Message\RequestInterface runBeforeSendingCallbacks(\Psr\Http\Message\RequestInterface $request, array $options)
      * @method static array mergeOptions(array ...$options)
      * @method static \Illuminate\Http\Client\PendingRequest stub(callable $callback)
      * @method static bool isAllowedRequestUrl(string $url)
@@ -11490,6 +11529,20 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Assert if a mailable was sent a number of times.
+         *
+         * @param string $mailable
+         * @param int $times
+         * @return void
+         * @static
+         */
+        public static function assertSentTimes($mailable, $times = 1)
+        {
+            /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
+            $instance->assertSentTimes($mailable, $times);
+        }
+
+        /**
          * Determine if a mailable was not sent or queued to be sent based on a truth-test callback.
          *
          * @param string|\Closure $mailable
@@ -12701,6 +12754,77 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Pause a queue by its connection and name.
+         *
+         * @param string $connection
+         * @param string $queue
+         * @return void
+         * @static
+         */
+        public static function pause($connection, $queue)
+        {
+            /** @var \Illuminate\Queue\QueueManager $instance */
+            $instance->pause($connection, $queue);
+        }
+
+        /**
+         * Pause a queue by its connection and name for a given amount of time.
+         *
+         * @param string $connection
+         * @param string $queue
+         * @param \DateTimeInterface|\DateInterval|int $ttl
+         * @return void
+         * @static
+         */
+        public static function pauseFor($connection, $queue, $ttl)
+        {
+            /** @var \Illuminate\Queue\QueueManager $instance */
+            $instance->pauseFor($connection, $queue, $ttl);
+        }
+
+        /**
+         * Resume a paused queue by its connection and name.
+         *
+         * @param string $connection
+         * @param string $queue
+         * @return void
+         * @static
+         */
+        public static function resume($connection, $queue)
+        {
+            /** @var \Illuminate\Queue\QueueManager $instance */
+            $instance->resume($connection, $queue);
+        }
+
+        /**
+         * Determine if a queue is paused.
+         *
+         * @param string $connection
+         * @param string $queue
+         * @return bool
+         * @static
+         */
+        public static function isPaused($connection, $queue)
+        {
+            /** @var \Illuminate\Queue\QueueManager $instance */
+            return $instance->isPaused($connection, $queue);
+        }
+
+        /**
+         * Indicate that queue workers should not poll for restart or pause signals.
+         * 
+         * This prevents the workers from hitting the application cache to determine if they need to pause or restart.
+         *
+         * @return void
+         * @static
+         */
+        public static function withoutInterruptionPolling()
+        {
+            /** @var \Illuminate\Queue\QueueManager $instance */
+            $instance->withoutInterruptionPolling();
+        }
+
+        /**
          * Add a queue connection resolver.
          *
          * @param string $driver
@@ -13389,6 +13513,33 @@ namespace Illuminate\Support\Facades {
         {
             //Method inherited from \Illuminate\Queue\Queue 
             \Laravel\Horizon\RedisQueue::createPayloadUsing($callback);
+        }
+
+        /**
+         * Get the queue configuration array.
+         *
+         * @return array
+         * @static
+         */
+        public static function getConfig()
+        {
+            //Method inherited from \Illuminate\Queue\Queue 
+            /** @var \Laravel\Horizon\RedisQueue $instance */
+            return $instance->getConfig();
+        }
+
+        /**
+         * Set the queue configuration array.
+         *
+         * @param array $config
+         * @return \Laravel\Horizon\RedisQueue
+         * @static
+         */
+        public static function setConfig($config)
+        {
+            //Method inherited from \Illuminate\Queue\Queue 
+            /** @var \Laravel\Horizon\RedisQueue $instance */
+            return $instance->setConfig($config);
         }
 
         /**
@@ -14220,6 +14371,18 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Gets a list of content types acceptable by the client browser in preferable order.
+         *
+         * @return string[]
+         * @static
+         */
+        public static function getAcceptableContentTypes()
+        {
+            /** @var \Illuminate\Http\Request $instance */
+            return $instance->getAcceptableContentTypes();
+        }
+
+        /**
          * Merge new input into the current request's input array.
          *
          * @param array $input
@@ -14773,6 +14936,34 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Sets the list of HTTP methods that can be overridden.
+         * 
+         * Set to null to allow all methods to be overridden (default). Set to an
+         * empty array to disallow overrides entirely. Otherwise, provide the list
+         * of uppercased method names that are allowed.
+         *
+         * @param \Symfony\Component\HttpFoundation\uppercase-string[]|null $methods
+         * @static
+         */
+        public static function setAllowedHttpMethodOverride($methods)
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request 
+            return \Illuminate\Http\Request::setAllowedHttpMethodOverride($methods);
+        }
+
+        /**
+         * Gets the list of HTTP methods that can be overridden.
+         *
+         * @return \Symfony\Component\HttpFoundation\uppercase-string[]|null
+         * @static
+         */
+        public static function getAllowedHttpMethodOverride()
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request 
+            return \Illuminate\Http\Request::getAllowedHttpMethodOverride();
+        }
+
+        /**
          * Whether the request contains a Session which was started in one of the
          * previous requests.
          *
@@ -14869,7 +15060,7 @@ namespace Illuminate\Support\Facades {
          * 
          * Suppose this request is instantiated from /mysite on localhost:
          * 
-         *  * http://localhost/mysite              returns an empty string
+         *  * http://localhost/mysite              returns '/'
          *  * http://localhost/mysite/about        returns '/about'
          *  * http://localhost/mysite/enco%20ded   returns '/enco%20ded'
          *  * http://localhost/mysite/about?var=1  returns '/about'
@@ -15203,7 +15394,18 @@ namespace Illuminate\Support\Facades {
 
         /**
          * Gets the format associated with the mime type.
+         * 
+         * Resolution order:
+         *   1) Exact match on the full MIME type (e.g. "application/json").
+         *   2) Match on the canonical MIME type (i.e. before the first ";" parameter).
+         *   3) If the type is "application/*+suffix", use the structured syntax suffix
+         *      mapping (e.g. "application/foo+json" → "json"), when available.
+         *   4) If $subtypeFallback is true and no match was found:
+         *      - return the MIME subtype (without "x-" prefix), provided it does not
+         *        contain a "+" (e.g. "application/x-yaml" → "yaml", "text/csv" → "csv").
          *
+         * @param string|null $mimeType The mime type to check
+         * @param bool $subtypeFallback Whether to fall back to the subtype if no exact match is found
          * @static
          */
         public static function getFormat($mimeType)
@@ -15216,6 +15418,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Associates a format with mime types.
          *
+         * @param string $format The format to set
          * @param string|string[] $mimeTypes The associated mime types (the preferred one must be the first as it will be used as the content type)
          * @static
          */
@@ -15504,19 +15707,6 @@ namespace Illuminate\Support\Facades {
             //Method inherited from \Symfony\Component\HttpFoundation\Request 
             /** @var \Illuminate\Http\Request $instance */
             return $instance->getEncodings();
-        }
-
-        /**
-         * Gets a list of content types acceptable by the client browser in preferable order.
-         *
-         * @return string[]
-         * @static
-         */
-        public static function getAcceptableContentTypes()
-        {
-            //Method inherited from \Symfony\Component\HttpFoundation\Request 
-            /** @var \Illuminate\Http\Request $instance */
-            return $instance->getAcceptableContentTypes();
         }
 
         /**
@@ -15884,13 +16074,14 @@ namespace Illuminate\Support\Facades {
          * Retrieve input from the request as a Fluent object instance.
          *
          * @param array|string|null $key
+         * @param array $default
          * @return \Illuminate\Support\Fluent
          * @static
          */
-        public static function fluent($key = null)
+        public static function fluent($key = null, $default = [])
         {
             /** @var \Illuminate\Http\Request $instance */
-            return $instance->fluent($key);
+            return $instance->fluent($key, $default);
         }
 
         /**
@@ -17946,6 +18137,7 @@ namespace Illuminate\Support\Facades {
      * @method static \Illuminate\Console\Scheduling\PendingEventAttributes monthlyOn(int $dayOfMonth = 1, string $time = '0:0')
      * @method static \Illuminate\Console\Scheduling\PendingEventAttributes twiceMonthly(int $first = 1, int $second = 16, string $time = '0:0')
      * @method static \Illuminate\Console\Scheduling\PendingEventAttributes lastDayOfMonth(string $time = '0:0')
+     * @method static \Illuminate\Console\Scheduling\PendingEventAttributes daysOfMonth(array|int ...$days)
      * @method static \Illuminate\Console\Scheduling\PendingEventAttributes quarterly()
      * @method static \Illuminate\Console\Scheduling\PendingEventAttributes quarterlyOn(int $dayOfQuarter = 1, string $time = '0:0')
      * @method static \Illuminate\Console\Scheduling\PendingEventAttributes yearly()
@@ -18082,7 +18274,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Specify the cache store that should be used to store mutexes.
          *
-         * @param string $store
+         * @param \UnitEnum|string $store
          * @return \Illuminate\Console\Scheduling\Schedule
          * @static
          */
@@ -18164,27 +18356,32 @@ namespace Illuminate\Support\Facades {
      */
     class Schema {
         /**
-         * Drop all tables from the database.
+         * Get the database connection instance.
          *
-         * @return void
+         * @static
+         */
+        public static function getConnection()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->getConnection();
+        }
+
+        /**
          * @static
          */
         public static function dropAllTables()
         {
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
-            $instance->dropAllTables();
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropAllTables();
         }
 
         /**
-         * Drop all views from the database.
-         *
-         * @return void
          * @static
          */
         public static function dropAllViews()
         {
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
-            $instance->dropAllViews();
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropAllViews();
         }
 
         /**
@@ -18195,7 +18392,8 @@ namespace Illuminate\Support\Facades {
          */
         public static function dropAllTypes()
         {
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            //Method inherited from \Illuminate\Database\Schema\PostgresBuilder 
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->dropAllTypes();
         }
 
@@ -18207,7 +18405,8 @@ namespace Illuminate\Support\Facades {
          */
         public static function getCurrentSchemaListing()
         {
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            //Method inherited from \Illuminate\Database\Schema\PostgresBuilder 
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getCurrentSchemaListing();
         }
 
@@ -18221,7 +18420,7 @@ namespace Illuminate\Support\Facades {
         public static function defaultStringLength($length)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            \Illuminate\Database\Schema\PostgresBuilder::defaultStringLength($length);
+            \Tpetry\PostgresqlEnhanced\Schema\Builder::defaultStringLength($length);
         }
 
         /**
@@ -18232,7 +18431,7 @@ namespace Illuminate\Support\Facades {
         public static function defaultTimePrecision($precision)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            return \Illuminate\Database\Schema\PostgresBuilder::defaultTimePrecision($precision);
+            return \Tpetry\PostgresqlEnhanced\Schema\Builder::defaultTimePrecision($precision);
         }
 
         /**
@@ -18246,7 +18445,7 @@ namespace Illuminate\Support\Facades {
         public static function defaultMorphKeyType($type)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            \Illuminate\Database\Schema\PostgresBuilder::defaultMorphKeyType($type);
+            \Tpetry\PostgresqlEnhanced\Schema\Builder::defaultMorphKeyType($type);
         }
 
         /**
@@ -18258,7 +18457,7 @@ namespace Illuminate\Support\Facades {
         public static function morphUsingUuids()
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            \Illuminate\Database\Schema\PostgresBuilder::morphUsingUuids();
+            \Tpetry\PostgresqlEnhanced\Schema\Builder::morphUsingUuids();
         }
 
         /**
@@ -18270,7 +18469,7 @@ namespace Illuminate\Support\Facades {
         public static function morphUsingUlids()
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            \Illuminate\Database\Schema\PostgresBuilder::morphUsingUlids();
+            \Tpetry\PostgresqlEnhanced\Schema\Builder::morphUsingUlids();
         }
 
         /**
@@ -18283,7 +18482,7 @@ namespace Illuminate\Support\Facades {
         public static function createDatabase($name)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->createDatabase($name);
         }
 
@@ -18297,7 +18496,7 @@ namespace Illuminate\Support\Facades {
         public static function dropDatabaseIfExists($name)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->dropDatabaseIfExists($name);
         }
 
@@ -18310,7 +18509,7 @@ namespace Illuminate\Support\Facades {
         public static function getSchemas()
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getSchemas();
         }
 
@@ -18324,7 +18523,7 @@ namespace Illuminate\Support\Facades {
         public static function hasTable($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->hasTable($table);
         }
 
@@ -18338,7 +18537,7 @@ namespace Illuminate\Support\Facades {
         public static function hasView($view)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->hasView($view);
         }
 
@@ -18352,7 +18551,7 @@ namespace Illuminate\Support\Facades {
         public static function getTables($schema = null)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getTables($schema);
         }
 
@@ -18367,7 +18566,7 @@ namespace Illuminate\Support\Facades {
         public static function getTableListing($schema = null, $schemaQualified = true)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getTableListing($schema, $schemaQualified);
         }
 
@@ -18381,7 +18580,7 @@ namespace Illuminate\Support\Facades {
         public static function getViews($schema = null)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getViews($schema);
         }
 
@@ -18395,7 +18594,7 @@ namespace Illuminate\Support\Facades {
         public static function getTypes($schema = null)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getTypes($schema);
         }
 
@@ -18410,7 +18609,7 @@ namespace Illuminate\Support\Facades {
         public static function hasColumn($table, $column)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->hasColumn($table, $column);
         }
 
@@ -18425,7 +18624,7 @@ namespace Illuminate\Support\Facades {
         public static function hasColumns($table, $columns)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->hasColumns($table, $columns);
         }
 
@@ -18441,7 +18640,7 @@ namespace Illuminate\Support\Facades {
         public static function whenTableHasColumn($table, $column, $callback)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->whenTableHasColumn($table, $column, $callback);
         }
 
@@ -18457,8 +18656,42 @@ namespace Illuminate\Support\Facades {
         public static function whenTableDoesntHaveColumn($table, $column, $callback)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->whenTableDoesntHaveColumn($table, $column, $callback);
+        }
+
+        /**
+         * Execute a table builder callback if the given table has a given index.
+         *
+         * @param string $table
+         * @param string|array $index
+         * @param \Closure $callback
+         * @param string|null $type
+         * @return void
+         * @static
+         */
+        public static function whenTableHasIndex($table, $index, $callback, $type = null)
+        {
+            //Method inherited from \Illuminate\Database\Schema\Builder 
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            $instance->whenTableHasIndex($table, $index, $callback, $type);
+        }
+
+        /**
+         * Execute a table builder callback if the given table doesn't have a given index.
+         *
+         * @param string $table
+         * @param string|array $index
+         * @param \Closure $callback
+         * @param string|null $type
+         * @return void
+         * @static
+         */
+        public static function whenTableDoesntHaveIndex($table, $index, $callback, $type = null)
+        {
+            //Method inherited from \Illuminate\Database\Schema\Builder 
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            $instance->whenTableDoesntHaveIndex($table, $index, $callback, $type);
         }
 
         /**
@@ -18473,7 +18706,7 @@ namespace Illuminate\Support\Facades {
         public static function getColumnType($table, $column, $fullDefinition = false)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getColumnType($table, $column, $fullDefinition);
         }
 
@@ -18487,7 +18720,7 @@ namespace Illuminate\Support\Facades {
         public static function getColumnListing($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getColumnListing($table);
         }
 
@@ -18501,7 +18734,7 @@ namespace Illuminate\Support\Facades {
         public static function getColumns($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getColumns($table);
         }
 
@@ -18515,7 +18748,7 @@ namespace Illuminate\Support\Facades {
         public static function getIndexes($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getIndexes($table);
         }
 
@@ -18529,7 +18762,7 @@ namespace Illuminate\Support\Facades {
         public static function getIndexListing($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getIndexListing($table);
         }
 
@@ -18545,7 +18778,7 @@ namespace Illuminate\Support\Facades {
         public static function hasIndex($table, $index, $type = null)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->hasIndex($table, $index, $type);
         }
 
@@ -18559,7 +18792,7 @@ namespace Illuminate\Support\Facades {
         public static function getForeignKeys($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getForeignKeys($table);
         }
 
@@ -18574,7 +18807,7 @@ namespace Illuminate\Support\Facades {
         public static function table($table, $callback)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->table($table, $callback);
         }
 
@@ -18589,7 +18822,7 @@ namespace Illuminate\Support\Facades {
         public static function create($table, $callback)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->create($table, $callback);
         }
 
@@ -18603,7 +18836,7 @@ namespace Illuminate\Support\Facades {
         public static function drop($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->drop($table);
         }
 
@@ -18617,7 +18850,7 @@ namespace Illuminate\Support\Facades {
         public static function dropIfExists($table)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->dropIfExists($table);
         }
 
@@ -18632,7 +18865,7 @@ namespace Illuminate\Support\Facades {
         public static function dropColumns($table, $columns)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->dropColumns($table, $columns);
         }
 
@@ -18647,7 +18880,7 @@ namespace Illuminate\Support\Facades {
         public static function rename($from, $to)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->rename($from, $to);
         }
 
@@ -18660,7 +18893,7 @@ namespace Illuminate\Support\Facades {
         public static function enableForeignKeyConstraints()
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->enableForeignKeyConstraints();
         }
 
@@ -18673,7 +18906,7 @@ namespace Illuminate\Support\Facades {
         public static function disableForeignKeyConstraints()
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->disableForeignKeyConstraints();
         }
 
@@ -18687,7 +18920,7 @@ namespace Illuminate\Support\Facades {
         public static function withoutForeignKeyConstraints($callback)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->withoutForeignKeyConstraints($callback);
         }
 
@@ -18700,7 +18933,7 @@ namespace Illuminate\Support\Facades {
         public static function getCurrentSchemaName()
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->getCurrentSchemaName();
         }
 
@@ -18715,21 +18948,8 @@ namespace Illuminate\Support\Facades {
         public static function parseSchemaAndTable($reference, $withDefaultSchema = null)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             return $instance->parseSchemaAndTable($reference, $withDefaultSchema);
-        }
-
-        /**
-         * Get the database connection instance.
-         *
-         * @return \Illuminate\Database\Connection
-         * @static
-         */
-        public static function getConnection()
-        {
-            //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
-            return $instance->getConnection();
         }
 
         /**
@@ -18742,7 +18962,7 @@ namespace Illuminate\Support\Facades {
         public static function blueprintResolver($resolver)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            /** @var \Illuminate\Database\Schema\PostgresBuilder $instance */
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
             $instance->blueprintResolver($resolver);
         }
 
@@ -18758,7 +18978,7 @@ namespace Illuminate\Support\Facades {
         public static function macro($name, $macro)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            \Illuminate\Database\Schema\PostgresBuilder::macro($name, $macro);
+            \Tpetry\PostgresqlEnhanced\Schema\Builder::macro($name, $macro);
         }
 
         /**
@@ -18773,7 +18993,7 @@ namespace Illuminate\Support\Facades {
         public static function mixin($mixin, $replace = true)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            \Illuminate\Database\Schema\PostgresBuilder::mixin($mixin, $replace);
+            \Tpetry\PostgresqlEnhanced\Schema\Builder::mixin($mixin, $replace);
         }
 
         /**
@@ -18786,7 +19006,7 @@ namespace Illuminate\Support\Facades {
         public static function hasMacro($name)
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            return \Illuminate\Database\Schema\PostgresBuilder::hasMacro($name);
+            return \Tpetry\PostgresqlEnhanced\Schema\Builder::hasMacro($name);
         }
 
         /**
@@ -18798,7 +19018,317 @@ namespace Illuminate\Support\Facades {
         public static function flushMacros()
         {
             //Method inherited from \Illuminate\Database\Schema\Builder 
-            \Illuminate\Database\Schema\PostgresBuilder::flushMacros();
+            \Tpetry\PostgresqlEnhanced\Schema\Builder::flushMacros();
+        }
+
+        /**
+         * Change a domain's constraint in the schema.
+         *
+         * @static
+         */
+        public static function changeDomainConstraint($name, $check)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->changeDomainConstraint($name, $check);
+        }
+
+        /**
+         * Create a new domain in the schema.
+         *
+         * @static
+         */
+        public static function createDomain($name, $type, $check = null)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createDomain($name, $type, $check);
+        }
+
+        /**
+         * Drop domains from the schema.
+         *
+         * @static
+         */
+        public static function dropDomain(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropDomain(...$name);
+        }
+
+        /**
+         * Drop domains from the schema if they exist.
+         *
+         * @static
+         */
+        public static function dropDomainIfExists(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropDomainIfExists(...$name);
+        }
+
+        /**
+         * Create a new extension on the schema.
+         *
+         * @static
+         */
+        public static function createExtension($name, $schema = null)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createExtension($name, $schema);
+        }
+
+        /**
+         * Create a new extension on the schema if it does not exist.
+         *
+         * @static
+         */
+        public static function createExtensionIfNotExists($name, $schema = null)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createExtensionIfNotExists($name, $schema);
+        }
+
+        /**
+         * Drop extensions from the schema.
+         *
+         * @static
+         */
+        public static function dropExtension(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropExtension(...$name);
+        }
+
+        /**
+         * Drop extensions from the schema if they exist.
+         *
+         * @static
+         */
+        public static function dropExtensionIfExists(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropExtensionIfExists(...$name);
+        }
+
+        /**
+         * Create a new function on the schema.
+         *
+         * @param array<string, string> $parameters
+         * @param array<string, string>|string $return
+         * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile', searchPath?: array<int, string>} $options
+         * @static
+         */
+        public static function createFunction($name, $parameters, $return, $language, $body, $options = [])
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createFunction($name, $parameters, $return, $language, $body, $options);
+        }
+
+        /**
+         * Create or replace a new function on the schema.
+         *
+         * @param array<string, string> $parameters
+         * @param array<string, string>|string $return
+         * @param array{calledOnNull?: bool, cost?: int, leakproof?: bool, parallel?: 'restricted'|'safe'|'unsafe', security?: 'definer'|'invoker', volatility?: 'immutable'|'stable'|'volatile', searchPath?: array<int, string>} $options
+         * @static
+         */
+        public static function createFunctionOrReplace($name, $parameters, $return, $language, $body, $options = [])
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createFunctionOrReplace($name, $parameters, $return, $language, $body, $options);
+        }
+
+        /**
+         * Drop function from the schema.
+         *
+         * @param \Tpetry\PostgresqlEnhanced\Schema\?array<int, string> $arguments
+         * @static
+         */
+        public static function dropFunction($name, $arguments = null)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropFunction($name, $arguments);
+        }
+
+        /**
+         * Drop function from the schema if they exist.
+         *
+         * @param \Tpetry\PostgresqlEnhanced\Schema\?array<int, string> $arguments
+         * @static
+         */
+        public static function dropFunctionIfExists($name, $arguments = null)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropFunctionIfExists($name, $arguments);
+        }
+
+        /**
+         * Create/Modify a continuous aggregate on the schema.
+         *
+         * @static
+         */
+        public static function continuousAggregate($table, $callback)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->continuousAggregate($table, $callback);
+        }
+
+        /**
+         * Create a materialized view on the schema.
+         *
+         * @static
+         */
+        public static function createMaterializedView($name, $query, $withData = true, $columns = [])
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createMaterializedView($name, $query, $withData, $columns);
+        }
+
+        /**
+         * Create a recursive view on the schema.
+         *
+         * @static
+         */
+        public static function createRecursiveView($name, $query, $columns)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createRecursiveView($name, $query, $columns);
+        }
+
+        /**
+         * Create or replace a recursive view on the schema.
+         *
+         * @static
+         */
+        public static function createRecursiveViewOrReplace($name, $query, $columns)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createRecursiveViewOrReplace($name, $query, $columns);
+        }
+
+        /**
+         * Create a view on the schema.
+         *
+         * @static
+         */
+        public static function createView($name, $query, $columns = [])
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createView($name, $query, $columns);
+        }
+
+        /**
+         * Create or replace a view on the schema.
+         *
+         * @static
+         */
+        public static function createViewOrReplace($name, $query, $columns = [])
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->createViewOrReplace($name, $query, $columns);
+        }
+
+        /**
+         * Drop continuous aggregates from the schema.
+         *
+         * @static
+         */
+        public static function dropContinuousAggregate(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropContinuousAggregate(...$name);
+        }
+
+        /**
+         * Drop continuous aggregates from the schema if they exist.
+         *
+         * @static
+         */
+        public static function dropContinuousAggregateIfExists(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropContinuousAggregateIfExists(...$name);
+        }
+
+        /**
+         * Drop materialized views from the schema.
+         *
+         * @static
+         */
+        public static function dropMaterializedView(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropMaterializedView(...$name);
+        }
+
+        /**
+         * Drop materialized views from the schema if they exist.
+         *
+         * @static
+         */
+        public static function dropMaterializedViewIfExists(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropMaterializedViewIfExists(...$name);
+        }
+
+        /**
+         * Drop views from the schema.
+         *
+         * @static
+         */
+        public static function dropView(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropView(...$name);
+        }
+
+        /**
+         * Drop views from the schema if they exist.
+         *
+         * @static
+         */
+        public static function dropViewIfExists(...$name)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropViewIfExists(...$name);
+        }
+
+        /**
+         * Refresh materialized of the schema.
+         *
+         * @static
+         */
+        public static function refreshMaterializedView($name, $concurrently = false, $withData = true)
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->refreshMaterializedView($name, $concurrently, $withData);
+        }
+
+        /**
+         * @static
+         */
+        public static function dropAllContinuousAggregates()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropAllContinuousAggregates();
+        }
+
+        /**
+         * @static
+         */
+        public static function dropAllHypertables()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropAllHypertables();
+        }
+
+        /**
+         * @static
+         */
+        public static function dropAllMaterializedViews()
+        {
+            /** @var \Tpetry\PostgresqlEnhanced\Schema\Builder $instance */
+            return $instance->dropAllMaterializedViews();
         }
 
             }
@@ -18869,7 +19399,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the default session driver name.
          *
-         * @return string
+         * @return string|null
          * @static
          */
         public static function getDefaultDriver()
@@ -19305,6 +19835,18 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Get the session cache instance.
+         *
+         * @return \Illuminate\Contracts\Cache\Repository
+         * @static
+         */
+        public static function cache()
+        {
+            /** @var \Illuminate\Session\Store $instance */
+            return $instance->cache();
+        }
+
+        /**
          * Remove an item from the session, returning its value.
          *
          * @param string $key
@@ -19552,6 +20094,31 @@ namespace Illuminate\Support\Facades {
         {
             /** @var \Illuminate\Session\Store $instance */
             $instance->setPreviousUrl($url);
+        }
+
+        /**
+         * Get the previous route name from the session.
+         *
+         * @return string|null
+         * @static
+         */
+        public static function previousRoute()
+        {
+            /** @var \Illuminate\Session\Store $instance */
+            return $instance->previousRoute();
+        }
+
+        /**
+         * Set the "previous" route name in the session.
+         *
+         * @param string|null $route
+         * @return void
+         * @static
+         */
+        public static function setPreviousRoute($route)
+        {
+            /** @var \Illuminate\Session\Store $instance */
+            $instance->setPreviousRoute($route);
         }
 
         /**
@@ -22544,6 +23111,17 @@ namespace Illuminate\Support\Facades {
         }
 
         /**
+         * Determine if the stack has any content in it.
+         *
+         * @static
+         */
+        public static function isStackEmpty($section)
+        {
+            /** @var \Illuminate\View\Factory $instance */
+            return $instance->isStackEmpty($section);
+        }
+
+        /**
          * Flush all of the stacks.
          *
          * @return void
@@ -23093,6 +23671,28 @@ namespace App\Facades {
      * @see GameBridgeService
      */
     class GameBridge {
+        /**
+         * Set the number of retry attempts
+         *
+         * @static
+         */
+        public static function retryAttempts($retryAttempts)
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->retryAttempts($retryAttempts);
+        }
+
+        /**
+         * Disable retry attempts
+         *
+         * @static
+         */
+        public static function noRetry()
+        {
+            /** @var \App\Services\GameBridge\GameBridgeService $instance */
+            return $instance->noRetry();
+        }
+
         /**
          * Get a server-specific API instance for fluent operations
          *
@@ -24171,11 +24771,6 @@ namespace Laravel\Pulse\Facades {
 
 namespace Laravel\Socialite\Facades {
     /**
-     * @method array getScopes()
-     * @method \Laravel\Socialite\Contracts\Provider scopes(array|string $scopes)
-     * @method \Laravel\Socialite\Contracts\Provider setScopes(array|string $scopes)
-     * @method \Laravel\Socialite\Contracts\Provider redirectUrl(string $url)
-     * @see \Laravel\Socialite\SocialiteManager
      */
     class Socialite extends \Illuminate\Support\Manager {
         /**
@@ -24422,10 +25017,10 @@ namespace Livewire {
         /**
          * @static
          */
-        public static function snapshot($component)
+        public static function snapshot($component, $context = null)
         {
             /** @var \Livewire\LivewireManager $instance */
-            return $instance->snapshot($component);
+            return $instance->snapshot($component, $context);
         }
 
         /**
@@ -25703,6 +26298,16 @@ namespace Illuminate\Routing {
             return \Illuminate\Routing\Route::permission($permissions);
         }
 
+        /**
+         * @see \Spatie\Permission\PermissionServiceProvider::registerMacroHelpers()
+         * @param mixed $rolesOrPermissions
+         * @static
+         */
+        public static function roleOrPermission($rolesOrPermissions = [])
+        {
+            return \Illuminate\Routing\Route::roleOrPermission($rolesOrPermissions);
+        }
+
             }
     }
 
@@ -26017,6 +26622,19 @@ namespace  {
         {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->withoutGlobalScopes($scopes);
+        }
+
+        /**
+         * Remove all global scopes except the given scopes.
+         *
+         * @param array $scopes
+         * @return \Illuminate\Database\Eloquent\Builder<static>
+         * @static
+         */
+        public static function withoutGlobalScopesExcept($scopes = [])
+        {
+            /** @var \Illuminate\Database\Eloquent\Builder $instance */
+            return $instance->withoutGlobalScopesExcept($scopes);
         }
 
         /**
@@ -27283,7 +27901,7 @@ namespace  {
          * @template TRelatedModel of \Illuminate\Database\Eloquent\Model
          * @param \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel, *, *>|string $relation
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @param string $boolean
          * @param (\Closure(\Illuminate\Database\Eloquent\Builder<TRelatedModel>): mixed)|null $callback
          * @return \Illuminate\Database\Eloquent\Builder<static>
@@ -27301,7 +27919,7 @@ namespace  {
          *
          * @param \Illuminate\Database\Eloquent\Relations\Relation<*, *, *>|string $relation
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27347,7 +27965,7 @@ namespace  {
          * @param \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel, *, *>|string $relation
          * @param (\Closure(\Illuminate\Database\Eloquent\Builder<TRelatedModel>): mixed)|null $callback
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27365,7 +27983,7 @@ namespace  {
          * @param string $relation
          * @param (\Closure(\Illuminate\Database\Eloquent\Builder<*>|\Illuminate\Database\Eloquent\Relations\Relation<*, *, *>): mixed)|null $callback
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27382,7 +28000,7 @@ namespace  {
          * @param \Illuminate\Database\Eloquent\Relations\Relation<TRelatedModel, *, *>|string $relation
          * @param (\Closure(\Illuminate\Database\Eloquent\Builder<TRelatedModel>): mixed)|null $callback
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27429,7 +28047,7 @@ namespace  {
          * @param \Illuminate\Database\Eloquent\Relations\MorphTo<TRelatedModel, *>|string $relation
          * @param string|array<int, string> $types
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @param string $boolean
          * @param (\Closure(\Illuminate\Database\Eloquent\Builder<TRelatedModel>, string): mixed)|null $callback
          * @return \Illuminate\Database\Eloquent\Builder<static>
@@ -27447,7 +28065,7 @@ namespace  {
          * @param \Illuminate\Database\Eloquent\Relations\MorphTo<*, *>|string $relation
          * @param string|array<int, string> $types
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27496,7 +28114,7 @@ namespace  {
          * @param string|array<int, string> $types
          * @param (\Closure(\Illuminate\Database\Eloquent\Builder<TRelatedModel>, string): mixed)|null $callback
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27514,7 +28132,7 @@ namespace  {
          * @param string|array<int, string> $types
          * @param (\Closure(\Illuminate\Database\Eloquent\Builder<TRelatedModel>, string): mixed)|null $callback
          * @param string $operator
-         * @param int $count
+         * @param \Illuminate\Contracts\Database\Query\Expression|int $count
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27835,7 +28453,7 @@ namespace  {
          *
          * @param mixed $relations
          * @param \Illuminate\Contracts\Database\Query\Expression|string $column
-         * @param string $function
+         * @param string|null $function
          * @return \Illuminate\Database\Eloquent\Builder<static>
          * @static
          */
@@ -27938,6 +28556,141 @@ namespace  {
         {
             /** @var \Illuminate\Database\Eloquent\Builder $instance */
             return $instance->mergeConstraintsFrom($from);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderLazyByCursor::lazyByCursor()
+         * @param int $chunkSize
+         * @return \Illuminate\Support\LazyCollection
+         * @static
+         */
+        public static function lazyByCursor($chunkSize = 1000)
+        {
+            return \Illuminate\Database\Eloquent\Builder::lazyByCursor($chunkSize);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::deleteReturning()
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function deleteReturning($returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::deleteReturning($returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::forceDeleteReturning()
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function forceDeleteReturning($returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::forceDeleteReturning($returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::insertOrIgnoreReturning()
+         * @param array $values
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function insertOrIgnoreReturning($values, $returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::insertOrIgnoreReturning($values, $returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::insertReturning()
+         * @param array $values
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function insertReturning($values, $returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::insertReturning($values, $returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::insertUsingReturning()
+         * @param array $columns
+         * @param mixed $query
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function insertUsingReturning($columns, $query, $returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::insertUsingReturning($columns, $query, $returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::updateFromReturning()
+         * @param array $values
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function updateFromReturning($values, $returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::updateFromReturning($values, $returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::updateOrInsertReturning()
+         * @param array $attributes
+         * @param array $values
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function updateOrInsertReturning($attributes, $values = [], $returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::updateOrInsertReturning($attributes, $values, $returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::updateReturning()
+         * @param array $values
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function updateReturning($values, $returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::updateReturning($values, $returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderReturning::upsertReturning()
+         * @param array $values
+         * @param array|string $uniqueBy
+         * @param array|null $update
+         * @param array $returning
+         * @return \Illuminate\Database\Eloquent\Collection
+         * @static
+         */
+        public static function upsertReturning($values, $uniqueBy, $update = null, $returning = [])
+        {
+            return \Illuminate\Database\Eloquent\Builder::upsertReturning($values, $uniqueBy, $update, $returning);
+        }
+
+        /**
+         * @see \Tpetry\PostgresqlEnhanced\Eloquent\Mixins\BuilderUpsertPartial::upsertPartial()
+         * @param array $values
+         * @param array|string $uniqueBy
+         * @param array|null $update
+         * @param callable|string $where
+         * @return int
+         * @static
+         */
+        public static function upsertPartial($values, $uniqueBy, $update, $where)
+        {
+            return \Illuminate\Database\Eloquent\Builder::upsertPartial($values, $uniqueBy, $update, $where);
         }
 
         /**

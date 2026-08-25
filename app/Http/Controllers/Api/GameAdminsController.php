@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameAdminPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\PlayerAdminResource;
@@ -10,10 +12,18 @@ use App\Rules\DateRange;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Game Admins')]
-class GameAdminsController extends Controller
+class GameAdminsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameAdminPermissions::VIEW, only: ['index']),
+        ];
+    }
+
     /**
      * List
      *

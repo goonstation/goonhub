@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\RemoteMusicPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Jobs\RemoteMusic;
 use App\Services\CommonRequest;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Remote Music')]
-class RemoteMusicController extends Controller
+class RemoteMusicController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(RemoteMusicPermissions::ADD, only: ['store']),
+        ];
+    }
+
     /**
      * Play
      *

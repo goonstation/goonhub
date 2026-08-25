@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PollPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Requests\Polls\StoreRequest;
@@ -15,9 +17,20 @@ use App\Rules\DateRange;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class PollsController extends Controller
+class PollsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PollPermissions::VIEW, only: ['index', 'show']),
+            HasAnyAbility::using(PollPermissions::ADD, only: ['store', 'addOption', 'pickOption']),
+            HasAnyAbility::using(PollPermissions::UPDATE, only: ['update', 'updateOption']),
+            HasAnyAbility::using(PollPermissions::DELETE, only: ['destroy', 'destroyOption', 'unpickOption']),
+        ];
+    }
+
     private function populatePollResults($poll)
     {
         // The ordering of options is important ok

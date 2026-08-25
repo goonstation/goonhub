@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameAdminRankPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\GameAdminRankResource;
@@ -11,10 +13,21 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Game Admin Ranks')]
-class GameAdminRanksController extends Controller
+class GameAdminRanksController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameAdminRankPermissions::VIEW, only: ['index']),
+            HasAnyAbility::using(GameAdminRankPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(GameAdminRankPermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(GameAdminRankPermissions::DELETE, only: ['destroy']),
+        ];
+    }
+
     /**
      * List
      *

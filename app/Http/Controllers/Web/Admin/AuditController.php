@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\AuditPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class AuditController extends Controller
+class AuditController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(AuditPermissions::VIEW, only: ['index', 'show', 'getTypes']),
+        ];
+    }
+
     public function index(Request $request)
     {
         return Inertia::render('Admin/Audit/Index', [

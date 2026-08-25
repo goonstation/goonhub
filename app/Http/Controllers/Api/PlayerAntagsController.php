@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PlayerAntagPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PlayerAntagResource;
 use App\Models\PlayerAntag;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Player Antags')]
-class PlayerAntagsController extends Controller
+class PlayerAntagsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PlayerAntagPermissions::ADD, only: ['store']),
+        ];
+    }
+
     /**
      * Add
      *

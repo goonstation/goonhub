@@ -2,13 +2,26 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\RedirectPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\Redirect as ModelsRedirect;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class RedirectsController extends Controller
+class RedirectsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(RedirectPermissions::VIEW, only: ['index']),
+            HasPermission::using(RedirectPermissions::ADD, only: ['create', 'store']),
+            HasPermission::using(RedirectPermissions::UPDATE, only: ['edit', 'update']),
+            HasPermission::using(RedirectPermissions::DELETE, only: ['destroy']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $redirects = ModelsRedirect::with([

@@ -2,13 +2,29 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\GameBuildSettingPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\GameBuildSetting;
+use App\Traits\ManagesGameBuildSettings;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class GameBuildSettingsController extends Controller
+class GameBuildSettingsController extends Controller implements HasMiddleware
 {
+    use ManagesGameBuildSettings;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(GameBuildSettingPermissions::VIEW, only: ['index']),
+            HasPermission::using(GameBuildSettingPermissions::ADD, only: ['create', 'store']),
+            HasPermission::using(GameBuildSettingPermissions::UPDATE, only: ['edit', 'update']),
+            HasPermission::using(GameBuildSettingPermissions::DELETE, only: ['destroy']),
+        ];
+    }
+
     public function index()
     {
         return Inertia::render('Admin/GameBuilds/Settings/Index', [

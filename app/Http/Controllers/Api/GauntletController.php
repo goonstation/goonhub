@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GauntletPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Models\Events\EventGauntletHighScore;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class GauntletController extends Controller
+class GauntletController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GauntletPermissions::VIEW, only: ['getPrevious']),
+        ];
+    }
+
     /**
      * Get previous
      *

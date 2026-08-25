@@ -2,14 +2,24 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\HosPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Hos\StoreHosRequest;
 use App\Models\PlayerHos;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class HosController extends Controller
+class HosController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(HosPermissions::UPDATE, only: ['destroyMulti', 'toggle', 'bulkToggle']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $hos = PlayerHos::with([

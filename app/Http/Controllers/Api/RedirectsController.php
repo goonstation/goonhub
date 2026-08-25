@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\RedirectPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\RedirectResource;
@@ -11,9 +13,20 @@ use App\Rules\Range;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class RedirectsController extends Controller
+class RedirectsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(RedirectPermissions::VIEW, only: ['index']),
+            HasAnyAbility::using(RedirectPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(RedirectPermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(RedirectPermissions::DELETE, only: ['destroy']),
+        ];
+    }
+
     /**
      * List
      *

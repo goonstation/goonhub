@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\GameBuildPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameBuildCancelRequest;
 use App\Http\Requests\GameBuildCreateRequest;
@@ -9,12 +11,22 @@ use App\Models\GameBuild;
 use App\Models\PlayerAdmin;
 use App\Traits\ManagesGameBuilds;
 use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class GameBuildsController extends Controller
+class GameBuildsController extends Controller implements HasMiddleware
 {
     use ManagesGameBuilds;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(GameBuildPermissions::VIEW, only: ['index', 'status', 'show']),
+            HasPermission::using(GameBuildPermissions::BUILD, only: ['store']),
+            HasPermission::using(GameBuildPermissions::CANCEL, only: ['cancel']),
+        ];
+    }
 
     private function getCounts()
     {

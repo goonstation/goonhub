@@ -2,16 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameRoundPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GameRoundResource;
 use App\Models\GameRound;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Carbon;
 
 #[Group('Game Rounds')]
-class GameRoundsController extends Controller
+class GameRoundsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameRoundPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(GameRoundPermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(GameRoundPermissions::END, only: ['endRound']),
+        ];
+    }
+
     /**
      * Add
      *

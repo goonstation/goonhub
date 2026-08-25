@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\MapPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Jobs\BuildMap;
 use App\Models\Map;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Str;
 use ZipArchive;
 
-class MapsController extends Controller
+class MapsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(MapPermissions::GENERATE, only: ['generate']),
+        ];
+    }
+
     /**
      * Generate
      *

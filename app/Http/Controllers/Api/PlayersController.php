@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PlayerPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PlayerCompIdsResource;
 use App\Http\Resources\PlayerIpsResource;
@@ -15,11 +17,46 @@ use App\Models\PlayerConnection;
 use App\Traits\ManagesPlayers;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 
-class PlayersController extends Controller
+class PlayersController extends Controller implements HasMiddleware
 {
     use ManagesPlayers;
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PlayerPermissions::LOGIN, only: ['store']),
+            HasAnyAbility::using(PlayerPermissions::VIEW, only: ['search', 'index']),
+            HasAnyAbility::using(PlayerPermissions::IPS, only: ['getIps']),
+            HasAnyAbility::using(PlayerPermissions::COMP_IDS, only: ['getCompIds']),
+            HasAnyAbility::using(PlayerPermissions::STATS, only: ['stats']),
+        ];
+    }
+
+    /**
+     * List
+     *
+     * List paginated and filtered players
+     *
+     * @return AnonymousResourceCollection<LengthAwarePaginator<PlayerResource>>
+     */
+    public function index(Request $request)
+    {
+        return PlayerResource::collection(
+            Player::withCount(['connections', 'participations'])->with([
+                'mentor:id,player_id',
+                'hos:id,player_id',
+                'whitelist.servers',
+                'whitelist.serverGroups',
+                'bypassCap.servers',
+                'bypassCap.serverGroups',
+            ])->indexFilterPaginate()
+        );
+    }
 
     /**
      * Login

@@ -6,4 +6,9 @@ return [
     'groups' => [
         'game-auth' => ['game-auth.*', 'password.email'],
     ],
+
+    'output' => [
+        'script' => App\Helpers\ZiggyScript::class,
+        'merge_script' => App\Helpers\ZiggyMergeScript::class,
+    ],
 ];

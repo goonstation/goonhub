@@ -37,7 +37,7 @@
     </q-card>
 
     <q-card
-      v-if="$page.props.jetstream.canManageTwoFactorAuthentication && isGameAdmin"
+      v-if="$page.props.jetstream.canManageTwoFactorAuthentication && canSetTwoFactor"
       class="gh-card"
       flat
     >
@@ -75,7 +75,9 @@ import { usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 // import DeleteUserForm from './Partials/DeleteUserForm.vue'
 // import LogoutOtherBrowserSessionsForm from './Partials/LogoutOtherBrowserSessionsForm.vue'
+import Roles from '@/Access/Roles'
 import Alert from '@/Components/Alert.vue'
+import useAuth from '@/Composables/auth'
 import LinkByond from './Partials/LinkByond.vue'
 import LinkDiscord from './Partials/LinkDiscord.vue'
 import TwoFactorAuthenticationForm from './Partials/TwoFactorAuthenticationForm.vue'
@@ -92,8 +94,12 @@ defineProps({
 })
 
 const page = usePage()
+const auth = useAuth()
 
-const isGameAdmin = computed(() => {
-  return !!page.props.auth.user.game_admin.id || !!page.props.auth.user.is_admin
+console.log(auth)
+
+const canSetTwoFactor = computed(() => {
+  // return !!page.props.auth.user?.game_admin?.id || !!page.props.auth.user?.is_admin
+  return auth.hasRole(Roles.GAME_ADMIN) || auth.isSuperAdmin()
 })
 </script>

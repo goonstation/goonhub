@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Services\CommonRequest;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Laravel\Sanctum\Exceptions\MissingAbilityException;
 use Laravel\Sanctum\PersonalAccessToken as SanctumPersonalAccessToken;
 
 /**
@@ -64,13 +62,11 @@ class PersonalAccessToken extends SanctumPersonalAccessToken
      */
     public function can($ability)
     {
-        $serverId = app(CommonRequest::class)->fromServerId();
-
-        if ($serverId) {
-            $isTokenForServer = $this->allServers()->where('server_id', $serverId)->exists();
-            if (! $isTokenForServer) {
-                throw new MissingAbilityException($ability, 'Token has no access to this server.');
-            }
+        /** @var \App\Models\User */
+        $user = $this->tokenable;
+        if (! $user->can($ability)) {
+            // If the user can't do it, our token can't either.
+            return false;
         }
 
         return in_array('*', $this->abilities) || array_key_exists($ability, array_flip($this->abilities));

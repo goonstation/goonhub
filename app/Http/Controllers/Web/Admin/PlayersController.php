@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\PlayerPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\Ban;
 use App\Models\BanDetail;
@@ -11,12 +13,20 @@ use App\Models\Player;
 use App\Models\PlayerConnection;
 use App\Traits\ManagesBans;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
-class PlayersController extends Controller
+class PlayersController extends Controller implements HasMiddleware
 {
     use ManagesBans;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(PlayerPermissions::VIEW, only: ['index', 'show', 'showByCkey']),
+        ];
+    }
 
     public function index(Request $request)
     {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\VpnCheckPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\VpnCheckResource;
 use App\Models\VpnCheck;
@@ -9,12 +11,20 @@ use App\Models\VpnWhitelist;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Http;
 
 #[Group('VPN Checks')]
-class VpnChecksController extends Controller
+class VpnChecksController extends Controller implements HasMiddleware
 {
     private $checkCacheTime = 30; // days
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(VpnCheckPermissions::CHECK, only: ['check']),
+        ];
+    }
 
     /**
      * Check

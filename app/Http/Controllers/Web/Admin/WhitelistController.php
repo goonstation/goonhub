@@ -2,14 +2,24 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\WhitelistPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\Player;
 use App\Traits\ManagesWhitelist;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class WhitelistController extends Controller
+class WhitelistController extends Controller implements HasMiddleware
 {
     use ManagesWhitelist;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(WhitelistPermissions::UPDATE, only: ['destroyMulti', 'toggle', 'bulkToggle']),
+        ];
+    }
 
     public function destroyMulti(Request $request)
     {

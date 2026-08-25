@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\MentorPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Mentors\StoreMentorRequest;
+use App\Models\Player;
 use App\Models\PlayerMentor;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class MentorsController extends Controller
+class MentorsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(MentorPermissions::UPDATE, only: ['destroyMulti', 'toggle', 'bulkToggle']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $mentors = PlayerMentor::with([
@@ -60,6 +71,19 @@ class MentorsController extends Controller
         PlayerMentor::whereIn('id', $data['ids'])->delete();
 
         return ['message' => 'Mentors removed successfully'];
+    }
+
+    public function toggle(Request $request, Player $player)
+    {
+        if ($player->is_mentor) {
+            $player->mentor()->delete();
+
+            return ['message' => 'Mentor removed successfully'];
+        }
+
+        $player->mentor()->create(['player_id' => $player->id]);
+
+        return ['message' => 'Mentor added successfully'];
     }
 
     public function bulkToggle(Request $request)

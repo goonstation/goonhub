@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameBuildTestMergePermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameBuildTestMergeCreateRequest;
 use App\Http\Requests\GameBuildTestMergeUpdateRequest;
@@ -13,11 +15,22 @@ use App\Traits\ManagesGameBuildTestMerges;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Game Build Test Merges')]
-class GameBuildTestMergesController extends Controller
+class GameBuildTestMergesController extends Controller implements HasMiddleware
 {
     use ManagesGameBuildTestMerges;
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameBuildTestMergePermissions::VIEW, only: ['index']),
+            HasAnyAbility::using(GameBuildTestMergePermissions::ADD, only: ['store']),
+            HasAnyAbility::using(GameBuildTestMergePermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(GameBuildTestMergePermissions::DELETE, only: ['destroy']),
+        ];
+    }
 
     /**
      * List

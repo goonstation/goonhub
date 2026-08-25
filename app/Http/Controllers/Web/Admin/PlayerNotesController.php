@@ -2,17 +2,30 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\PlayerNotePermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlayerNotes\StoreRequest;
 use App\Models\PlayerNote;
 use App\Traits\ManagesPlayerNotes;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
-class PlayerNotesController extends Controller
+class PlayerNotesController extends Controller implements HasMiddleware
 {
     use ManagesPlayerNotes;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(PlayerNotePermissions::VIEW, only: ['index', 'show']),
+            HasPermission::using(PlayerNotePermissions::ADD, only: ['create', 'store']),
+            HasPermission::using(PlayerNotePermissions::UPDATE, only: ['edit', 'update']),
+            HasPermission::using(PlayerNotePermissions::DELETE, only: ['destroy', 'destroyMulti']),
+        ];
+    }
 
     public function index(Request $request)
     {

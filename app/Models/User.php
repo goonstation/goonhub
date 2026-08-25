@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
@@ -55,7 +56,7 @@ use Spatie\Permission\Traits\HasRoles;
  *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User filter(array $input = [], $filter = null)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $limit = 15)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User indexFilter(\EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc')
  * @method static \Illuminate\Pagination\LengthAwarePaginator indexFilterPaginate(\Illuminate\Database\Eloquent\Builder $query, \EloquentFilter\ModelFilter|string|null $filter = null, array $default = [], string $sortBy = 'id', string $order = 'desc', int $perPage = 15, bool $simple = false)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\User newQuery()
@@ -184,5 +185,29 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return $this->gameAdmin?->hasAccessToServer($serverId) ?? false;
+    }
+
+    public function getAllRolesWithCache(): array
+    {
+        return Cache::rememberForever('user_roles_'.$this->id, function () {
+            return $this->getRoleNames()->toArray();
+        });
+    }
+
+    public function getAllPermissionsWithCache(): array
+    {
+        return Cache::rememberForever('user_permissions_'.$this->id, function () {
+            return $this->getAllPermissions()->pluck('name')->toArray();
+        });
+    }
+
+    public function rolesHaveChanged(): bool
+    {
+        return Cache::missing('user_roles_'.$this->id);
+    }
+
+    public function permissionsHaveChanged(): bool
+    {
+        return Cache::missing('user_permissions_'.$this->id);
     }
 }

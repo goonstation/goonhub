@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\EventPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
 
-class EventsController extends Controller
+class EventsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(EventPermissions::VIEW),
+        ];
+    }
+
     public function index(Request $request)
     {
         $eventTypes = [];

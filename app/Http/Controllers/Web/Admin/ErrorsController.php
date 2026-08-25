@@ -2,14 +2,24 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\ErrorPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\Events\EventError;
 use App\Models\GameRound;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class ErrorsController extends Controller
+class ErrorsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(ErrorPermissions::VIEW),
+        ];
+    }
+
     public function index(Request $request)
     {
         $rounds = GameRound::with([

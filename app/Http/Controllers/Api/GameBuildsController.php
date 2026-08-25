@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameBuildPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameBuildCancelRequest;
 use App\Http\Requests\GameBuildCreateRequest;
@@ -14,11 +16,21 @@ use App\Traits\ManagesGameBuilds;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Game Builds')]
-class GameBuildsController extends Controller
+class GameBuildsController extends Controller implements HasMiddleware
 {
     use ManagesGameBuilds;
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameBuildPermissions::VIEW, only: ['index', 'status']),
+            HasAnyAbility::using(GameBuildPermissions::BUILD, only: ['build']),
+            HasAnyAbility::using(GameBuildPermissions::CANCEL, only: ['cancel']),
+        ];
+    }
 
     /**
      * List

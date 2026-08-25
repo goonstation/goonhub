@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\RandomEntryPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\EventAiLawResource;
 use App\Http\Resources\EventFineResource;
@@ -9,12 +11,20 @@ use App\Http\Resources\EventStationNameResource;
 use App\Http\Resources\EventTicketResource;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 #[Group('Random Entries')]
-class RandomEntriesController extends Controller
+class RandomEntriesController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(RandomEntryPermissions::VIEW, only: ['index']),
+        ];
+    }
+
     /**
      * List
      *

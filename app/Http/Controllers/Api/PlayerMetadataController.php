@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PlayerMetadataPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Resources\PlayerMetadataResource;
@@ -11,10 +13,20 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Player Metadata')]
-class PlayerMetadataController extends Controller
+class PlayerMetadataController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PlayerMetadataPermissions::VIEW, only: ['index', 'getByPlayer', 'getByData']),
+            HasAnyAbility::using(PlayerMetadataPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(PlayerMetadataPermissions::DELETE, only: ['destroyByPlayer', 'destroyByData']),
+        ];
+    }
+
     /**
      * List
      *

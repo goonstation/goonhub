@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\JobBanPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Requests\JobBans\DestroyRequest;
@@ -18,11 +20,22 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Job Bans')]
-class JobBansController extends Controller
+class JobBansController extends Controller implements HasMiddleware
 {
     use ManagesJobBans;
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(JobBanPermissions::VIEW, only: ['index', 'check', 'getForPlayer']),
+            HasAnyAbility::using(JobBanPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(JobBanPermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(JobBanPermissions::DELETE, only: ['destroy']),
+        ];
+    }
 
     /**
      * List

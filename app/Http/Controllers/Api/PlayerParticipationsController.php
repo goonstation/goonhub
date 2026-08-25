@@ -2,17 +2,27 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PlayerParticipationPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PlayerParticipationResource;
 use App\Models\PlayerParticipation;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 use function Sentry\captureMessage;
 
 #[Group('Player Participations')]
-class PlayerParticipationsController extends Controller
+class PlayerParticipationsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PlayerParticipationPermissions::ADD, only: ['store', 'storeBulk']),
+        ];
+    }
+
     /**
      * Add
      *

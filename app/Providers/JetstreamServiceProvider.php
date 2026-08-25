@@ -12,6 +12,8 @@ use App\Actions\Jetstream\UpdateTeamName;
 use Illuminate\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class JetstreamServiceProvider extends ServiceProvider
 {
@@ -68,21 +70,13 @@ class JetstreamServiceProvider extends ServiceProvider
      */
     protected function configurePermissions(): void
     {
-        Jetstream::permissions([
-            'general',
-            'server-group:default',
-            'server-group:streamer',
-        ]);
+        $roles = Role::all();
+        $permissions = Permission::all();
 
-        Jetstream::defaultApiTokenPermissions(['general']);
+        Jetstream::permissions($permissions->pluck('name')->toArray());
 
-        Jetstream::role('game-developer', 'Game Developer', [
-            'game:develop',
-            'game:admin',
-        ])->description('Administrator users can perform any action.');
-
-        Jetstream::role('game-admin', 'Game Admin', [
-            'game:admin',
-        ])->description('Editor users have the ability to read, create, and update.');
+        foreach ($roles as $role) {
+            Jetstream::role($role->name, $role->name, $role->permissions->pluck('name')->toArray());
+        }
     }
 }

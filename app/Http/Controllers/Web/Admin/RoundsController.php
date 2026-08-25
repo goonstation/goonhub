@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\GameRoundPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\GameRound;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class RoundsController extends Controller
+class RoundsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(GameRoundPermissions::VIEW, only: ['index', 'show']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $rounds = GameRound::with(['server', 'mapRecord'])->indexFilterPaginate(perPage: 30);

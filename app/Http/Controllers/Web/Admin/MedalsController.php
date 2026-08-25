@@ -2,16 +2,31 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\MedalPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\Medal;
 use App\Models\PlayerMedal;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
-class MedalsController extends Controller
+class MedalsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(MedalPermissions::VIEW, only: ['index', 'medalsPlayerDoesntHave']),
+            HasPermission::using(MedalPermissions::ADD, only: ['create', 'store']),
+            HasPermission::using(MedalPermissions::UPDATE, only: ['edit', 'update']),
+            HasPermission::using(MedalPermissions::DELETE, only: ['destroy']),
+            HasPermission::using(MedalPermissions::ADD_TO_PLAYER, only: ['addToPlayer']),
+            HasPermission::using(MedalPermissions::REMOVE_FROM_PLAYER, only: ['removeFromPlayer']),
+        ];
+    }
+
     public function index(Request $request)
     {
         /** @var \Illuminate\Pagination\LengthAwarePaginator */

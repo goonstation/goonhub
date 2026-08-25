@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PlayerSavePermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PlayerDataResource;
 use App\Http\Resources\PlayerSaveResource;
@@ -11,13 +13,24 @@ use App\Models\PlayerSave;
 use App\Rules\PlayerIdWithCkey;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Sentry\EventHint;
 
 use function Sentry\captureMessage;
 
 #[Group('Player Saves')]
-class PlayerSavesController extends Controller
+class PlayerSavesController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PlayerSavePermissions::VIEW, only: ['index']),
+            HasAnyAbility::using(PlayerSavePermissions::ADD, only: ['storeData', 'storeFile', 'storeDataBulk']),
+            HasAnyAbility::using(PlayerSavePermissions::DELETE, only: ['destroyData', 'destroyFile']),
+            HasAnyAbility::using(PlayerSavePermissions::TRANSFER, only: ['transferSaves']),
+        ];
+    }
+
     /**
      * List data and saves
      *

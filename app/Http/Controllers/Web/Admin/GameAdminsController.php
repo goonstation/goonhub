@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\GameAdminPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\PlayerAdmin;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 
-class GameAdminsController extends Controller
+class GameAdminsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(GameAdminPermissions::VIEW, only: ['index', 'show']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $gameAdmins = PlayerAdmin::with(['player', 'rank'])->indexFilterPaginate(perPage: 30);

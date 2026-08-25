@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\BanPermissions;
 use App\Facades\GameBridge;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bans\StoreRequest;
 use App\Libraries\DiscordBot;
@@ -11,12 +13,23 @@ use App\Models\BanDetail;
 use App\Traits\ManagesBans;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
-class BansController extends Controller
+class BansController extends Controller implements HasMiddleware
 {
     use ManagesBans;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(BanPermissions::VIEW, only: ['index', 'indexRemoved', 'show', 'getDetails', 'showRemoveDetails', 'lookupDetails']),
+            HasPermission::using(BanPermissions::ADD, only: ['create', 'store', 'storeDetail']),
+            HasPermission::using(BanPermissions::UPDATE, only: ['edit', 'update', 'updateDetail']),
+            HasPermission::using(BanPermissions::DELETE, only: ['destroy', 'destroyMulti', 'destroyDetail', 'removeLookupDetails']),
+        ];
+    }
 
     public function index(Request $request)
     {

@@ -2,16 +2,27 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameBuildArtifactPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Libraries\GameBuilder\Build;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\SplFileInfo;
 
 #[Group('Game Build Artifacts')]
-class GameBuildArtifactsController extends Controller
+class GameBuildArtifactsController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameBuildArtifactPermissions::CHECK, only: ['check']),
+            HasAnyAbility::using(GameBuildArtifactPermissions::DOWNLOAD, only: ['game', 'byond', 'rustg']),
+        ];
+    }
+
     private function getGameArtifacts(string $server)
     {
         $buildPath = Build::$path;

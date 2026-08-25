@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Helpers\GetPermissionData;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Collection;
+use Inertia\Inertia;
 use Laravel\Jetstream\Jetstream;
+use Spatie\Permission\Models\Permission;
+use Str;
 
 class ApiTokenController extends Controller
 {
@@ -15,14 +20,47 @@ class ApiTokenController extends Controller
      */
     public function index(Request $request)
     {
-        return Jetstream::inertia()->render($request, 'API/Index', [
+        return Inertia::render('API/Index', [
             'tokens' => $request->user()->tokens->map(function ($token) {
                 return $token->toArray() + [
                     'last_used_ago' => optional($token->last_used_at)->diffForHumans(),
+                    'abilities' => $token->abilities ?? [],
                 ];
             }),
-            'availablePermissions' => Jetstream::$permissions,
-            'defaultPermissions' => Jetstream::$defaultPermissions,
+        ]);
+    }
+
+    /**
+     * Show the create API token screen.
+     *
+     * @return \Inertia\Response
+     */
+    public function create(Request $request)
+    {
+        $permissions = Permission::where('guard_name', 'web')->get()
+            ->pluck('name')
+            ->groupBy(function ($permission) {
+                return Str::title(implode(' ', array_slice(explode('-', $permission), 1)));
+            })
+            ->sortKeys()
+            ->map(function (Collection $permissions, $group) {
+                return [
+                    'group' => $group,
+                    'permissions' => $permissions->map(function ($permission) {
+                        $data = GetPermissionData::getPermissionData($permission);
+
+                        return [
+                            'label' => $data['label'],
+                            'description' => $data['description'],
+                            'value' => $permission,
+                        ];
+                    }),
+                ];
+            })
+            ->values();
+
+        return Inertia::render('API/Create', [
+            'availablePermissions' => $permissions,
         ]);
     }
 
@@ -58,6 +96,48 @@ class ApiTokenController extends Controller
     }
 
     /**
+     * Show the edit API token screen.
+     *
+     * @param  string  $tokenId
+     * @return \Inertia\Response
+     */
+    public function edit(Request $request, $tokenId)
+    {
+        $token = $request->user()->tokens()->where('id', $tokenId)->firstOrFail();
+
+        $permissions = Permission::where('guard_name', 'web')->get()
+            ->pluck('name')
+            ->groupBy(function ($permission) {
+                return Str::title(implode(' ', array_slice(explode('-', $permission), 1)));
+            })
+            ->sortKeys()
+            ->map(function (Collection $permissions, $group) {
+                return [
+                    'group' => $group,
+                    'permissions' => $permissions->map(function ($permission) {
+                        $data = GetPermissionData::getPermissionData($permission);
+
+                        return [
+                            'label' => $data['label'],
+                            'description' => $data['description'],
+                            'value' => $permission,
+                        ];
+                    }),
+                ];
+            })
+            ->values();
+
+        return Inertia::render('API/Edit', [
+            'token' => [
+                'id' => $token->id,
+                'name' => $token->name,
+                'abilities' => $token->abilities ?? [],
+            ],
+            'availablePermissions' => $permissions,
+        ]);
+    }
+
+    /**
      * Update the given API token's permissions.
      *
      * @param  string  $tokenId
@@ -66,6 +146,7 @@ class ApiTokenController extends Controller
     public function update(Request $request, $tokenId)
     {
         $request->validate([
+            'name' => ['required', 'string', 'max:255'],
             'permissions' => 'array',
             'permissions.*' => 'string',
         ]);
@@ -74,10 +155,11 @@ class ApiTokenController extends Controller
         $token = $request->user()->tokens()->where('id', $tokenId)->firstOrFail();
 
         $token->forceFill([
+            'name' => $request->input('name'),
             'abilities' => Jetstream::validPermissions($request->input('permissions', [])),
         ])->save();
 
-        return back(303);
+        return back(303)->with('success', 'API token updated successfully.');
     }
 
     /**

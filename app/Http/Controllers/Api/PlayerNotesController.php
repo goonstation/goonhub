@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\PlayerNotePermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndexQueryRequest;
 use App\Http\Requests\PlayerNotes\StoreRequest;
@@ -13,11 +15,22 @@ use App\Traits\ManagesPlayerNotes;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Player Notes')]
-class PlayerNotesController extends Controller
+class PlayerNotesController extends Controller implements HasMiddleware
 {
     use ManagesPlayerNotes;
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(PlayerNotePermissions::VIEW, only: ['index']),
+            HasAnyAbility::using(PlayerNotePermissions::ADD, only: ['store']),
+            HasAnyAbility::using(PlayerNotePermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(PlayerNotePermissions::DELETE, only: ['destroy']),
+        ];
+    }
 
     /**
      * List

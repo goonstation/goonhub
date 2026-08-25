@@ -2,14 +2,24 @@
 
 namespace App\Http\Controllers\Web\Admin;
 
+use App\Enums\Permissions\BypassCapPermissions;
+use App\Helpers\HasPermission;
 use App\Http\Controllers\Controller;
 use App\Models\Player;
 use App\Traits\ManagesBypassCap;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class BypassCapController extends Controller
+class BypassCapController extends Controller implements HasMiddleware
 {
     use ManagesBypassCap;
+
+    public static function middleware(): array
+    {
+        return [
+            HasPermission::using(BypassCapPermissions::UPDATE, only: ['destroyMulti', 'toggle', 'bulkToggle']),
+        ];
+    }
 
     public function destroyMulti(Request $request)
     {

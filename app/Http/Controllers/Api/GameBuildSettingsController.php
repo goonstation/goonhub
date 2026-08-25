@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\GameBuildSettingPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GameBuildSettingCreateRequest;
 use App\Http\Requests\GameBuildSettingUpdateRequest;
@@ -13,11 +15,22 @@ use App\Traits\ManagesGameBuildSettings;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
 #[Group('Game Build Settings')]
-class GameBuildSettingsController extends Controller
+class GameBuildSettingsController extends Controller implements HasMiddleware
 {
     use ManagesGameBuildSettings;
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(GameBuildSettingPermissions::VIEW, only: ['index']),
+            HasAnyAbility::using(GameBuildSettingPermissions::ADD, only: ['store']),
+            HasAnyAbility::using(GameBuildSettingPermissions::UPDATE, only: ['update']),
+            HasAnyAbility::using(GameBuildSettingPermissions::DELETE, only: ['destroy']),
+        ];
+    }
 
     /**
      * List

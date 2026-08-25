@@ -2,14 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Permissions\OrchestrationPermissions;
+use App\Helpers\HasAnyAbility;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrchestrationStatusResource;
 use App\Traits\ManagesOrchestration;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class OrchestrationController extends Controller
+class OrchestrationController extends Controller implements HasMiddleware
 {
     use ManagesOrchestration;
+
+    public static function middleware(): array
+    {
+        return [
+            HasAnyAbility::using(OrchestrationPermissions::VIEW, only: ['status']),
+            HasAnyAbility::using(OrchestrationPermissions::RESTART, only: ['restart']),
+        ];
+    }
 
     /**
      * Status
