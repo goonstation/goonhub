@@ -29,8 +29,13 @@ export default {
           filterable: false,
           headerClasses: 'q-table--col-auto-width',
         },
-        { name: 'ckey', label: 'Ckey', field: 'ckey', sortable: true },
-        { name: 'name', label: 'Name', field: 'name', sortable: true },
+        { name: 'ckey', label: 'Ckey', field: (row) => row.player?.ckey, sortable: true },
+        {
+          name: 'name',
+          label: 'Name',
+          field: (row) => row.alias || row.player?.key || row.player?.ckey,
+          sortable: true,
+        },
         {
           name: 'rank',
           label: 'Rank',
