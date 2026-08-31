@@ -146,7 +146,6 @@ RUN composer install \
     --no-ansi \
     --no-dev \
     && composer clear-cache \
-    && php artisan gh:generate-frontend-permissions \
     && bun install --frozen-lockfile \
     && bun run build \
     && bun run build:game-auth \
