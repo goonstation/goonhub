@@ -1,6 +1,6 @@
 ARG PHP_VERSION=8.4
 ARG COMPOSER_VERSION=2.8
-ARG NODE_VERSION=latest
+ARG NODE_VERSION=current-slim
 ARG BUN_VERSION=latest
 
 FROM node:${NODE_VERSION} AS node
@@ -8,6 +8,8 @@ FROM node:${NODE_VERSION} AS node
 FROM oven/bun:${BUN_VERSION} AS bun
 
 FROM composer:${COMPOSER_VERSION} AS vendor
+
+FROM python:3.12-slim-bookworm AS python
 
 FROM php:${PHP_VERSION}-cli-bookworm AS base
 
@@ -34,7 +36,6 @@ ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/relea
 
 RUN dpkg --add-architecture i386; \
     apt-get update; \
-    apt-get upgrade -yqq; \
     apt-get install -yqq --no-install-recommends --show-progress \
     apt-utils \
     curl \
@@ -143,6 +144,7 @@ RUN cd /usr/local/src && \
 ##########################################
 
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=vendor /usr/bin/composer /usr/bin/composer
+COPY --link --from=python /usr/local /usr/local
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /usr/local/bin /usr/local/bin
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /opt /opt
