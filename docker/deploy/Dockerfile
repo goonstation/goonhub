@@ -9,6 +9,8 @@ FROM oven/bun:${BUN_VERSION} AS bun
 
 FROM composer:${COMPOSER_VERSION} AS vendor
 
+FROM python:3.12-slim-bookworm AS python
+
 FROM php:${PHP_VERSION}-cli-bookworm AS base
 
 ARG WWWUSER=42080
@@ -127,6 +129,7 @@ RUN cd /usr/local/src && \
 ##########################################
 
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=vendor /usr/bin/composer /usr/bin/composer
+COPY --link --from=python /usr/local /usr/local
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /usr/local/bin /usr/local/bin
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --from=node /opt /opt
