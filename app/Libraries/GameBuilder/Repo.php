@@ -109,6 +109,12 @@ class Repo
             ], timeout: 300);
         }
 
+        $this->run(
+            ['tools/bootstrap/python', '-m', 'hooks.install'],
+            timeout: 60,
+            env: ['HOOKS_INCLUDE_TGUI' => '1', 'HOOKS_INCLUDE_BASE' => '1']
+        );
+
         $process = Process::fromShellCommandline(
             'git config --file .gitmodules --get-regexp path | awk \'{ print $1 }\'',
             $this->repoDir

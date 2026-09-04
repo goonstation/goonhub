@@ -234,7 +234,7 @@ class Build
         $process->wait();
         Cache::forget($this->procCacheKey);
         if (! $process->isSuccessful()) {
-            throw new \Exception($process->getErrorOutput() ?: $process->getOutput(), 69);
+            throw new ProcessFailedException($process);
         }
     }
 
