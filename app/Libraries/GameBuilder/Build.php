@@ -569,7 +569,14 @@ class Build
         }
 
         Http::sink($artifactPath)
+            ->throw()
             ->get('https://byond-tracy-writer.goonhub.com/latest.zip');
+
+        // Unpacked into the build so the profiler is deployed with the Byond version it was built for
+        $zip = new ZipArchive;
+        $zip->open($artifactPath);
+        $zip->extractTo($this->buildDir);
+        $zip->close();
 
         $this->log('Downloaded latest byond-tracy-writer');
     }
@@ -748,6 +755,7 @@ class Build
         // What to include in the deployed game
         $include = [
             'goonstation.dmb', 'goonstation.rsc', 'buildByond.conf', '.env.build', 'cdn-manifest.json',
+            'libprof.so',
             'assets', 'config', 'strings', 'sound', 'tools', 'testmerges',
             '+secret/assets', '+secret/strings',
         ];
@@ -810,7 +818,7 @@ class Build
         $buildStamp = $this->getBuildStamp();
         $byondVersion = "{$this->settings->byond_major}.{$this->settings->byond_minor}";
 
-        $toUpload = ['game' => false, 'byond' => false, 'rustg' => false, 'byond_tracy_writer' => true];
+        $toUpload = ['game' => false, 'byond' => false, 'rustg' => false];
         $res = Http::get("{$this->server->orchestrator}/build/check", [
             'server' => $this->server->server_id,
             'buildstamp' => $buildStamp,
@@ -819,7 +827,7 @@ class Build
         ]);
         $res = $res->json();
         if (isset($res['outdated'])) {
-            $toUpload = array_merge($toUpload, $res['outdated']);
+            $toUpload = array_merge($toUpload, array_intersect_key($res['outdated'], $toUpload));
         }
 
         if (in_array(true, $toUpload, true) === false) {
@@ -851,14 +859,6 @@ class Build
                 'rustg',
                 file_get_contents("{$this->rootRustgDir}/{$this->settings->rustg_version}.zip"),
                 "{$this->settings->rustg_version}.zip"
-            );
-        }
-        if ($toUpload['byond_tracy_writer']) {
-            $this->log('Attaching new byond-tracy-writer artifact to upload');
-            $req->attach(
-                'byond_tracy_writer',
-                file_get_contents("{$this->rootByondTracyWriterDir}/latest.zip"),
-                'latest.zip'
             );
         }
         $this->log('Uploading new artifacts to remote server');
