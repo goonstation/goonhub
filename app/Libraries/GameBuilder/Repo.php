@@ -5,6 +5,7 @@ namespace App\Libraries\GameBuilder;
 use GrahamCampbell\GitHub\Facades\GitHub;
 use Illuminate\Support\Facades\File;
 use Str;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class Repo
@@ -207,6 +208,50 @@ class Repo
     public function getConflictedFiles()
     {
         return $this->run(['git', 'diff', '--name-only', '--diff-filter=U', '--relative']);
+    }
+
+    private function getSecretConflictRefs(): ?array
+    {
+        try {
+            return [
+                $this->run(['git', 'rev-parse', ':2:+secret']),
+                $this->run(['git', 'rev-parse', ':3:+secret']),
+            ];
+        } catch (ProcessFailedException) {
+            return null;
+        }
+    }
+
+    public function resolveSecretConflict(): bool
+    {
+        $refs = $this->getSecretConflictRefs();
+        if ($refs === null) {
+            return false;
+        }
+
+        [$ours, $theirs] = $refs;
+        try {
+            $this->run(['git', '-C', '+secret', 'checkout', '--detach', $ours]);
+            $this->run(['git', '-C', '+secret', 'merge', '--no-commit', '--no-ff', $theirs]);
+            $this->run([
+                'git', '-C', '+secret',
+                '-c', "user.name={$this->userName}",
+                '-c', "user.email={$this->userEmail}",
+                'commit', '--no-gpg-sign', '-m', 'Merge secret refs for testmerge',
+            ]);
+        } catch (ProcessFailedException) {
+            try {
+                $this->run(['git', '-C', '+secret', 'merge', '--abort']);
+            } catch (ProcessFailedException) {
+                // The merge may have failed before it started.
+            }
+
+            return false;
+        }
+
+        $this->run(['git', 'add', '--', '+secret']);
+
+        return $this->getConflictedFiles() === '';
     }
 
     public function abortMerge()

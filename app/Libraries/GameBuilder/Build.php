@@ -337,14 +337,19 @@ class Build
         try {
             $this->repo->merge($prBranch);
         } catch (ProcessFailedException) {
-            $this->log('Failed to merge due to conflicts');
-            $this->testMergeConflicts[] = [
-                'prId' => $testMerge->pr_id,
-                'files' => $this->repo->getConflictedFiles(),
-            ];
-            $this->repo->abortMerge();
+            $conflictedFiles = $this->repo->getConflictedFiles();
+            if ($conflictedFiles === '+secret' && $this->repo->resolveSecretConflict()) {
+                $this->log('Merged conflict in +secret');
+            } else {
+                $this->log('Failed to merge due to conflicts');
+                $this->testMergeConflicts[] = [
+                    'prId' => $testMerge->pr_id,
+                    'files' => $conflictedFiles,
+                ];
+                $this->repo->abortMerge();
 
-            return false;
+                return false;
+            }
         }
 
         $this->repo->commit("Testmerge $prBranch");
