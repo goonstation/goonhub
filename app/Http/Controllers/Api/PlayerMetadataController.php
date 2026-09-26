@@ -141,6 +141,38 @@ class PlayerMetadataController extends Controller
     }
 
     /**
+     * Add Bulk
+     *
+     * Add multiple pieces of metadata to a player at once, skipping any they already have
+     */
+    public function storeBulk(Request $request)
+    {
+        $data = $request->validate([
+            'player_id' => 'required|integer|exists:players,id',
+            'metadata' => ['required', 'array', 'min:1', 'max:25'],
+            'metadata.*' => ['required', 'string', 'distinct'],
+        ]);
+
+        $existing = PlayerMetadata::where('player_id', $data['player_id'])
+            ->whereIn('metadata', $data['metadata'])
+            ->pluck('metadata')
+            ->all();
+        $now = now();
+        $insertData = [];
+        foreach (array_diff($data['metadata'], $existing) as $metadata) {
+            $insertData[] = [
+                'player_id' => $data['player_id'],
+                'metadata' => $metadata,
+                'created_at' => $now,
+                'updated_at' => $now,
+            ];
+        }
+        PlayerMetadata::insert($insertData);
+
+        return ['message' => 'Added metadata'];
+    }
+
+    /**
      * Delete By Player
      *
      * Delete all metadata associated with a specific player

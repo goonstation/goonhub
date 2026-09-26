@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\ValidateFromGameServer;
 use App\Models\Player;
 use App\Models\PlayerMetadata;
-use App\Http\Middleware\ValidateFromGameServer;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -42,6 +42,26 @@ class PlayerMetadataTest extends TestCase
                 'event_runner' => ['count' => 0, 'ckeys' => []],
             ],
         ]);
+    }
+
+    public function test_bulk_store_adds_only_missing_metadata(): void
+    {
+        $player = Player::factory()->create();
+        $other = Player::factory()->create();
+        $this->addMetadata($player->id, 'discord_linked');
+        $this->addMetadata($other->id, 'rp_whitelisted');
+
+        $response = $this->postJson(route('api.players.metadata.store-bulk'), [
+            'player_id' => $player->id,
+            'metadata' => ['discord_linked', 'rp_whitelisted', 'event_runner'],
+        ]);
+
+        $response->assertOk();
+        $this->assertEqualsCanonicalizing(
+            ['discord_linked', 'rp_whitelisted', 'event_runner'],
+            PlayerMetadata::where('player_id', $player->id)->pluck('metadata')->all()
+        );
+        $this->assertSame(1, PlayerMetadata::where('player_id', $other->id)->count());
     }
 
     private function addMetadata(?int $playerId, string $metadata): void

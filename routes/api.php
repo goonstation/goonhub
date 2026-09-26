@@ -100,6 +100,7 @@ Route::middleware(['isadmin'])->group(function () {
         Route::get('/get-by-data/{data}', 'getByData')->name('get-by-data');
         Route::post('/get-by-data-bulk', 'getByDataBulk')->name('get-by-data-bulk');
         Route::post('/', 'store')->name('store');
+        Route::post('/bulk', 'storeBulk')->name('store-bulk');
         Route::delete('/clear-by-player/{ckey}', 'destroyByPlayer')->name('destroy-by-player');
         Route::delete('/clear-by-data/{metadata}', 'destroyByData')->name('destroy-by-data');
     });
