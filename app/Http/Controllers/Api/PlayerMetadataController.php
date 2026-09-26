@@ -11,6 +11,7 @@ use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 #[Group('Player Metadata')]
 class PlayerMetadataController extends Controller
@@ -48,6 +49,55 @@ class PlayerMetadataController extends Controller
         return [
             /** @var array{string} */
             'data' => $metadata->pluck('metadata'),
+        ];
+    }
+
+    /**
+     * Get By Metadata Bulk
+     *
+     * Get the ckeys associated with multiple pieces of metadata at once
+     */
+    public function getByDataBulk(Request $request)
+    {
+        $data = $request->validate([
+            'metadata' => ['required', 'array', 'min:1', 'max:25'],
+            'metadata.*' => ['required', 'string'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:50'],
+        ]);
+
+        $values = $data['metadata'];
+        $limit = $data['limit'] ?? 50;
+
+        // Deduplicate player rows before counting
+        $distinct = PlayerMetadata::whereIn('metadata', $values)
+            ->whereNotNull('player_id')
+            ->select('metadata', 'player_id')
+            ->distinct();
+        $ranked = DB::query()
+            ->fromSub($distinct, 'metadata_players')
+            ->join('players', 'players.id', '=', 'metadata_players.player_id')
+            ->select('metadata_players.metadata', 'players.ckey')
+            ->selectRaw('COUNT(*) OVER (PARTITION BY metadata_players.metadata) AS player_count')
+            ->selectRaw('ROW_NUMBER() OVER (PARTITION BY metadata_players.metadata ORDER BY players.ckey) AS metadata_rank');
+        $matches = DB::query()
+            ->fromSub($ranked, 'ranked_metadata_players')
+            ->where('metadata_rank', '<=', $limit)
+            ->orderBy('metadata_rank')
+            ->get()
+            ->groupBy('metadata');
+
+        $result = [];
+        foreach ($values as $value) {
+            $players = $matches->get($value, collect());
+            $result[$value] = [
+                'count' => (int) ($players->first()->player_count ?? 0),
+                'ckeys' => $players->pluck('ckey')->all(),
+            ];
+        }
+
+        return [
+            /** @var array<string, array{count: int, ckeys: array<int, string>}> */
+            'data' => (object) $result,
         ];
     }
 
