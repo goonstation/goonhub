@@ -757,7 +757,7 @@ class Build
             'goonstation.dmb', 'goonstation.rsc', 'buildByond.conf', '.env.build', 'cdn-manifest.json',
             'libprof.so',
             'assets', 'config', 'strings', 'sound', 'tools', 'testmerges',
-            '+secret/assets', '+secret/strings', '+secret/icons'
+            '+secret/assets', '+secret/strings', '+secret/icons',
         ];
         $this->log('Creating new game build artifact archive');
         $process = new Process([
