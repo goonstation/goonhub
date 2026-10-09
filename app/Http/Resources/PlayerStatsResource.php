@@ -13,6 +13,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property int $connected
  * @property int $connected_rp
  * @property int $time_played
+ * @property int $played_security
+ * @property int $played_medical
+ * @property int $played_research
+ * @property int $played_engineering
  */
 class PlayerStatsResource extends JsonResource
 {
@@ -38,6 +42,14 @@ class PlayerStatsResource extends JsonResource
             'played' => $this->played,
             /** @var int */
             'played_rp' => $this->played_rp,
+            /** @var int */
+            'played_security' => $this->played_security,
+            /** @var int */
+            'played_medical' => $this->played_medical,
+            /** @var int */
+            'played_research' => $this->played_research,
+            /** @var int */
+            'played_engineering' => $this->played_engineering,
             /** @var int */
             'connected' => $this->connected,
             /** @var int */
