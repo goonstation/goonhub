@@ -77,6 +77,27 @@
           </div>
           <q-card-section>
             <base-select
+              v-if="state === 'create'"
+              :model-value="form.server_ids"
+              @update:model-value="setServerIds"
+              label="Servers"
+              load-route="/game-servers"
+              option-value="server_id"
+              option-label="name"
+              filled
+              lazy-rules
+              dense
+              multiple
+              use-chips
+              emit-value
+              map-options
+              :filters="{ with_invisible: true }"
+              :error="!!form.errors.server_ids"
+              :error-message="form.errors.server_ids"
+              :default-items="[{ name: 'All', server_id: 'all' }]"
+            />
+            <base-select
+              v-else
               v-model="form.server_id"
               label="Server"
               load-route="/game-servers"
@@ -342,6 +363,12 @@ export default {
 
   created() {
     if (this.state === 'create') {
+      // 'all' is only a UI choice, the server treats no selected servers as all servers
+      this.form.transform((data) => ({
+        ...data,
+        server_ids: data.server_ids.filter((id) => id !== 'all'),
+      }))
+
       const url = new URL(window.location.href)
       const urlSearch = new URLSearchParams(url.search)
       urlSearch.forEach((param, key) => {
@@ -358,6 +385,13 @@ export default {
   },
 
   methods: {
+    // 'All' is the default, and is exclusive
+    setServerIds(ids) {
+      ids = ids || []
+      this.form.server_ids =
+        !ids.length || ids.at(-1) === 'all' ? ['all'] : ids.filter((id) => id !== 'all')
+    },
+
     getSecondsUntil(date) {
       const now = new Date()
       const until = new Date(date)

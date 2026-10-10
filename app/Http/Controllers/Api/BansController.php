@@ -117,7 +117,7 @@ class BansController extends Controller
     #[HasServerIdBody, HasGameAdminIdBody, HasGameAdminCkeyBody]
     public function store(StoreRequest $request)
     {
-        return $this->addBan($request);
+        return $this->addBan($request, $request->getGameServer());
     }
 
     /**
