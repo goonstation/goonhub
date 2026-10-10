@@ -9,7 +9,6 @@ use App\Models\Player;
 use App\Models\PlayerMedal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request as FacadesRequest;
 use Inertia\Inertia;
 
 class MedalsController extends Controller
@@ -84,10 +83,6 @@ class MedalsController extends Controller
         $medal = Medal::where('uuid', $uuid)
             ->where('hidden', false)
             ->firstOrFail();
-
-        if (FacadesRequest::input('sort_by') === 'name') {
-            FacadesRequest::merge(['sort_by' => 'ckey']);
-        }
 
         return Player::select([
             'id',
