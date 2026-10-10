@@ -190,7 +190,6 @@
               outline
             />
             <q-btn
-              v-else
               @click="
                 $inertia.visit(
                   $route('admin.bans.create', {
