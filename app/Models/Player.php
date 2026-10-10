@@ -42,6 +42,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerMedal> $medals
  * @property-read int|null $medals_count
  * @property-read \App\Models\PlayerMentor|null $mentor
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerMetadata> $metadata
+ * @property-read int|null $metadata_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerNote> $notes
  * @property-read int|null $notes_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PlayerParticipation> $participations
@@ -155,6 +157,11 @@ class Player extends BaseModel
     public function notes(): HasMany
     {
         return $this->hasMany(PlayerNote::class, 'player_id');
+    }
+
+    public function metadata(): HasMany
+    {
+        return $this->hasMany(PlayerMetadata::class, 'player_id');
     }
 
     public function medals(): HasMany
