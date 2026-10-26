@@ -7,13 +7,21 @@ const UNITS = new Map([
   ['us', 1e-6],
   ['%', 0.01],
 ])
-const COMPARISONS = new Map([
-  ['>', (a, b) => a > b],
-  ['>=', (a, b) => a >= b],
-  ['<', (a, b) => a < b],
-  ['<=', (a, b) => a <= b],
-  ['=', (a, b) => a === b],
-])
+
+function compare(operator, a, b) {
+  switch (operator) {
+    case '>':
+      return a > b
+    case '>=':
+      return a >= b
+    case '<':
+      return a < b
+    case '<=':
+      return a <= b
+    default:
+      return a === b
+  }
+}
 
 // Seconds as "s.mmmuuu" colored parts
 export function splitTime(seconds) {
@@ -193,8 +201,7 @@ function termPredicate(token, columns) {
       throw new Error(`"${column.name}" can't use ${unit}`)
     }
     const target = Number(amount) * (unit ? UNITS.get(unit.toLowerCase()) : 1)
-    const compare = COMPARISONS.get(operator)
-    return (row) => compare(row[column.name], target)
+    return (row) => compare(operator, row[column.name], target)
   }
 
   const options = token.toLowerCase().split('|').filter(Boolean)
