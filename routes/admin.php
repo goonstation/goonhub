@@ -20,6 +20,7 @@ use App\Http\Controllers\Web\Admin\MentorsController;
 use App\Http\Controllers\Web\Admin\OrchestrationController;
 use App\Http\Controllers\Web\Admin\PlayerNotesController;
 use App\Http\Controllers\Web\Admin\PlayersController;
+use App\Http\Controllers\Web\Admin\ProfilerController;
 use App\Http\Controllers\Web\Admin\RedirectsController;
 use App\Http\Controllers\Web\Admin\RoundsController;
 use App\Http\Controllers\Web\Admin\UsersController;
@@ -219,6 +220,12 @@ Route::controller(ErrorsController::class)->prefix('errors')->name('errors.')->g
     Route::get('/get-errors/{gameRound}', 'getErrors')
         ->whereNumber('gameRound')
         ->name('get-errors');
+});
+
+Route::controller(ProfilerController::class)->prefix('profiler')->name('profiler.')->group(function () {
+    Route::get('/', 'index')->name('index')
+        ->breadcrumbs(fn (Trail $trail) => $trail->push('Profiler', 'admin.profiler.index'));
+    Route::post('/fetch', 'fetch')->name('fetch');
 });
 
 Route::controller(RedirectsController::class)->prefix('redirects')->name('redirects.')->group(function () {

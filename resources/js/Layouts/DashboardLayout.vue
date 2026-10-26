@@ -255,6 +255,7 @@ export default {
               route('admin.logs.index'),
               route('admin.errors.index'),
               route('admin.medals.index'),
+              route('admin.profiler.index'),
               route('admin.builds.index'),
             ],
             children: [
@@ -281,6 +282,10 @@ export default {
               {
                 label: 'Medals',
                 href: route('admin.medals.index'),
+              },
+              {
+                label: 'Profiler',
+                href: route('admin.profiler.index'),
               },
             ],
           },
