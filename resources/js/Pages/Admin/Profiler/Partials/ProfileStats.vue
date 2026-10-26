@@ -79,9 +79,9 @@
 </style>
 
 <script setup>
-import useFormats from '@/Composables/formats';
-import { computed } from 'vue';
-import { deltaClass } from '../profiler';
+import useFormats from '@/Composables/formats'
+import { computed } from 'vue'
+import { deltaClass } from '../profiler'
 
 const props = defineProps({
   stats: { type: Object, required: true },

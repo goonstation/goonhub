@@ -283,10 +283,9 @@ const { isSendmaps, comparing, metric, columns, rows, stats, total, filterError 
   merge
 )
 
-// Delta columns aren't picked themselves: they show alongside the column they compare
 const columnOptions = computed(() =>
   columns.value
-    .filter((col) => !col.required && col.kind !== 'delta')
+    .filter((col) => !col.required && col.kind !== 'delta') // delta cols aren't picked
     .map((col) => ({ label: col.label, value: col.name }))
 )
 const visibleColumns = computed(() =>
@@ -371,10 +370,8 @@ function setMain(data, name, from = null) {
   source.value = name
   mainUrl.value = from
   clearBaseline()
-  // Keep the current (or linked) sort when the new profile has that column
-  if (!columns.value.some((col) => col.name === pagination.value.sortBy)) {
-    sortBy(metric.value)
-  }
+  // Each profile starts sorted by self time, largest first; a shared link re-applies its own sort
+  sortBy(metric.value)
 }
 
 function setBaseline(data, name, from = null) {
@@ -385,8 +382,6 @@ function setBaseline(data, name, from = null) {
   baseline.value = data
   baselineSource.value = name
   baselineUrl.value = from
-  // A comparison sorts by the biggest growth in share of the profile first
-  sortBy('pct_delta')
 }
 
 function clearBaseline() {

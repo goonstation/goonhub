@@ -33,8 +33,8 @@ const timeText = (seconds) =>
 // Red for more, green for less (sorry r-g colorblindness)
 export const deltaClass = (value) =>
   value > 0 ? 'text-negative'
-    : value < 0 ? 'text-positive'
-      : 'text-grey-7'
+  : value < 0 ? 'text-positive'
+  : 'text-grey-7'
 
 // Type a proc is defined on, e.g. /datum/gas_mixture/proc/share -> /datum/gas_mixture
 const procType = (row) =>
@@ -101,7 +101,7 @@ function columnSpecs(sendmaps, timedValue, comparing) {
         },
         { name: 'calls', label: 'calls', kind: 'number' },
       ]
-      : [
+    : [
         { name: 'self', label: 'self', kind: 'time' },
         {
           name: 'pct',
@@ -146,7 +146,7 @@ function columnSpecs(sendmaps, timedValue, comparing) {
           of: spec.name,
         },
       ]
-      : [spec]
+    : [spec]
   )
 }
 
@@ -251,8 +251,8 @@ export default function useProfiler(entries, other, search, merge) {
       if (comparing.value) {
         row.status =
           !base.value.has(row.id) ? 'new'
-            : !current.value.has(row.id) ? 'gone'
-              : null
+          : !current.value.has(row.id) ? 'gone'
+          : null
       }
       return row
     })
@@ -262,8 +262,8 @@ export default function useProfiler(entries, other, search, merge) {
     const kind = spec.unit ?? spec.kind
     const text =
       kind === 'time' ? timeText(value)
-        : kind === 'percent' ? formats.percent(value)
-          : formats.number(value)
+      : kind === 'percent' ? formats.percent(value)
+      : formats.number(value)
     return spec.kind === 'delta' && value > 0 ? `+${text}` : text
   }
 
@@ -324,7 +324,7 @@ export default function useProfiler(entries, other, search, merge) {
               .reverse()
               .slice(0, 10),
           }
-          : null,
+        : null,
     }
   })
 
