@@ -40,18 +40,89 @@ jobs:
           docker network create "$WEBBRIDGE_NETWORK" --label "for=goonhub"
       - name: Rollout new containers
         run: |
-          (\
-            trap 'kill 0' SIGINT; \
-            docker rollout app --wait-after-healthy 5 --pre-stop-hook " \
-              touch /tmp/drain && \
-              supervisorctl stop scheduler:* && \
-              supervisorctl stop pulse:* && \
-              php artisan gh:cancel-builds && \
-              sleep 45 \
-            " & \
-            docker rollout nginx --wait-after-healthy 5 --pre-stop-hook "touch /tmp/drain && sleep 45" & \
-            wait\
-          )
+          set -euo pipefail
+
+          docker rollout app --wait-after-healthy 5 --pre-stop-hook " \
+            touch /tmp/drain && \
+            supervisorctl stop scheduler:* && \
+            supervisorctl stop pulse:* && \
+            php artisan gh:cancel-builds && \
+            sleep 45 \
+          " &
+          app_pid=$!
+
+          docker rollout nginx --wait-after-healthy 5 --pre-stop-hook "touch /tmp/drain && sleep 45" &
+          nginx_pid=$!
+
+          # Wait for both rollouts, even if the first one fails.
+          app_status=0
+          nginx_status=0
+          wait "$app_pid" || app_status=$?
+          wait "$nginx_pid" || nginx_status=$?
+
+          if (( app_status != 0 || nginx_status != 0 )); then
+            echo "::error::Rollout failed: app=${app_status}, nginx=${nginx_status}. Skipping readiness checks and cleanup."
+            exit 1
+          fi
+      - name: Verify nginx upstream readiness
+        timeout-minutes: 5
+        run: |
+          set -euo pipefail
+
+          # Refuse an ambiguous or incomplete deployment.
+          for service in app nginx; do
+            container_ids="$(docker compose ps --status running --quiet "$service")"
+            if [[ -z "$container_ids" || "$container_ids" == *$'\n'* ]]; then
+              echo "::error::Expected exactly one running ${service} container. Skipping cleanup."
+              exit 1
+            fi
+            if [[ "$service" == nginx ]]; then
+              nginx_id="$container_ids"
+            fi
+          done
+          nginx_name="$(docker inspect --format '{{.Name}}' "$nginx_id")"
+          nginx_name="${nginx_name#/}"
+
+          # Use PHP already present in the app container to reach the exact
+          # nginx container over their shared Docker networks.
+          probe="$(cat <<'PHP'
+          foreach ([['goonhub.com', '/'], ['ws.goonhub.com', '/up']] as [$host, $path]) {
+              $context = stream_context_create(['http' => [
+                  'method' => 'GET',
+                  'header' => "Host: {$host}\r\nConnection: close\r\nUser-Agent: GoonhubDeployReadiness\r\n",
+                  'timeout' => 3,
+                  'follow_location' => 0,
+                  'max_redirects' => 0,
+                  'ignore_errors' => true,
+              ]]);
+              $http_response_header = [];
+              $body = @file_get_contents('http://'.$argv[1].$path, false, $context, 0, 4096);
+              $status = $http_response_header[0] ?? 'no HTTP response';
+              if ($body === false || !preg_match('~^HTTP/\S+ 200(?: |$)~', $status)) {
+                  fwrite(STDERR, "Readiness failed for {$host}{$path}: {$status}\n");
+                  exit(1);
+              }
+          }
+          PHP
+          )"
+
+          consecutive_successes=0
+          for attempt in {1..30}; do
+            if docker compose exec -T app php -r "$probe" "$nginx_name"; then
+              consecutive_successes=$((consecutive_successes + 1))
+              if (( consecutive_successes == 3 )); then
+                echo "Laravel and Reverb are reachable through ${nginx_name}; three consecutive checks passed."
+                exit 0
+              fi
+            else
+              consecutive_successes=0
+            fi
+            echo "Readiness check ${attempt}/30: ${consecutive_successes}/3 consecutive successes."
+            sleep 2
+          done
+
+          echo "::error::nginx upstream readiness did not stabilize. Skipping cleanup; deployment needs inspection."
+          exit 1
       - name: Clean up
         run: |
           docker volume prune --filter "label=for=goonhub" -a -f
