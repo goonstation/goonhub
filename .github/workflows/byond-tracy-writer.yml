@@ -19,7 +19,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           repository: goonstation/byond-tracy-writer
           ref: ${{ github.event.client_payload.sha || github.event.client_payload.ref || inputs.ref || 'master' }}
@@ -30,7 +30,7 @@ jobs:
           sudo apt-get install zip gcc-multilib libc6-dev-i386
 
       - name: Build
-        run: gcc -m32 -shared -fPIC -O2 -o libprof.so prof.c
+        run: gcc -D_FILE_OFFSET_BITS=64 -std=c11 -m32 -shared -fPIC -O2 prof.c -pthread -o libprof.so
 
       - run: zip latest.zip libprof.so
 

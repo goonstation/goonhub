@@ -64,6 +64,7 @@ class PlayersController extends Controller
             'notes.gameAdmin',
             'notes.gameServer',
             'medals.medal',
+            'metadata:id,player_id,metadata',
             'whitelist.serverGroups',
             'whitelist.servers',
             'bypassCap.serverGroups',

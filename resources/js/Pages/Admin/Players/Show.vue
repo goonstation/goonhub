@@ -190,7 +190,6 @@
               outline
             />
             <q-btn
-              v-else
               @click="
                 $inertia.visit(
                   $route('admin.bans.create', {
@@ -381,6 +380,7 @@ import JobBanHistory from './Partials/JobBanHistory.vue'
 import Medals from './Partials/Medals.vue'
 import Notes from './Partials/Notes.vue'
 import OtherAccounts from './Partials/OtherAccounts.vue'
+import PlayerMetadata from './Partials/PlayerMetadata.vue'
 
 export default {
   layout: (h, page) =>
@@ -401,6 +401,7 @@ export default {
     JobBanHistory,
     Notes,
     Medals,
+    PlayerMetadata,
     OtherAccounts,
     PlayerBypassCapDialog,
     PlayerWhitelistDialog,
@@ -498,6 +499,13 @@ export default {
           total: this.otherAccounts.length,
           component: OtherAccounts,
           props: { accounts: this.otherAccounts },
+        },
+        {
+          name: 'metadata',
+          label: 'Metadata',
+          total: this.player.metadata.length,
+          component: PlayerMetadata,
+          props: { metadata: this.player.metadata },
         },
       ]
     },

@@ -9,6 +9,7 @@ use App\Http\Requests\Bans\StoreRequest;
 use App\Libraries\DiscordBot;
 use App\Models\Ban;
 use App\Models\BanDetail;
+use App\Models\GameServer;
 use App\Traits\ManagesBans;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -38,38 +39,48 @@ class BansController extends Controller
 
     public function store(StoreRequest $request)
     {
+        $serverIds = $request->validate([
+            'server_ids' => 'nullable|array|exists:game_servers,server_id',
+        ])['server_ids'] ?? [];
+
         $request->merge([
             'game_admin_id' => $request->user()->gameAdmin->id,
         ]);
-        $ban = $this->addBan($request);
 
-        dispatch(function () use ($ban) {
-            try {
-                $byondEpochStart = Carbon::parse('2000-01-01 00:00:00'); // byond epoch start
-                DiscordBot::export('ban', 'GET', [
-                    'key' => $ban->gameAdmin->player->ckey,
-                    'key2' => "{$ban->originalBanDetail->ckey} (IP: {$ban->originalBanDetail->ip}, CompID: {$ban->originalBanDetail->comp_id})",
-                    'msg' => $ban->reason,
-                    'time' => $ban->expires_at ? $ban->duration_human : 'permanent',
-                    'timestamp' => $ban->expires_at ? $ban->expires_at->diffInMinutes($byondEpochStart) : 0,
-                ]);
-            } catch (\Throwable $e) {
-                // ignore
-            }
+        // No servers selected means the ban applies to all servers
+        $gameServers = $serverIds ? GameServer::whereIn('server_id', $serverIds)->get() : [null];
 
-            GameBridge::server($ban->server_id ?: 'active')
-                ->sendAndForget([
-                    'type' => 'ban_added',
-                    'admin_ckey' => $ban->gameAdmin->player->ckey,
-                    'server_id' => $ban->server_id,
-                    'ckey' => $ban->originalBanDetail->ckey,
-                    'comp_id' => $ban->originalBanDetail->comp_id,
-                    'ip' => $ban->originalBanDetail->ip,
-                    'reason' => $ban->reason,
-                    'duration' => $ban->duration,
-                    'requires_appeal' => $ban->requires_appeal ? 1 : 0,
-                ]);
-        });
+        foreach ($gameServers as $gameServer) {
+            $ban = $this->addBan($request, $gameServer);
+
+            dispatch(function () use ($ban) {
+                try {
+                    $byondEpochStart = Carbon::parse('2000-01-01 00:00:00'); // byond epoch start
+                    DiscordBot::export('ban', 'GET', [
+                        'key' => $ban->gameAdmin->player->ckey,
+                        'key2' => "{$ban->originalBanDetail->ckey} (IP: {$ban->originalBanDetail->ip}, CompID: {$ban->originalBanDetail->comp_id})",
+                        'msg' => $ban->reason,
+                        'time' => $ban->expires_at ? $ban->duration_human : 'permanent',
+                        'timestamp' => $ban->expires_at ? $ban->expires_at->diffInMinutes($byondEpochStart) : 0,
+                    ]);
+                } catch (\Throwable $e) {
+                    // ignore
+                }
+
+                GameBridge::server($ban->server_id ?: 'active')
+                    ->sendAndForget([
+                        'type' => 'ban_added',
+                        'admin_ckey' => $ban->gameAdmin->player->ckey,
+                        'server_id' => $ban->server_id,
+                        'ckey' => $ban->originalBanDetail->ckey,
+                        'comp_id' => $ban->originalBanDetail->comp_id,
+                        'ip' => $ban->originalBanDetail->ip,
+                        'reason' => $ban->reason,
+                        'duration' => $ban->duration,
+                        'requires_appeal' => $ban->requires_appeal ? 1 : 0,
+                    ]);
+            });
+        }
 
         return to_route('admin.bans.index');
     }

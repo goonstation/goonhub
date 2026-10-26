@@ -6,6 +6,7 @@ use App\Http\Requests\Bans\StoreRequest;
 use App\Http\Resources\BanResource;
 use App\Models\Ban;
 use App\Models\BanDetail;
+use App\Models\GameServer;
 use App\Models\Player;
 use App\Models\PlayerNote;
 use App\Services\CommonRequest;
@@ -53,7 +54,7 @@ trait ManagesBans
     /**
      * Add a ban
      */
-    private function addBan(StoreRequest $request)
+    private function addBan(StoreRequest $request, ?GameServer $gameServer)
     {
         $data = collect($request->validated());
 
@@ -72,7 +73,6 @@ trait ManagesBans
         }
 
         $gameAdmin = $request->getGameAdmin();
-        $gameServer = $request->getGameServer();
         $gameServerGroup = $request->getGameServerGroup();
 
         if (! $gameServer) {

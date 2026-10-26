@@ -36,6 +36,16 @@ class PlayerFilter extends BaseModelFilter
             ->orWhere('key', 'ILIKE', '%'.$val.'%');
     }
 
+    public function sortByName($order)
+    {
+        return $this->orderBy('ckey', $order);
+    }
+
+    public function sortByEarnedAt($order)
+    {
+        return $this->orderBy('earned_at', $order)->orderBy('players.id', $order);
+    }
+
     public function connectionsCount($val)
     {
         return $this->filterRangeRelationship('connections', $val);

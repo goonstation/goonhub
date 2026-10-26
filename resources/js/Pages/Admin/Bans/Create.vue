@@ -24,7 +24,7 @@ export default {
         ckey: null,
         comp_id: null,
         ip: null,
-        server_id: 'all',
+        server_ids: ['all'],
         reason: null,
         duration: null,
         requires_appeal: false,
