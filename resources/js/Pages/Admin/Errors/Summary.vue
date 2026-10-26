@@ -1,5 +1,5 @@
 <template>
-  <error-summary-table fetch-on-load />
+  <error-summary-table prop-key="errors" fetch-route="admin.errors.summary" />
 </template>
 
 <script>
@@ -12,5 +12,9 @@ export default {
   },
 
   layout: (h, page) => h(DashboardLayout, { title: 'Errors' }, () => page),
+
+  props: {
+    errors: Object,
+  },
 }
 </script>

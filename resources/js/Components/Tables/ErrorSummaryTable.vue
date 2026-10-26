@@ -5,6 +5,7 @@
       :routes="routes"
       :columns="columns"
       :pagination="{ sortBy: 'overview_count', rowsPerPage: 987654321 }"
+      :skeleton-options="{ rows: 15 }"
       :search="search"
       :virtual-scroll-sticky-size-start="48"
       :virtual-scroll-slice-size="100"
@@ -160,6 +161,12 @@ import BaseTable from './BaseTable.vue'
 
 export default {
   components: { BaseTable, BaseSelect, ErrorsByRound },
+  props: {
+    fetchRoute: {
+      type: String,
+      default: 'web.events.errors.index',
+    },
+  },
   setup() {
     return {
       ionCloseOutline,
@@ -169,7 +176,7 @@ export default {
   data() {
     return {
       routes: {
-        fetch: 'web.events.errors.index',
+        fetch: this.fetchRoute,
       },
       columns: [
         {

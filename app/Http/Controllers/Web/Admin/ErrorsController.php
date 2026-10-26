@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Events\ErrorsIndexRequest;
 use App\Models\Events\EventError;
 use App\Models\GameRound;
+use App\Traits\ManagesErrorSummary;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ErrorsController extends Controller
 {
+    use ManagesErrorSummary;
+
     public function index(Request $request)
     {
         return Inertia::render('Admin/Errors/Index', [
@@ -42,8 +46,10 @@ class ErrorsController extends Controller
         return EventError::where('round_id', $gameRound->id)->orderBy('created_at', 'asc')->get();
     }
 
-    public function summary(Request $request)
+    public function summary(ErrorsIndexRequest $request)
     {
-        return Inertia::render('Admin/Errors/Summary');
+        return Inertia::render('Admin/Errors/Summary', [
+            'errors' => Inertia::lazy(fn () => $this->getErrorSummary($request)),
+        ]);
     }
 }
