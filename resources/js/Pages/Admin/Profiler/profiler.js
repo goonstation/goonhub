@@ -1,14 +1,19 @@
 import useFormats from '@/Composables/formats'
 import { computed } from 'vue'
 
-const UNITS = { s: 1, ms: 1e-3, us: 1e-6, '%': 0.01 }
-const COMPARISONS = {
-  '>': (a, b) => a > b,
-  '>=': (a, b) => a >= b,
-  '<': (a, b) => a < b,
-  '<=': (a, b) => a <= b,
-  '=': (a, b) => a === b,
-}
+const UNITS = new Map([
+  ['s', 1],
+  ['ms', 1e-3],
+  ['us', 1e-6],
+  ['%', 0.01],
+])
+const COMPARISONS = new Map([
+  ['>', (a, b) => a > b],
+  ['>=', (a, b) => a >= b],
+  ['<', (a, b) => a < b],
+  ['<=', (a, b) => a <= b],
+  ['=', (a, b) => a === b],
+])
 
 // Seconds as "s.mmmuuu" colored parts
 export function splitTime(seconds) {
@@ -187,8 +192,9 @@ function termPredicate(token, columns) {
     if (unit === '%' ? kind !== 'percent' : unit && kind !== 'time') {
       throw new Error(`"${column.name}" can't use ${unit}`)
     }
-    const target = Number(amount) * (unit ? UNITS[unit.toLowerCase()] : 1)
-    return (row) => COMPARISONS[operator](row[column.name], target)
+    const target = Number(amount) * (unit ? UNITS.get(unit.toLowerCase()) : 1)
+    const compare = COMPARISONS.get(operator)
+    return (row) => compare(row[column.name], target)
   }
 
   const options = token.toLowerCase().split('|').filter(Boolean)

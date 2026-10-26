@@ -233,7 +233,7 @@
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import { ionHelpCircleOutline } from '@quasar/extras/ionicons-v6'
 import axios from 'axios'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import ProfileStats from './Partials/ProfileStats.vue'
 import useProfiler, { deltaClass, splitTime } from './profiler'
 
@@ -242,7 +242,6 @@ defineOptions({
 })
 
 const USERNAME_KEY = 'profiler-logs-username'
-const PASSWORD_KEY = 'profiler-logs-password'
 const COLUMNS_KEY = 'profiler-columns'
 const MERGE_KEY = 'profiler-merge'
 
@@ -252,8 +251,7 @@ const params = new URLSearchParams(window.location.search)
 const url = ref(params.get('url') || '')
 const baseUrl = ref(params.get('base') || '')
 const username = ref(localStorage.getItem(USERNAME_KEY) || '')
-// Session storage, so the password is forgotten when the tab closes
-const password = ref(sessionStorage.getItem(PASSWORD_KEY) || '')
+const password = ref('')
 const loading = ref(false)
 const error = ref('')
 
@@ -401,14 +399,13 @@ async function fetchInto(setter, target) {
       password: password.value,
     })
     setter(response.data, target.split('/').pop(), target)
-    sessionStorage.setItem(PASSWORD_KEY, password.value)
   } catch (e) {
     error.value = e.response?.data?.message || e.message
   }
   loading.value = false
 }
 
-// A shared link opens once: straight away when the login is remembered, otherwise on the first Load
+// A shared link fills in its URLs; the first Load after entering the login opens them with the link's view
 const pendingLink = ref(!!params.get('url'))
 
 async function loadMain() {
@@ -445,8 +442,4 @@ function openFile(setter) {
   })
   input.click()
 }
-
-onMounted(() => {
-  if (canFetch(url.value)) loadMain()
-})
 </script>
