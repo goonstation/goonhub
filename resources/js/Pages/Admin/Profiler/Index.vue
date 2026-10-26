@@ -11,15 +11,28 @@
             v-model="url"
             class="col-12 col-md"
             label="logs.goonhub.com profiler JSON URL"
+            name="profiler-url"
+            autocomplete="off"
+            :input-attrs="ignoreAutofill"
             filled
             dense
           />
-          <q-input v-model="username" class="col-6 col-md-2" label="Logs username" filled dense />
+          <q-input
+            v-model="username"
+            class="col-6 col-md-2"
+            label="Logs username"
+            name="logs-username"
+            autocomplete="username"
+            filled
+            dense
+          />
           <q-input
             v-model="password"
             class="col-6 col-md-2"
             label="Logs password"
             type="password"
+            name="logs-password"
+            autocomplete="current-password"
             filled
             dense
           />
@@ -244,6 +257,14 @@ defineOptions({
 const USERNAME_KEY = 'profiler-logs-username'
 const COLUMNS_KEY = 'profiler-columns'
 const MERGE_KEY = 'profiler-merge'
+// Opt-outs for 1Password, LastPass, Bitwarden, Dashlane and KeePassXC-Browser
+const ignoreAutofill = {
+  'data-1p-ignore': '',
+  'data-lpignore': 'true',
+  'data-bwignore': '',
+  'data-form-type': 'other',
+  'data-kpxc-ignore': '',
+}
 
 // The view (profiles, filter, sort, tab) lives in the query string so a link reopens it
 const params = new URLSearchParams(window.location.search)
