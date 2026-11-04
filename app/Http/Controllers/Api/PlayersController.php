@@ -310,6 +310,18 @@ class PlayersController extends Controller
                             $query->whereNot('round_id', null)->whereRelation('gameRound', 'rp_mode', '=', true);
                         });
                 },
+                'participations as played_security' => function (Builder $query) {
+                    $query->where('job', 'Security Officer')->orWhere('job', 'Security Assistant');
+                },
+                'participations as played_medical' => function (Builder $query) {
+                    $query->where('job','Medical Doctor')->orWhere('job', 'Medical Trainee');
+                },
+                'participations as played_research' => function (Builder $query) {
+                    $query->where('job', 'Scientist')->orWhere('job', 'Research Trainee');
+                },
+                'participations as played_engineering' => function (Builder $query) {
+                    $query->where('job', 'Engineer')->orWhere('job', 'Technical Trainee');
+                },
                 'connections as connected' => function (Builder $query) {
                     $query->where(function (Builder $query) {
                         $query->where('round_id', null)->whereNot('legacy_data->rp_mode', true);
