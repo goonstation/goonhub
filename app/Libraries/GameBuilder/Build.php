@@ -767,7 +767,8 @@ class Build
         ];
         $this->log('Creating new game build artifact archive');
         $process = new Process([
-            'tar', '--warning=no-failed-read', '--ignore-failed-read', '-czf',
+            'tar', '--exclude=tools/bootstrap/.cache',
+            '--warning=no-failed-read', '--ignore-failed-read', '-czf',
             "{$this->artifactsDir}/game-$buildStamp.tar.gz",
             ...$include,
         ], cwd: $this->buildDir);
