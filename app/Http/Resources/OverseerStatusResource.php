@@ -4,17 +4,17 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrchestrationStatusResource extends JsonResource
+class OverseerStatusResource extends JsonResource
 {
     public function toArray($request)
     {
         return [
             'status' => $this['status'],
-            'health' => $this['health'],
+            'health' => $this['health'] ?? null,
             /** @format date-time */
-            'startedAt' => $this['startedAt'],
+            'startedAt' => $this['startedAt'] ?? null,
             /** @var bool */
-            'restarting' => $this['restarting'],
+            'restarting' => $this['restarting'] ?? false,
         ];
     }
 }

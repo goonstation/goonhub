@@ -3,11 +3,13 @@
 namespace App\Traits;
 
 use App\Models\GameServer;
+use App\Services\Overseer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
+use RuntimeException;
+use Throwable;
 
-trait ManagesOrchestration
+trait ManagesOverseer
 {
     private function getServerStatus(Request $request)
     {
@@ -25,7 +27,7 @@ trait ManagesOrchestration
 
         $cachedData = [];
         foreach ($servers as $server) {
-            $cacheKey = "orchestration-status-{$server->server_id}";
+            $cacheKey = "overseer-status-{$server->server_id}";
             $cacheItem = Cache::get($cacheKey);
             if ($cacheItem) {
                 $cachedData[$server->server_id] = $cacheItem;
@@ -37,23 +39,14 @@ trait ManagesOrchestration
         }
 
         $status = [];
-        $orchestratorGroups = $servers->groupBy('orchestrator');
-        foreach ($orchestratorGroups as $orchestratorUrl => $group) {
-            $params = [];
-            if ($serverId) {
-                $params['server'] = $serverId;
-            }
-            $res = Http::get("$orchestratorUrl/status", $params);
-            $res->throwUnlessStatus(200);
-            $res = $res->json();
-            if (is_null($res)) {
-                throw new \Exception('Empty response');
-            }
+        $overseerGroups = $servers->groupBy('overseer');
+        foreach ($overseerGroups as $overseerUrl => $group) {
+            $res = app(Overseer::class)->status($overseerUrl ?: '', $serverId);
             $status = array_merge($status, $res);
         }
 
         foreach ($status as $resServerId => $singleStatus) {
-            $cacheKey = "orchestration-status-$resServerId";
+            $cacheKey = "overseer-status-$resServerId";
             Cache::set($cacheKey, $singleStatus, 55);
         }
 
@@ -69,18 +62,34 @@ trait ManagesOrchestration
         ]);
 
         $server = GameServer::firstWhere('server_id', $request['server']);
-        $lock = Cache::lock("orchestration-restart-{$server->server_id}", 60);
+        $lock = Cache::lock("overseer-restart-{$server->server_id}", 60);
         if (! $lock->get()) {
             throw new \Exception('Restarted recently');
         }
 
-        $res = Http::get("{$server->orchestrator}/restart", [
-            'server' => $server->server_id,
-        ]);
-        $res->throwUnlessStatus(200);
+        try {
+            $operation = app(Overseer::class)->restart($server->overseer ?? '', $server->server_id);
+        } catch (Throwable $exception) {
+            $lock->release();
+            throw $exception;
+        }
+        Cache::forget("overseer-status-{$server->server_id}");
 
-        Cache::forget("orchestration-status-{$server->server_id}");
+        return $operation;
+    }
 
-        return true;
+    private function getRestartOperation(Request $request, string $id): array
+    {
+        $data = $request->validate(['server' => 'required|string|exists:game_servers,server_id']);
+        $server = GameServer::firstWhere('server_id', $data['server']);
+        $operation = app(Overseer::class)->operation($server->overseer ?? '', $id);
+        if (($operation['server'] ?? null) !== $server->server_id) {
+            throw new RuntimeException('Overseer operation belongs to another server.');
+        }
+        if (in_array($operation['state'] ?? null, ['succeeded', 'failed'], true)) {
+            Cache::forget("overseer-status-{$server->server_id}");
+        }
+
+        return $operation;
     }
 }

@@ -17,7 +17,7 @@ use App\Http\Controllers\Web\Admin\LogsController;
 use App\Http\Controllers\Web\Admin\MapsController;
 use App\Http\Controllers\Web\Admin\MedalsController;
 use App\Http\Controllers\Web\Admin\MentorsController;
-use App\Http\Controllers\Web\Admin\OrchestrationController;
+use App\Http\Controllers\Web\Admin\OverseerController;
 use App\Http\Controllers\Web\Admin\PlayerNotesController;
 use App\Http\Controllers\Web\Admin\PlayersController;
 use App\Http\Controllers\Web\Admin\ProfilerController;
@@ -281,9 +281,10 @@ Route::controller(GameBuildTestMergesController::class)->prefix('builds/test-mer
     Route::put('/{prId}/commits', 'updateCommits')->whereNumber('prId')->name('update-commits');
 });
 
-Route::controller(OrchestrationController::class)->prefix('orchestration')->name('orchestration.')->group(function () {
+Route::controller(OverseerController::class)->prefix('overseer')->name('overseer.')->group(function () {
     Route::get('/status', 'status')->name('status');
     Route::post('/restart', 'restart')->name('restart');
+    Route::get('/operations/{id}', 'operation')->name('operation');
 });
 
 Route::controller(AuditController::class)->prefix('audit')->name('audit.')->group(function () {

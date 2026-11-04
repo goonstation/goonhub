@@ -6,6 +6,7 @@ use App\Jobs\BuildChangelog;
 use App\Jobs\ClearOldAudio;
 use App\Jobs\ClearOldDectalks;
 use App\Jobs\GameBuildOnRepoUpdate;
+use App\Jobs\GenerateFallbackExports;
 use App\Jobs\GenerateGlobalPlayerStats;
 use App\Jobs\GenerateNumbersStationPass;
 use App\Jobs\GetPlayerCounts;
@@ -38,6 +39,7 @@ class Kernel extends ConsoleKernel
             $schedule->job(new BuildChangelog)->everyFiveMinutes();
             $schedule->job(new GetPlayerCounts)->everyFiveMinutes();
             $schedule->job(new GameBuildOnRepoUpdate)->everyFiveMinutes();
+            $schedule->job(new GenerateFallbackExports)->everyFiveMinutes();
 
             $schedule->job(new GenerateNumbersStationPass)->hourly();
 

@@ -17,7 +17,7 @@
     </q-card-section>
     <q-list separator>
       <template v-if="servers.length">
-        <orchestrated-server
+        <overseer-server
           v-for="server in servers"
           :key="server.id"
           :server="server"
@@ -43,13 +43,13 @@
 
 <script>
 import { ionHelpCircleOutline } from '@quasar/extras/ionicons-v6'
-import OrchestratedServer from './Server.vue'
+import OverseerServer from './Server.vue'
 
 let statusInterval = 0
 
 export default {
   components: {
-    OrchestratedServer,
+    OverseerServer,
   },
 
   setup() {
@@ -101,7 +101,7 @@ export default {
       this.loadingStatus = true
       this.errorLoadingStatus = false
       try {
-        const { data } = await axios.get(route('admin.orchestration.status'))
+        const { data } = await axios.get(route('admin.overseer.status'))
         this.status = data
       } catch {
         this.errorLoadingStatus = true

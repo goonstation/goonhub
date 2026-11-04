@@ -61,7 +61,7 @@
             Any players currently connected will lose connection and will be required to manually
             reconnect once the restart is complete. Are you sure you want to restart this server?
             <br /><br />
-            The restart process may take up to 30 seconds to complete.
+            The restart process may take up to five minutes to complete.
           </span>
         </q-card-section>
 
@@ -174,12 +174,29 @@ export default {
       if (this.loadingRestart) return
       this.loadingRestart = true
       try {
-        await axios.post(route('admin.orchestration.restart'), { server: this.server.server_id })
+        const { data: operation } = await axios.post(route('admin.overseer.restart'), {
+          server: this.server.server_id,
+        })
+        let progress = operation
+        const deadline = Date.now() + 5 * 60 * 1000
+        while (!['succeeded', 'failed'].includes(progress.state)) {
+          if (Date.now() >= deadline) {
+            throw new Error('Restart is still in progress. Check server status before retrying.')
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2000))
+          const { data } = await axios.get(
+            route('admin.overseer.operation', { id: operation.id, server: this.server.server_id })
+          )
+          progress = data
+        }
+        if (progress.state === 'failed') {
+          throw new Error(progress.error || 'Server restart failed')
+        }
         this.$q.notify({ message: 'Server restarted', color: 'positive' })
         this.$emit('restarted')
       } catch (e) {
         this.$q.notify({
-          message: e.response.data.message || 'Something went wrong',
+          message: e.response?.data?.message || e.message || 'Something went wrong',
           color: 'negative',
         })
       }

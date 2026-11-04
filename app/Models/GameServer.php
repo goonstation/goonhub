@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Cache;
  * @property bool $invisible
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $orchestrator
+ * @property string|null $overseer
  * @property int|null $group_id
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Audit> $audits
  * @property-read int|null $audits_count
@@ -52,7 +52,7 @@ use Illuminate\Support\Facades\Cache;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereInvisible($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereLike($column, $value, $boolean = 'and')
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereOrchestrator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereOverseer($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer wherePort($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereServerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|\App\Models\GameServer whereShortName($value)

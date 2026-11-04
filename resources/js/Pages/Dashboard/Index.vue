@@ -16,7 +16,7 @@
 
     <div class="row q-col-gutter-md">
       <div class="col col-md-6 col-lg-4">
-        <server-orchestration />
+        <server-overseer />
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import ServerOrchestration from '@/Components/Orchestration/Manager.vue'
+import ServerOverseer from '@/Components/Overseer/Manager.vue'
 import DashboardLayout from '@/Layouts/DashboardLayout.vue'
 import HealthList from './Partials/HealthList.vue'
 
@@ -47,7 +47,7 @@ export default {
   layout: (h, page) => h(DashboardLayout, { title: 'Dashboard' }, () => page),
 
   components: {
-    ServerOrchestration,
+    ServerOverseer,
     HealthList,
   },
 

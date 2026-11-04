@@ -16,6 +16,7 @@ use App\Models\GameBuildSetting;
 use App\Models\GameBuildTestMerge;
 use App\Models\GameServer;
 use App\Models\PlayerAdmin;
+use App\Services\Overseer;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -824,13 +825,12 @@ class Build
         $byondVersion = "{$this->settings->byond_major}.{$this->settings->byond_minor}";
 
         $toUpload = ['game' => false, 'byond' => false, 'rustg' => false];
-        $res = Http::get("{$this->server->orchestrator}/build/check", [
+        $res = app(Overseer::class)->checkBuild($this->server->overseer ?? '', [
             'server' => $this->server->server_id,
             'buildstamp' => $buildStamp,
             'byond' => $byondVersion,
             'rustg' => $this->settings->rustg_version,
         ]);
-        $res = $res->json();
         if (isset($res['outdated'])) {
             $toUpload = array_merge($toUpload, array_intersect_key($res['outdated'], $toUpload));
         }
@@ -841,35 +841,21 @@ class Build
             return;
         }
 
-        $req = Http::createPendingRequest();
+        $files = [];
         if ($toUpload['game']) {
             $this->log('Attaching new game build artifact to upload');
-            $req->attach(
-                'build',
-                file_get_contents("{$this->artifactsDir}/game-$buildStamp.tar.gz"),
-                "game-$buildStamp.tar.gz"
-            );
+            $files['build'] = "{$this->artifactsDir}/game-$buildStamp.tar.gz";
         }
         if ($toUpload['byond']) {
             $this->log('Attaching new byond artifact to upload');
-            $req->attach(
-                'byond',
-                file_get_contents("{$this->rootByondDir}/$byondVersion.tar.gz"),
-                "$byondVersion.tar.gz"
-            );
+            $files['byond'] = "{$this->rootByondDir}/$byondVersion.tar.gz";
         }
         if ($toUpload['rustg']) {
             $this->log('Attaching new rust-g artifact to upload');
-            $req->attach(
-                'rustg',
-                file_get_contents("{$this->rootRustgDir}/{$this->settings->rustg_version}.zip"),
-                "{$this->settings->rustg_version}.zip"
-            );
+            $files['rustg'] = "{$this->rootRustgDir}/{$this->settings->rustg_version}.zip";
         }
-        $this->log('Uploading new artifacts to remote server');
-        $res = $req->withQueryParameters(['server' => $this->server->server_id])
-            ->post("{$this->server->orchestrator}/build/upload");
-        $res->throwUnlessStatus(200);
+        $this->log('Uploading new artifacts to Overseer');
+        app(Overseer::class)->uploadBuild($this->server->overseer ?? '', $this->server->server_id, $files);
     }
 
     private function buildFull()

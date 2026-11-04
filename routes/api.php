@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\GauntletController;
 use App\Http\Controllers\Api\JobBansController;
 use App\Http\Controllers\Api\MapsController;
 use App\Http\Controllers\Api\NumbersStationController;
-use App\Http\Controllers\Api\OrchestrationController;
+use App\Http\Controllers\Api\OverseerController;
 use App\Http\Controllers\Api\PlayerAntagsController;
 use App\Http\Controllers\Api\PlayerMedalsController;
 use App\Http\Controllers\Api\PlayerMetadataController;
@@ -214,8 +214,9 @@ Route::middleware(['isadmin'])->group(function () {
         Route::get('/rustg', 'rustg')->name('rustg');
         Route::get('/byond-tracy-writer', 'byondTracyWriter')->name('byond-tracy-writer');
     });
-    Route::controller(OrchestrationController::class)->prefix('orchestration')->name('orchestration.')->group(function () {
+    Route::controller(OverseerController::class)->prefix('overseer')->name('overseer.')->group(function () {
         Route::get('/status', 'status')->name('status');
         Route::post('/restart', 'restart')->name('restart');
+        Route::get('/operations/{id}', 'operation')->name('operation');
     });
 });

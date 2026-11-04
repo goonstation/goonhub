@@ -68,6 +68,7 @@ RUN dpkg --add-architecture i386; \
     sockets \
     pgsql \
     pdo_pgsql \
+    pdo_sqlite \
     opcache \
     exif \
     pdo_mysql \

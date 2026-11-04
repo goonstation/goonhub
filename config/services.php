@@ -14,6 +14,14 @@ return [
     |
     */
 
+    'overseer' => [
+        'token' => env('OVERSEER_API_TOKEN'),
+        'connect_timeout' => 10,
+        'timeout' => 30,
+        'fallback_timeout' => 30,
+        'upload_timeout' => 330,
+    ],
+
     'mailgun' => [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
