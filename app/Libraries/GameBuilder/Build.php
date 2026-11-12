@@ -564,7 +564,11 @@ class Build
         $this->log("Downloaded $version");
     }
 
-    /** Overseer requires runtime archives to contain a version directory */
+    /**
+     * Overseer requires runtime archives to contain a version directory
+     *
+     * @phpstan-impure
+     */
     private function isValidRustgZip(string $path, string $version): bool
     {
         $zip = new ZipArchive;
