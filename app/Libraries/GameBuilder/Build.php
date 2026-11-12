@@ -497,6 +497,8 @@ class Build
         $zip->extractTo($workDir);
         $zip->close();
         File::moveDirectory("$workDir/byond", "$workDir/$version");
+        // ZipArchive does not restore permissions
+        shell_exec("chmod -R 770 $workDir/$version");
 
         $process = new Process([
             'tar', 'czf',
@@ -506,7 +508,6 @@ class Build
         $this->runProcess($process);
 
         shell_exec("mv $workDir/$version {$this->byondDir}");
-        shell_exec("chmod -R 770 {$this->byondDir}");
         File::deleteDirectory($workDir);
 
         $this->log("Downloaded $version");
