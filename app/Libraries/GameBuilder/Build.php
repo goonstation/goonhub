@@ -539,9 +539,11 @@ class Build
         $this->checkCancelled();
         $this->log('Checking for updates', group: 'Rust-G');
 
-        if (File::exists("{$this->rootRustgDir}/{$this->settings->rustg_version}.zip")) {
+        $version = $this->settings->rustg_version;
+        $path = "{$this->rootRustgDir}/$version.zip";
+        if ($this->isValidRustgZip($path, $version)) {
             // Rust-G version already downloaded
-            $this->log("Already downloaded {$this->settings->rustg_version}");
+            $this->log("Already downloaded $version");
 
             return;
         }
@@ -552,10 +554,27 @@ class Build
             File::makeDirectory($this->rootRustgDir);
         }
 
-        Http::sink("{$this->rootRustgDir}/{$this->settings->rustg_version}.zip")
-            ->get("https://rustg.goonhub.com/{$this->settings->rustg_version}.zip");
+        Http::sink($path)->get("https://rustg.goonhub.com/$version.zip")->throw();
 
-        $this->log("Downloaded {$this->settings->rustg_version}");
+        if (! $this->isValidRustgZip($path, $version)) {
+            File::delete($path);
+            throw new \Exception("Rust-G $version zip does not contain $version/librust_g.so");
+        }
+
+        $this->log("Downloaded $version");
+    }
+
+    /** Overseer requires runtime archives to contain a version directory */
+    private function isValidRustgZip(string $path, string $version): bool
+    {
+        $zip = new ZipArchive;
+        if ($zip->open($path) !== true) {
+            return false;
+        }
+        $valid = $zip->locateName("$version/librust_g.so") !== false;
+        $zip->close();
+
+        return $valid;
     }
 
     private function updateByondTracyWriter()
