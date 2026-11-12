@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
+scripts_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/scripts"
+
+while IFS= read -r -d '' script; do
+    bash "$script" || {
+        script_status=$?
+        printf 'Error: script "%s" failed with exit code %s\n' "$script" "$script_status" >&2
+    }
+done < <(find "$scripts_dir" -type f -name '*.sh' -print0 | sort -z)
+
 composer install
 bun install
 

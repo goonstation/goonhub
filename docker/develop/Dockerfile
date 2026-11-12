@@ -49,6 +49,7 @@ RUN dpkg --add-architecture i386; \
     libsodium-dev \
     libbrotli-dev \
     locales \
+    ripgrep \
     # For SSH signing
     openssh-client \
     # Custom packages
@@ -159,6 +160,7 @@ USER ${USER}
 COPY --link --chown=${WWWUSER}:${WWWGROUP} supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY --link --chown=${WWWUSER}:${WWWGROUP} php.ini ${PHP_INI_DIR}/conf.d/99-sail.ini
 COPY --link --chown=${WWWUSER}:${WWWGROUP} --chmod=755 start-container /usr/local/bin/start-container
+COPY --link --chown=${WWWUSER}:${WWWGROUP} scripts /usr/local/bin/scripts
 
 EXPOSE 80/tcp
 
