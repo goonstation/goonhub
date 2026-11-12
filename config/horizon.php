@@ -194,6 +194,20 @@ return [
             'nice' => 0,
         ],
 
+        'builds' => [
+            'connection' => 'redis',
+            'queue' => ['builds'],
+            'balance' => 'auto',
+            'autoScalingStrategy' => 'time',
+            'maxProcesses' => 2,
+            'maxTime' => 0,
+            'maxJobs' => 0,
+            'memory' => 128,
+            'tries' => 1,
+            'timeout' => 600,
+            'nice' => 0,
+        ],
+
         'events' => [
             'connection' => 'redis',
             'queue' => ['events'],

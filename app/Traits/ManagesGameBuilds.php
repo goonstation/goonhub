@@ -22,7 +22,7 @@ trait ManagesGameBuilds
         $res = ['current' => [], 'queued' => []];
         /** @var \Illuminate\Redis\Connections\PhpRedisConnection */
         $redis = Redis::client();
-        $reservedJobs = $redis->zrange('queues:default:reserved', 0, -1);
+        $reservedJobs = $redis->zrange('queues:builds:reserved', 0, -1);
         foreach ($reservedJobs as $job) {
             $job = json_decode($job);
             if ($job->data->commandName === GameBuildJob::class) {

@@ -24,6 +24,8 @@ class GameBuild implements ShouldBeUnique, ShouldQueue
 
     protected $timeout = 600;
 
+    public $queue = 'builds';
+
     public $tries = 1;
 
     public $uniqueFor = 600;
