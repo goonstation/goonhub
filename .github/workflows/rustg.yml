@@ -54,7 +54,9 @@ jobs:
 
       - run: |
           cd target/i686-unknown-linux-gnu/release
-          zip ${{ env.RUSTG_GIT_REF_NAME }}.zip librust_g.so
+          mkdir ${{ env.RUSTG_GIT_REF_NAME }}
+          cp librust_g.so ${{ env.RUSTG_GIT_REF_NAME }}/
+          zip -r ${{ env.RUSTG_GIT_REF_NAME }}.zip ${{ env.RUSTG_GIT_REF_NAME }}
 
       - uses: ryand56/r2-upload-action@latest
         with:
