@@ -232,7 +232,12 @@ class Repo
         [$ours, $theirs] = $refs;
         try {
             $this->run(['git', '-C', '+secret', 'checkout', '--detach', $ours]);
-            $this->run(['git', '-C', '+secret', 'merge', '--no-commit', '--no-ff', $theirs]);
+            $this->run([
+                'git', '-C', '+secret',
+                '-c', "user.name={$this->userName}",
+                '-c', "user.email={$this->userEmail}",
+                'merge', '--no-commit', '--no-ff', $theirs,
+            ]);
             $this->run([
                 'git', '-C', '+secret',
                 '-c', "user.name={$this->userName}",
