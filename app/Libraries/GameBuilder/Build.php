@@ -658,9 +658,13 @@ class Build
         // Clean up old files
         File::deleteDirectory("{$this->buildCdnDir}/browserassets");
         File::deleteDirectory("{$this->buildCdnDir}/tgui");
+        File::deleteDirectory("{$this->buildCdnDir}/+secret");
         // Transfer new files
         File::moveDirectory("{$this->buildDir}/browserassets", "{$this->buildCdnDir}/browserassets");
         File::moveDirectory("{$this->buildDir}/tgui", "{$this->buildCdnDir}/tgui");
+        if (File::exists("{$this->buildDir}/+secret/browserassets")) {
+            File::copyDirectory("{$this->buildDir}/+secret/browserassets", "{$this->buildCdnDir}/+secret/browserassets");
+        }
         // Copy +secret/tgui so tgui build can find secret interfaces relative to its workspace root
         if (File::exists("{$this->buildDir}/+secret/tgui")) {
             File::copyDirectory("{$this->buildDir}/+secret/tgui", "{$this->buildCdnDir}/+secret/tgui");
@@ -709,10 +713,10 @@ class Build
         );
         $this->runProcess($process);
 
-        if (File::exists("{$this->buildCdnDir}/+secret/browserassets/src/tgui")) {
-            $this->log('Copying secret TGUI bundles');
+        if (File::exists("{$this->buildCdnDir}/+secret/browserassets/src")) {
+            $this->log('Copying secret browserassets');
             $process = Process::fromShellCommandline(
-                "rsync -rl {$this->buildCdnDir}/+secret/browserassets/src/tgui/ {$this->buildCdnDir}/browserassets/src/tgui/"
+                "rsync -rl {$this->buildCdnDir}/+secret/browserassets/src/ {$this->buildCdnDir}/browserassets/src/"
             );
             $this->runProcess($process);
         }
