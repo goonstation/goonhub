@@ -555,7 +555,11 @@ class Build
             File::makeDirectory($this->rootRustgDir);
         }
 
-        Http::sink($path)->get("https://rustg.goonhub.com/$version.zip")->throw();
+        Http::sink($path)
+            ->connectTimeout(15)
+            ->retry(3, 2000, throw: false)
+            ->get("https://rustg.goonhub.com/$version.zip")
+            ->throw();
 
         if (! $this->isValidRustgZip($path, $version)) {
             File::delete($path);
