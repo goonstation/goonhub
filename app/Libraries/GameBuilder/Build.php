@@ -594,13 +594,25 @@ class Build
             File::makeDirectory($this->rootByondTracyWriterDir);
         }
 
-        if (File::exists($artifactPath)) {
-            File::delete($artifactPath);
-        }
+        // Download to a temp file so a failed refresh never destroys the last good artifact
+        $tmpPath = "$artifactPath.tmp";
+        File::delete($tmpPath);
 
-        Http::sink($artifactPath)
-            ->throw()
-            ->get('https://byond-tracy-writer.goonhub.com/latest.zip');
+        try {
+            Http::sink($tmpPath)
+                ->connectTimeout(15)
+                ->timeout(120)
+                ->retry(3, 2000, throw: false)
+                ->throw()
+                ->get('https://byond-tracy-writer.goonhub.com/latest.zip');
+            File::move($tmpPath, $artifactPath);
+        } catch (\Throwable $e) {
+            File::delete($tmpPath);
+            if (! File::exists($artifactPath)) {
+                throw $e;
+            }
+            $this->log('Download failed, using previously cached byond-tracy-writer: '.$e->getMessage());
+        }
 
         // Unpacked into the build so the profiler is deployed with the Byond version it was built for
         $zip = new ZipArchive;
